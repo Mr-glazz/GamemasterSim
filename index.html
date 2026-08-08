@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketsim Roster - Player Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #1a2230; color: #d1d5db; margin: 0; padding: 0; }
+        .header { background-color: #111827; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4b5563; }
+        .team-name { font-size: 20px; font-weight: bold; color: #f3f4f6; }
+        .finances { font-size: 16px; color: #10b981; font-weight: bold; }
+        .schedule { background: #374151; padding: 4px 10px; border-radius: 4px; font-size: 13px; color: #f3f4f6; }
+        .container { display: flex; height: calc(100vh - 50px); }
+        .sidebar { width: 200px; background-color: #0f172a; padding: 15px 5px; border-right: 1px solid #374151; }
+        .nav-button { display: block; width: 90%; padding: 10px; margin-bottom: 8px; background: none; border: none; color: #9ca3af; text-align: left; font-size: 15px; cursor: pointer; }
+        .nav-button.active { background-color: #1f2937; color: #ffffff; border-radius: 4px; }
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; }
+        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid #374151; padding-bottom: 8px; }
+        .basketsim-sheet { display: flex; gap: 25px; max-width: 800px; margin: 0 auto; }
+        .avatar-box { width: 200px; background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; text-align: center; height: fit-content; }
+        .jheri-curl-portrait { width: 130px; height: 130px; background-color: #c48b58; border-radius: 50% 50% 40% 40%; margin: 0 auto 15px auto; position: relative; border: 2px solid #000; box-shadow: 0 -12px 0 6px #1c1105, -8px -6px 0 6px #1c1105, 8px -6px 0 6px #1c1105, -12px 10px 0 2px #1c1105, 12px 10px 0 2px #1c1105, inset 5px 15px 0 rgba(255,255,255,0.15); }
+        .jheri-curl-portrait::before { content: ''; position: absolute; top: 55px; left: 35px; width: 10px; height: 10px; background-color: #000; border-radius: 50%; box-shadow: 50px 0 0 #000, 25px 15px 0 -2px #000; }
+        .jheri-curl-portrait::after { content: ''; position: absolute; bottom: -5px; left: -10px; width: 150px; height: 35px; background-color: #b91c1c; border-radius: 20px 20px 0 0; border: 2px solid #000; }
+        .data-tables { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .basketsim-table { width: 100%; border-collapse: collapse; background-color: #111827; border: 1px solid #374151; border-radius: 4px; overflow: hidden; }
+        .basketsim-table th { background-color: #1f2937; color: #9ca3af; padding: 8px 12px; font-size: 13px; text-align: left; text-transform: uppercase; border-bottom: 1px solid #374151; }
+        .basketsim-table td { padding: 9px 12px; font-size: 14px; border-bottom: 1px solid #1f2937; color: #e5e7eb; }
+        .stat-label { color: #9ca3af; width: 60%; }
+        .stat-value { font-weight: bold; color: #3b82f6; text-align: right; }
+        .good-val { color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="team-name">🏀 Boston Titans</div>
+        <div class="schedule">Season 1 | Week 2 (Week B: Rivalry Showcase)</div>
+        <div class="finances">Club Funds: $120,000</div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <button class="nav-button active">📋 Player Roster</button>
+            <button class="nav-button">⚡ Tactics Board</button>
+            <button class="nav-button">🏆 Sunday Cup</button>
+            <button class="nav-button">🏫 Youth School</button>
+            <button class="nav-button">🏪 Transfer List</button>
+        </div>
+        <div class="main-content">
+            <div class="section-title">Player Profile View</div>
+            <div class="basketsim-sheet">
+                <div class="avatar-box">
+                    <div class="jheri-curl-portrait"></div>
+                    <div style="font-weight: bold; font-size: 16px; color: #fff;">Chamberlain</div>
+                    <div style="font-size: 13px; color: #9ca3af; margin-top: 3px;">Jersey #13 | Center</div>
+                </div>
+                <div class="data-tables">
+                    <table class="basketsim-table">
+                        <thead><tr><th colspan="2">Player Technical Skills</th></tr></thead>
+                        <tbody>
+                            <tr><td class="stat-label">Height</td><td class="stat-value">7'1"</td></tr>
+                            <tr><td class="stat-label">Inside Scoring</td><td class="stat-value">88</td></tr>
+                            <tr><td class="stat-label">Interior Defense</td><td class="stat-value good-val">91</td></tr>
+                            <tr><td class="stat-label">Court Passing</td><td class="stat-value">55</td></tr>
+                            <tr><td class="stat-label">Potential Tier</td><td class="stat-value">10 (Hall of Fame)</td></tr>
+                        </tbody>
+                    </table>
+                    <table class="basketsim-table">
+                        <thead><tr><th colspan="2">Internal Roster Values</th></tr></thead>
+                        <tbody>
+                            <tr><td class="stat-label">Current Health Status</td><td class="stat-value good-val">100% (Fit)</td></tr>
+                            <tr><td class="stat-label">Base Attitude</td><td class="stat-value">Ambitious & Hardworking</td></tr>
+                            <tr><td class="stat-label">Team Chemistry Connection</td><td class="stat-value">84%</td></tr>
+                            <tr><td class="stat-label">Tactical Favorite Setting</td><td class="stat-value">Fast Break</td></tr>
+                            <tr><td class="stat-label">Feeling Toward Future</td><td class="stat-value">Optimistic (Wants Ring)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
