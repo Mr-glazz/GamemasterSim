@@ -16,9 +16,18 @@
         .nav-button:hover { background-color: #1f2937; color: #fff; }
         .nav-button.active { background-color: #2563eb; color: #ffffff; font-weight: bold; }
         .main-content { flex: 1; padding: 25px; overflow-y: auto; }
-        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid #374151; padding-bottom: 8px; }
+        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid #374151; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
+        
+        /* Dynamic Roster Styles */
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .player-card { background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; }
+        .player-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 8px; margin-bottom: 10px; }
+        .player-name { font-weight: bold; font-size: 16px; color: #fff; }
+        .player-pos { font-size: 12px; background: #2563eb; padding: 2px 6px; border-radius: 4px; color: #fff; }
+        .player-stats-mini { font-size: 13px; color: #9ca3af; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        
         .basketsim-sheet { display: flex; gap: 25px; max-width: 900px; margin: 0 auto; flex-wrap: wrap; }
         .avatar-box { width: 200px; background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; text-align: center; height: fit-content; }
         .jheri-curl-portrait { width: 130px; height: 130px; background-color: #c48b58; border-radius: 50% 50% 40% 40%; margin: 0 auto 15px auto; position: relative; border: 2px solid #000; box-shadow: 0 -12px 0 6px #1c1105, -8px -6px 0 6px #1c1105, 8px -6px 0 6px #1c1105, -12px 10px 0 2px #1c1105, 12px 10px 0 2px #1c1105, inset 5px 15px 0 rgba(255,255,255,0.15); }
@@ -32,7 +41,7 @@
         .stat-value { font-weight: bold; color: #3b82f6; text-align: right; }
         .good-val { color: #10b981; }
         .card { background-color: #111827; border: 1px solid #374151; padding: 20px; border-radius: 6px; margin-bottom: 15px; }
-        .btn { background-color: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn { background-color: #2563eb; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .btn:hover { background-color: #1d4ed8; }
         .btn-success { background-color: #10b981; }
         .btn-success:hover { background-color: #059669; }
@@ -59,35 +68,13 @@
             
             <!-- 1. ROSTER TAB -->
             <div id="roster" class="tab-panel active">
-                <div class="section-title">Player Profile View & Roster Management</div>
-                <div class="basketsim-sheet">
-                    <div class="avatar-box">
-                        <div class="jheri-curl-portrait"></div>
-                        <div style="font-weight: bold; font-size: 16px; color: #fff;">Chamberlain</div>
-                        <div style="font-size: 13px; color: #9ca3af; margin-top: 3px;">Jersey #13 | Center</div>
-                    </div>
-                    <div class="data-tables">
-                        <table class="basketsim-table">
-                            <thead><tr><th colspan="2">Player Technical Skills</th></tr></thead>
-                            <tbody>
-                                <tr><td class="stat-label">Height</td><td class="stat-value">7'1"</td></tr>
-                                <tr><td class="stat-label">Inside Scoring</td><td class="stat-value">88</td></tr>
-                                <tr><td class="stat-label">Interior Defense</td><td class="stat-value good-val">91</td></tr>
-                                <tr><td class="stat-label">Court Passing</td><td class="stat-value">55</td></tr>
-                                <tr><td class="stat-label">Potential Tier</td><td class="stat-value">10 (Hall of Fame)</td></tr>
-                            </tbody>
-                        </table>
-                        <table class="basketsim-table">
-                            <thead><tr><th colspan="2">Internal Roster Values</th></tr></thead>
-                            <tbody>
-                                <tr><td class="stat-label">Current Health Status</td><td class="stat-value good-val">100% (Fit)</td></tr>
-                                <tr><td class="stat-label">Base Attitude</td><td class="stat-value">Ambitious & Hardworking</td></tr>
-                                <tr><td class="stat-label">Team Chemistry Connection</td><td class="stat-value">84%</td></tr>
-                                <tr><td class="stat-label">Tactical Favorite Setting</td><td class="stat-value">Fast Break</td></tr>
-                                <tr><td class="stat-label">Feeling Toward Future</td><td class="stat-value">Optimistic (Wants Ring)</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="section-title">
+                    <span>Active Team Roster</span>
+                    <button class="btn btn-success" onclick="addNewPlayerPrompt()">+ Hire/Draft Player</button>
+                </div>
+                <!-- Dynamic Roster Container -->
+                <div id="roster-container" class="roster-grid">
+                    <!-- JavaScript will inject player cards here -->
                 </div>
             </div>
 
@@ -151,7 +138,12 @@
             funds: 120000,
             tactic: "Fast Break",
             currentBid: 45000,
-            secondsLeft: 179
+            secondsLeft: 179,
+            roster: [
+                { name: "Chamberlain", pos: "Center", number: 13, height: "7'1\"", insideScoring: 88, defense: 91, passing: 55, potential: "10 (HoF)" },
+                { name: "Bob Cousy", pos: "Point Guard", number: 14, height: "6'1\"", insideScoring: 72, defense: 75, passing: 94, potential: "9 (All-Star)" },
+                { name: "Bill Sharman", pos: "Shooting Guard", number: 21, height: "6'2\"", insideScoring: 81, defense: 78, passing: 68, potential: "8 (Starter)" }
+            ]
         };
 
         function switchTab(evt, tabName) {
@@ -163,16 +155,38 @@
             evt.currentTarget.classList.add("active");
         }
 
+        function renderRoster() {
+            let container = document.getElementById("roster-container");
+            container.innerHTML = "";
+            gameData.rosterforEach = gameData.roster.forEach(player => {
+                let card = document.createElement("div");
+                card.className = "player-card";
+                card.innerHTML = `
+                    <div>
+                        <div class="player-header">
+                            <span class="player-name">#${player.number} ${player.name}</span>
+                            <span class="player-pos">${player.pos}</span>
+                        </div>
+                        <div class="player-stats-mini">
+                            <div>Height: <strong>${player.height}</strong></div>
+                            <div>Potential: <strong>${player.potential}</strong></div>
+                            <div>Inside Sc.: <strong style="color:#3b82f6;">${player.insideScoring}</strong></div>
+                            <div>Defense: <strong style="color:#10b981;">${player.defense}</strong></div>
+                            <div>Passing: <strong>${player.passing}</strong></div>
+                        </div>
+                    </div>
+                    <button class="btn" style="background:#374151; font-size:12px; margin-top:5px;" onclick="alert('Viewing detailed player sheet for ${player.name}')">Detailed View</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         function updateFundsDisplay() {
             document.getElementById("header-funds").innerText = "Club Funds: $" + gameData.funds.toLocaleString();
         }
 
         function changeTactics() {
-            if (gameData.tactic === "Fast Break") {
-                gameData.tactic = "Inside Triangle";
-            } else {
-                gameData.tactic = "Fast Break";
-            }
+            gameData.tactic = gameData.tactic === "Fast Break" ? "Inside Triangle" : "Fast Break";
             document.getElementById("tactic-display").innerText = gameData.tactic;
         }
 
@@ -186,11 +200,28 @@
             document.getElementById("youth-display").innerText = "$" + Number(val).toLocaleString();
         }
 
+        function addNewPlayerPrompt() {
+            let name = prompt("Enter new player name:");
+            if (!name) return;
+            let pos = prompt("Enter position (PG, SG, SF, PF, C):", "SF");
+            gameData.roster.push({
+                name: name,
+                pos: pos || "SF",
+                number: Math.floor(Math.random() * 50) + 1,
+                height: "6'6\"",
+                insideScoring: Math.floor(Math.random() * 30) + 65,
+                defense: Math.floor(Math.random() * 30) + 65,
+                passing: Math.floor(Math.random() * 30) + 60,
+                potential: "7 (Rotation)"
+            });
+            renderRoster();
+        }
+
         function placeBid() {
             if (gameData.funds >= 55000) {
                 gameData.funds -= 55000;
                 gameData.currentBid += 10000;
-                gameData.secondsLeft = 180; // Reset timer extension simulation
+                gameData.secondsLeft = 180;
                 updateFundsDisplay();
                 document.getElementById("bid-display").innerText = "$" + gameData.currentBid.toLocaleString();
                 let alertBox = document.getElementById("bid-alert");
@@ -212,6 +243,11 @@
                 alert("Insufficient Club Funds for Scout proposal!");
             }
         }
+
+        // Initialize Roster on Load
+        window.onload = function() {
+            renderRoster();
+        };
 
         // Live auction clock countdown simulation loop
         setInterval(() => {
