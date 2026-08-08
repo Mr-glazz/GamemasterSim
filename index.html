@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Master Sim - Basketsim Hybrid</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1a2230; color: #d1d5db; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #1a2230; color: #d1d5db; margin: 0; padding: 0; user-select: none; }
         .header { background-color: #111827; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4b5563; }
         .team-name { font-size: 20px; font-weight: bold; color: #f3f4f6; }
         .finances { font-size: 16px; color: #10b981; font-weight: bold; }
@@ -19,12 +19,12 @@
         .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid #374151; padding-bottom: 8px; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
-        .basketsim-sheet { display: flex; gap: 25px; max-width: 800px; margin: 0 auto; }
+        .basketsim-sheet { display: flex; gap: 25px; max-width: 900px; margin: 0 auto; flex-wrap: wrap; }
         .avatar-box { width: 200px; background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; text-align: center; height: fit-content; }
         .jheri-curl-portrait { width: 130px; height: 130px; background-color: #c48b58; border-radius: 50% 50% 40% 40%; margin: 0 auto 15px auto; position: relative; border: 2px solid #000; box-shadow: 0 -12px 0 6px #1c1105, -8px -6px 0 6px #1c1105, 8px -6px 0 6px #1c1105, -12px 10px 0 2px #1c1105, 12px 10px 0 2px #1c1105, inset 5px 15px 0 rgba(255,255,255,0.15); }
         .jheri-curl-portrait::before { content: ''; position: absolute; top: 55px; left: 35px; width: 10px; height: 10px; background-color: #000; border-radius: 50%; box-shadow: 50px 0 0 #000, 25px 15px 0 -2px #000; }
         .jheri-curl-portrait::after { content: ''; position: absolute; bottom: -5px; left: -10px; width: 150px; height: 35px; background-color: #b91c1c; border-radius: 20px 20px 0 0; border: 2px solid #000; }
-        .data-tables { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .data-tables { flex: 1; display: flex; flex-direction: column; gap: 15px; min-width: 300px; }
         .basketsim-table { width: 100%; border-collapse: collapse; background-color: #111827; border: 1px solid #374151; border-radius: 4px; overflow: hidden; }
         .basketsim-table th { background-color: #1f2937; color: #9ca3af; padding: 8px 12px; font-size: 13px; text-align: left; text-transform: uppercase; border-bottom: 1px solid #374151; }
         .basketsim-table td { padding: 9px 12px; font-size: 14px; border-bottom: 1px solid #1f2937; color: #e5e7eb; }
@@ -32,13 +32,20 @@
         .stat-value { font-weight: bold; color: #3b82f6; text-align: right; }
         .good-val { color: #10b981; }
         .card { background-color: #111827; border: 1px solid #374151; padding: 20px; border-radius: 6px; margin-bottom: 15px; }
+        .btn { background-color: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background-color: #1d4ed8; }
+        .btn-success { background-color: #10b981; }
+        .btn-success:hover { background-color: #059669; }
+        input[type="range"] { width: 100%; margin-top: 10px; accent-color: #10b981; }
+        .alert { padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 14px; display: none; }
+        .alert-success { background-color: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="team-name">🏀 Boston Titans</div>
-        <div class="schedule">Season 1 | Week 2 (Week B: Rivalry Showcase)</div>
-        <div class="finances">Club Funds: $120,000</div>
+        <div class="team-name" id="header-team">🏀 Boston Titans</div>
+        <div class="schedule" id="header-schedule">Season 1 | Week 2 (Week B: Rivalry Showcase)</div>
+        <div class="finances" id="header-funds">Club Funds: $120,000</div>
     </div>
     <div class="container">
         <div class="sidebar">
@@ -52,7 +59,7 @@
             
             <!-- 1. ROSTER TAB -->
             <div id="roster" class="tab-panel active">
-                <div class="section-title">Player Profile View</div>
+                <div class="section-title">Player Profile View & Roster Management</div>
                 <div class="basketsim-sheet">
                     <div class="avatar-box">
                         <div class="jheri-curl-portrait"></div>
@@ -89,8 +96,9 @@
                 <div class="section-title">Tactical Strategy Engine</div>
                 <div class="card">
                     <h3>Offensive Pace & Style</h3>
-                    <p>Current Strategy: <strong style="color: #3b82f6;">Fast Break</strong></p>
+                    <p>Current Strategy: <strong id="tactic-display" style="color: #3b82f6;">Fast Break</strong></p>
                     <p style="color: #9ca3af; font-size: 14px;">High tempo play designed to maximize transition scoring efficiency based on your guards' passing stats.</p>
+                    <button class="btn" onclick="changeTactics()">Switch to Inside Triangle</button>
                 </div>
             </div>
 
@@ -100,6 +108,8 @@
                 <div class="card">
                     <h3>Active War: Division 5.1 vs Division 5.2</h3>
                     <p>Standings rank-matching in progress. Winning division payout at season end: <strong style="color: #10b981;">$50,000</strong></p>
+                    <button class="btn btn-success" onclick="simCupMatch()">Simulate Sunday Match</button>
+                    <div id="cup-alert" class="alert alert-success">Match Won! +2 Goal Differential Secured for Division 5.1.</div>
                 </div>
             </div>
 
@@ -107,9 +117,10 @@
             <div id="youth" class="tab-panel">
                 <div class="section-title">Youth Academy & Scouting School</div>
                 <div class="card">
-                    <h3>Academy Investment</h3>
-                    <p>Current Monthly Funding: <strong style="color: #10b981;">$25,000</strong></p>
-                    <p style="color: #9ca3af; font-size: 14px;">Higher cash allocations push potential skill floors upward for incoming youth draft classes.</p>
+                    <h3>Academy Investment Slider</h3>
+                    <p>Monthly Funding Allocation: <strong id="youth-display" style="color: #10b981;">$25,000</strong></p>
+                    <p style="color: #9ca3af; font-size: 14px;">Adjust funding to increase incoming draft class talent floors.</p>
+                    <input type="range" id="youth-slider" min="5000" max="75000" step="5000" value="25000" oninput="updateYouth(this.value)">
                 </div>
             </div>
 
@@ -117,12 +128,18 @@
             <div id="transfer" class="tab-panel">
                 <div class="section-title">Dual-Market Transfer & Scouting List</div>
                 <div class="card">
-                    <h3>Market Path 1: Open Bidding (BuzzerBeater Style)</h3>
-                    <p style="color: #9ca3af; font-size: 14px;">3-day auction clock. Late bids placed in the final 3 minutes extend the timer by 3 minutes.</p>
+                    <h3>Market Path 1: Open Bidding Auction (BuzzerBeater Style)</h3>
+                    <p style="color: #9ca3af; font-size: 14px;">Player: <strong>Marcus Young (SG, Potential 9)</strong></p>
+                    <p>Current Highest Bid: <strong id="bid-display" style="color: #10b981;">$45,000</strong></p>
+                    <p>Auction Clock: <strong id="auction-timer" style="color: #ef4444;">02:59</strong> (Auto-extends on late bids)</p>
+                    <button class="btn" onclick="placeBid()">Place Winning Bid ($55,000)</button>
+                    <div id="bid-alert" class="alert alert-success">Bid accepted! Timer extended by 3 minutes.</div>
                 </div>
                 <div class="card">
                     <h3>Market Path 2: Free Agent Scout Market</h3>
-                    <p style="color: #9ca3af; font-size: 14px;">Immediate "Buy Now" Scout proposals available to bypass bidding wars.</p>
+                    <p style="color: #9ca3af; font-size: 14px;">Instant "Buy Now" Scout Proposal: <strong>Big Man prospect</strong></p>
+                    <button class="btn btn-success" onclick="buyScout()">Sign Immediate Scout ($35,000)</button>
+                    <div id="scout-alert" class="alert alert-success">Scout signed successfully! Roster depth updated.</div>
                 </div>
             </div>
 
@@ -130,6 +147,13 @@
     </div>
 
     <script>
+        let gameData = {
+            funds: 120000,
+            tactic: "Fast Break",
+            currentBid: 45000,
+            secondsLeft: 179
+        };
+
         function switchTab(evt, tabName) {
             let panels = document.getElementsByClassName("tab-panel");
             for (let p of panels) { p.classList.remove("active"); }
@@ -138,6 +162,68 @@
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
+
+        function updateFundsDisplay() {
+            document.getElementById("header-funds").innerText = "Club Funds: $" + gameData.funds.toLocaleString();
+        }
+
+        function changeTactics() {
+            if (gameData.tactic === "Fast Break") {
+                gameData.tactic = "Inside Triangle";
+            } else {
+                gameData.tactic = "Fast Break";
+            }
+            document.getElementById("tactic-display").innerText = gameData.tactic;
+        }
+
+        function simCupMatch() {
+            let alertBox = document.getElementById("cup-alert");
+            alertBox.style.display = "block";
+            setTimeout(() => { alertBox.style.display = "none"; }, 3500);
+        }
+
+        function updateYouth(val) {
+            document.getElementById("youth-display").innerText = "$" + Number(val).toLocaleString();
+        }
+
+        function placeBid() {
+            if (gameData.funds >= 55000) {
+                gameData.funds -= 55000;
+                gameData.currentBid += 10000;
+                gameData.secondsLeft = 180; // Reset timer extension simulation
+                updateFundsDisplay();
+                document.getElementById("bid-display").innerText = "$" + gameData.currentBid.toLocaleString();
+                let alertBox = document.getElementById("bid-alert");
+                alertBox.style.display = "block";
+                setTimeout(() => { alertBox.style.display = "none"; }, 3500);
+            } else {
+                alert("Insufficient Club Funds for this bid!");
+            }
+        }
+
+        function buyScout() {
+            if (gameData.funds >= 35000) {
+                gameData.funds -= 35000;
+                updateFundsDisplay();
+                let alertBox = document.getElementById("scout-alert");
+                alertBox.style.display = "block";
+                setTimeout(() => { alertBox.style.display = "none"; }, 3500);
+            } else {
+                alert("Insufficient Club Funds for Scout proposal!");
+            }
+        }
+
+        // Live auction clock countdown simulation loop
+        setInterval(() => {
+            if (gameData.secondsLeft > 0) {
+                gameData.secondsLeft--;
+                let mins = Math.floor(gameData.secondsLeft / 60);
+                let secs = gameData.secondsLeft % 60;
+                let formatted = (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+                let timerElem = document.getElementById("auction-timer");
+                if (timerElem) { timerElem.innerText = formatted; }
+            }
+        }, 1000);
     </script>
 </body>
 </html>
