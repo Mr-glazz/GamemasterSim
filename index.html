@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basketsim Roster - Player Details</title>
+    <title>Game Master Sim - Basketsim Hybrid</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #1a2230; color: #d1d5db; margin: 0; padding: 0; }
         .header { background-color: #111827; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4b5563; }
@@ -11,11 +12,14 @@
         .finances { font-size: 16px; color: #10b981; font-weight: bold; }
         .schedule { background: #374151; padding: 4px 10px; border-radius: 4px; font-size: 13px; color: #f3f4f6; }
         .container { display: flex; height: calc(100vh - 50px); }
-        .sidebar { width: 200px; background-color: #0f172a; padding: 15px 5px; border-right: 1px solid #374151; }
-        .nav-button { display: block; width: 90%; padding: 10px; margin-bottom: 8px; background: none; border: none; color: #9ca3af; text-align: left; font-size: 15px; cursor: pointer; }
-        .nav-button.active { background-color: #1f2937; color: #ffffff; border-radius: 4px; }
+        .sidebar { width: 220px; background-color: #0f172a; padding: 15px 5px; border-right: 1px solid #374151; }
+        .nav-button { display: block; width: 90%; padding: 10px; margin-bottom: 8px; background: none; border: none; color: #9ca3af; text-align: left; font-size: 15px; cursor: pointer; border-radius: 4px; }
+        .nav-button:hover { background-color: #1f2937; color: #fff; }
+        .nav-button.active { background-color: #2563eb; color: #ffffff; font-weight: bold; }
         .main-content { flex: 1; padding: 25px; overflow-y: auto; }
         .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid #374151; padding-bottom: 8px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
         .basketsim-sheet { display: flex; gap: 25px; max-width: 800px; margin: 0 auto; }
         .avatar-box { width: 200px; background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; text-align: center; height: fit-content; }
         .jheri-curl-portrait { width: 130px; height: 130px; background-color: #c48b58; border-radius: 50% 50% 40% 40%; margin: 0 auto 15px auto; position: relative; border: 2px solid #000; box-shadow: 0 -12px 0 6px #1c1105, -8px -6px 0 6px #1c1105, 8px -6px 0 6px #1c1105, -12px 10px 0 2px #1c1105, 12px 10px 0 2px #1c1105, inset 5px 15px 0 rgba(255,255,255,0.15); }
@@ -28,6 +32,7 @@
         .stat-label { color: #9ca3af; width: 60%; }
         .stat-value { font-weight: bold; color: #3b82f6; text-align: right; }
         .good-val { color: #10b981; }
+        .card { background-color: #111827; border: 1px solid #374151; padding: 20px; border-radius: 6px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -38,44 +43,102 @@
     </div>
     <div class="container">
         <div class="sidebar">
-            <button class="nav-button active">📋 Player Roster</button>
-            <button class="nav-button">⚡ Tactics Board</button>
-            <button class="nav-button">🏆 Sunday Cup</button>
-            <button class="nav-button">🏫 Youth School</button>
-            <button class="nav-button">🏪 Transfer List</button>
+            <button class="nav-button active" onclick="switchTab(event, 'roster')">📋 Player Roster</button>
+            <button class="nav-button" onclick="switchTab(event, 'tactics')">⚡ Tactics Board</button>
+            <button class="nav-button" onclick="switchTab(event, 'cup')">🏆 Sunday Cup</button>
+            <button class="nav-button" onclick="switchTab(event, 'youth')">🏫 Youth School</button>
+            <button class="nav-button" onclick="switchTab(event, 'transfer')">🏪 Transfer List</button>
         </div>
         <div class="main-content">
-            <div class="section-title">Player Profile View</div>
-            <div class="basketsim-sheet">
-                <div class="avatar-box">
-                    <div class="jheri-curl-portrait"></div>
-                    <div style="font-weight: bold; font-size: 16px; color: #fff;">Chamberlain</div>
-                    <div style="font-size: 13px; color: #9ca3af; margin-top: 3px;">Jersey #13 | Center</div>
-                </div>
-                <div class="data-tables">
-                    <table class="basketsim-table">
-                        <thead><tr><th colspan="2">Player Technical Skills</th></tr></thead>
-                        <tbody>
-                            <tr><td class="stat-label">Height</td><td class="stat-value">7'1"</td></tr>
-                            <tr><td class="stat-label">Inside Scoring</td><td class="stat-value">88</td></tr>
-                            <tr><td class="stat-label">Interior Defense</td><td class="stat-value good-val">91</td></tr>
-                            <tr><td class="stat-label">Court Passing</td><td class="stat-value">55</td></tr>
-                            <tr><td class="stat-label">Potential Tier</td><td class="stat-value">10 (Hall of Fame)</td></tr>
-                        </tbody>
-                    </table>
-                    <table class="basketsim-table">
-                        <thead><tr><th colspan="2">Internal Roster Values</th></tr></thead>
-                        <tbody>
-                            <tr><td class="stat-label">Current Health Status</td><td class="stat-value good-val">100% (Fit)</td></tr>
-                            <tr><td class="stat-label">Base Attitude</td><td class="stat-value">Ambitious & Hardworking</td></tr>
-                            <tr><td class="stat-label">Team Chemistry Connection</td><td class="stat-value">84%</td></tr>
-                            <tr><td class="stat-label">Tactical Favorite Setting</td><td class="stat-value">Fast Break</td></tr>
-                            <tr><td class="stat-label">Feeling Toward Future</td><td class="stat-value">Optimistic (Wants Ring)</td></tr>
-                        </tbody>
-                    </table>
+            
+            <!-- 1. ROSTER TAB -->
+            <div id="roster" class="tab-panel active">
+                <div class="section-title">Player Profile View</div>
+                <div class="basketsim-sheet">
+                    <div class="avatar-box">
+                        <div class="jheri-curl-portrait"></div>
+                        <div style="font-weight: bold; font-size: 16px; color: #fff;">Chamberlain</div>
+                        <div style="font-size: 13px; color: #9ca3af; margin-top: 3px;">Jersey #13 | Center</div>
+                    </div>
+                    <div class="data-tables">
+                        <table class="basketsim-table">
+                            <thead><tr><th colspan="2">Player Technical Skills</th></tr></thead>
+                            <tbody>
+                                <tr><td class="stat-label">Height</td><td class="stat-value">7'1"</td></tr>
+                                <tr><td class="stat-label">Inside Scoring</td><td class="stat-value">88</td></tr>
+                                <tr><td class="stat-label">Interior Defense</td><td class="stat-value good-val">91</td></tr>
+                                <tr><td class="stat-label">Court Passing</td><td class="stat-value">55</td></tr>
+                                <tr><td class="stat-label">Potential Tier</td><td class="stat-value">10 (Hall of Fame)</td></tr>
+                            </tbody>
+                        </table>
+                        <table class="basketsim-table">
+                            <thead><tr><th colspan="2">Internal Roster Values</th></tr></thead>
+                            <tbody>
+                                <tr><td class="stat-label">Current Health Status</td><td class="stat-value good-val">100% (Fit)</td></tr>
+                                <tr><td class="stat-label">Base Attitude</td><td class="stat-value">Ambitious & Hardworking</td></tr>
+                                <tr><td class="stat-label">Team Chemistry Connection</td><td class="stat-value">84%</td></tr>
+                                <tr><td class="stat-label">Tactical Favorite Setting</td><td class="stat-value">Fast Break</td></tr>
+                                <tr><td class="stat-label">Feeling Toward Future</td><td class="stat-value">Optimistic (Wants Ring)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
+            <!-- 2. TACTICS BOARD TAB -->
+            <div id="tactics" class="tab-panel">
+                <div class="section-title">Tactical Strategy Engine</div>
+                <div class="card">
+                    <h3>Offensive Pace & Style</h3>
+                    <p>Current Strategy: <strong style="color: #3b82f6;">Fast Break</strong></p>
+                    <p style="color: #9ca3af; font-size: 14px;">High tempo play designed to maximize transition scoring efficiency based on your guards' passing stats.</p>
+                </div>
+            </div>
+
+            <!-- 3. SUNDAY CUP TAB -->
+            <div id="cup" class="tab-panel">
+                <div class="section-title">Sunday Cross-Division Cup Leaderboard</div>
+                <div class="card">
+                    <h3>Active War: Division 5.1 vs Division 5.2</h3>
+                    <p>Standings rank-matching in progress. Winning division payout at season end: <strong style="color: #10b981;">$50,000</strong></p>
+                </div>
+            </div>
+
+            <!-- 4. YOUTH SCHOOL TAB -->
+            <div id="youth" class="tab-panel">
+                <div class="section-title">Youth Academy & Scouting School</div>
+                <div class="card">
+                    <h3>Academy Investment</h3>
+                    <p>Current Monthly Funding: <strong style="color: #10b981;">$25,000</strong></p>
+                    <p style="color: #9ca3af; font-size: 14px;">Higher cash allocations push potential skill floors upward for incoming youth draft classes.</p>
+                </div>
+            </div>
+
+            <!-- 5. TRANSFER LIST TAB -->
+            <div id="transfer" class="tab-panel">
+                <div class="section-title">Dual-Market Transfer & Scouting List</div>
+                <div class="card">
+                    <h3>Market Path 1: Open Bidding (BuzzerBeater Style)</h3>
+                    <p style="color: #9ca3af; font-size: 14px;">3-day auction clock. Late bids placed in the final 3 minutes extend the timer by 3 minutes.</p>
+                </div>
+                <div class="card">
+                    <h3>Market Path 2: Free Agent Scout Market</h3>
+                    <p style="color: #9ca3af; font-size: 14px;">Immediate "Buy Now" Scout proposals available to bypass bidding wars.</p>
+                </div>
+            </div>
+
         </div>
     </div>
+
+    <script>
+        function switchTab(evt, tabName) {
+            let panels = document.getElementsByClassName("tab-panel");
+            for (let p of panels) { p.classList.remove("active"); }
+            let buttons = document.getElementsByClassName("nav-button");
+            for (let b of buttons) { b.classList.remove("active"); }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
 </body>
 </html>
