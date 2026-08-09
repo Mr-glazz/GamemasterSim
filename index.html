@@ -37,7 +37,7 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* Upgraded Panini Trading Cards Grid & Styles */
+        /* Panini Trading Cards Grid & Styles */
         .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
         .player-card { background: linear-gradient(145deg, #111827, #1f2937); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
         .player-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5); border-color: var(--accent-blue); }
@@ -110,6 +110,7 @@
             <button class="nav-button active" onclick="switchTab(event, 'roster')">📋 Master Roster & Cards</button>
             <button class="nav-button" onclick="switchTab(event, 'standings')">🏆 12-Team League Standings</button>
             <button class="nav-button" onclick="switchTab(event, 'tactics')">⚡ Blueprints & Tactics</button>
+            <button class="nav-button" onclick="switchTab(event, 'gym')">💪 Gym & Training Area</button>
             
             <div class="nav-section-title">Operations & Market</div>
             <button class="nav-button" onclick="switchTab(event, 'transfer')">🏪 Live Auction & Free Agency</button>
@@ -193,6 +194,34 @@
                         <p style="margin: 0 0 8px 0;">Active Synergy Level: <strong id="blueprint-level" style="color: var(--accent-green);">Level 1 (Fresh Implementation)</strong></p>
                         <p style="margin: 0; font-size: 13px; color: var(--text-muted);" id="blueprint-desc">Run matches successfully with this loadout to increase blueprint tier and unlock passive team-wide stat multipliers.</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- GYM & TRAINING AREA TAB -->
+            <div id="gym" class="tab-panel">
+                <div class="section-title">Gym & Training Progression Area</div>
+                <div class="card">
+                    <h3>Attribute Training & Phenom Progression</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Grind player attributes on the strict 1-20 scale. Features an ultra-rare 1% Phenom mutation roll for triple (3X) training progression speed.</p>
+                    
+                    <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="font-size: 13px; color: var(--text-muted);">Select Roster Player:</label>
+                            <select id="gym-player-select" style="margin-top: 5px; margin-bottom: 15px;"></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 13px; color: var(--text-muted);">Select Skill to Train:</label>
+                            <select id="gym-skill-select" style="margin-top: 5px; margin-bottom: 15px;">
+                                <option value="iq">Match IQ</option>
+                                <option value="jsNum">Jump Shot (JS)</option>
+                                <option value="odNum">Perimeter Defense (OD)</option>
+                                <option value="handlingNum">Ball Handling (DR)</option>
+                                <option value="passingNum">Passing</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="runGymTrainingSession()">Execute Training Session (Check Phenom Roll)</button>
+                    <div class="terminal-box" id="gym-terminal" style="margin-top: 15px;">[Gym Initialized] Select player and target skill to begin weight and skill progression.</div>
                 </div>
             </div>
 
@@ -347,306 +376,413 @@
                     name: "Boston Titans",
                     wins: 0, losses: 0,
                     roster: [
-                        { name: "Dorian Freeman", pos: "PF", age: 26, height: "6'10\" / 208 cm", tier: "Standard", role: "star player", salary: 9784, dmi: 34500, potential: "allstar", gameShape: "proficient (9)", iq: 74, js: "prolific (14)", jr: "sensational (12)", od: "prominent (10)", handling: "sensational (12)", driving: "prolific (14)", passing: "respectable (7)", insideShot: "prominent (10)", insideDef: "average (6)", rebounding: "respectable (7)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "average (6)" },
-                        { name: "King Bronny", pos: "SF", age: 18, height: "6'9\" / 206 cm", tier: "Red Diamond", role: "franchise player", salary: 4250, dmi: 98400, potential: "generational", gameShape: "proficient (9)", iq: 95, js: "prominent (10)", jr: "respectable (7)", od: "sensational (12)", handling: "prolific (14)", driving: "prolific (14)", passing: "sensational (12)", insideShot: "sensational (12)", insideDef: "prolific (14)", rebounding: "prominent (10)", shotBlocking: "prominent (10)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "pitiful (2)" },
-                        { name: "RJ Mobley", pos: "SG", age: 18, height: "6'5\" / 196 cm", tier: "Regular Diamond", role: "rotation player", salary: 4250, dmi: 21500, potential: "superstar", gameShape: "respectable (7)", iq: 82, js: "respectable (7)", jr: "mediocre (5)", od: "respectable (7)", handling: "strong (8)", driving: "respectable (7)", passing: "awful (3)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "pitiful (2)" },
-                        { name: "Icetee Marrow", pos: "PG", age: 18, height: "6'2\" / 188 cm", tier: "Black Diamond", role: "franchise player", salary: 4250, dmi: 125000, potential: "mythic", gameShape: "proficient (9)", iq: 99, js: "prolific (14)", jr: "sensational (12)", od: "sensational (12)", handling: "prolific (14)", driving: "prolific (14)", passing: "sensational (12)", insideShot: "prolific (14)", insideDef: "sensational (12)", rebounding: "sensational (12)", shotBlocking: "sensational (12)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "proficient (9)" },
-                        { name: "Malik Cunningham", pos: "PG", age: 18, height: "6'3\" / 190 cm", tier: "Standard", role: "backup", salary: 2832, dmi: 12500, potential: "superstar", gameShape: "respectable (7)", iq: 78, js: "awful (3)", jr: "inept (4)", od: "prominent (10)", handling: "strong (8)", driving: "respectable (7)", passing: "awful (3)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "pitiful (2)" }
+                        { name: "Dorian Freeman", pos: "PF", age: 26, height: "6'10\" / 208 cm", tier: "Standard", role: "star player", salary: 9784, dmi: 34500, potential: "allstar", gameShape: "proficient (9)", iq: 74, jsNum: 14, js: "prolific (14)", jr: "sensational (12)", odNum: 10, od: "prominent (10)", handlingNum: 12, handling: "sensational (12)", driving: "prolific (14)", passingNum: 7, passing: "respectable (7)", insideShot: "prominent (10)", insideDef: "average (6)", rebounding: "respectable (7)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "average (6)", isPhenom: false },
+                        { name: "King Bronny", pos: "SF", age: 18, height: "6'9\" / 206 cm", tier: "Red Diamond", role: "franchise player", salary: 4250, dmi: 98400, potential: "generational", gameShape: "proficient (9)", iq: 95, jsNum: 10, js: "prominent (10)", jr: "respectable (7)", odNum: 12, od: "sensational (12)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 12, passing: "sensational (12)", insideShot: "sensational (12)", insideDef: "prolific (14)", rebounding: "prominent (10)", shotBlocking: "prominent (10)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "pitiful (2)", isPhenom: false },
+                        { name: "RJ Mobley", pos: "SG", age: 18, height: "6'5\" / 196 cm", tier: "Regular Diamond", role: "rotation player", salary: 4250, dmi: 21500, potential: "superstar", gameShape: "respectable (7)", iq: 82, jsNum: 7, js: "respectable (7)", jr: "mediocre (5)", odNum: 7, od: "respectable (7)", handlingNum: 8, handling: "strong (8)", driving: "respectable (7)", passingNum: 3, passing: "awful (3)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "pitiful (2)", isPhenom: false },
+                        { name: "Icetee Marrow", pos: "PG", age: 18, height: "6'2\" / 188 cm", tier: "Black Diamond", role: "franchise player", salary: 4250, dmi: 125000, potential: "mythic", gameShape: "proficient (9)", iq: 99, jsNum: 14, js: "prolific (14)", jr: "sensational (12)", odNum: 12, od: "sensational (12)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 12, passing: "sensational (12)", insideShot: "prolific (14)", insideDef: "sensational (12)", rebounding: "sensational (12)", shotBlocking: "sensational (12)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "proficient (9)", isPhenom: true },
+                        { name: "Malik Cunningham", pos: "PG", age: 18, height: "6'3\" / 190 cm", tier: "Standard", role: "backup", salary: 2832, dmi: 12500, potential: "superstar", gameShape: "respectable (7)", iq: 78, jsNum: 3, js: "awful (3)", jr: "inept (4)", odNum: 10, od: "prominent (10)", handlingNum: 8, handling: "strong (8)", driving: "respectable (7)", passingNum: 3, passing: "awful (3)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "pitiful (2)", isPhenom: false }
                     ]
                 },
-                { name: "Chicago Vipers", wins: 0, losses: 0, roster: [{ name: "Zach LaVine Jr.", pos: "SG", age: 24, height: "6'5\" / 196 cm", tier: "Standard", role: "star player", salary: 8500, dmi: 18000, potential: "allstar", gameShape: "respectable (7)", iq: 76, js: "prolific (14)", jr: "sensational (12)", od: "respectable (7)", handling: "strong (8)", driving: "prolific (14)", passing: "respectable (7)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "mediocre (5)", stamina: "proficient (9)", freeThrow: "proficient (9)", experience: "respectable (7)" }] },
-                { name: "Los Angeles Apex", wins: 0, losses: 0, roster: [{ name: "Bronny Jr II", pos: "PG", age: 19, height: "6'2\" / 188 cm", tier: "Red Diamond", role: "star player", salary: 6000, dmi: 32000, potential: "superstar", gameShape: "respectable (7)", iq: 84, js: "sensational (12)", jr: "respectable (7)", od: "sensational (12)", handling: "prolific (14)", driving: "prolific (14)", passing: "prominent (10)", insideShot: "respectable (7)", insideDef: "respectable (7)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "average (6)" }] },
-                { name: "New York Metros", wins: 0, losses: 0, roster: [{ name: "Julius Randle III", pos: "PF", age: 25, height: "6'8\" / 203 cm", tier: "Standard", role: "star player", salary: 9200, dmi: 29000, potential: "allstar", gameShape: "respectable (7)", iq: 77, js: "respectable (7)", jr: "mediocre (5)", od: "average (6)", handling: "strong (8)", driving: "sensational (12)", passing: "respectable (7)", insideShot: "prolific (14)", insideDef: "prominent (10)", rebounding: "prolific (14)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "prominent (10)" }] },
-                { name: "Miami Heatwave", wins: 0, losses: 0, roster: [{ name: "Jimmy Butler V", pos: "SF", age: 27, height: "6'7\" / 201 cm", tier: "Regular Diamond", role: "franchise player", salary: 11000, dmi: 45000, potential: "superstar", gameShape: "proficient (9)", iq: 90, js: "sensational (12)", jr: "respectable (7)", od: "sensational (12)", handling: "prolific (14)", driving: "prolific (14)", passing: "prominent (10)", insideShot: "prominent (10)", insideDef: "sensational (12)", rebounding: "prominent (10)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "sensational (12)" }] },
-                { name: "Dallas Mavericks X", wins: 0, losses: 0, roster: [{ name: "Luka Doncic Jr.", pos: "PG", age: 22, height: "6'7\" / 201 cm", tier: "Black Diamond", role: "franchise player", salary: 12500, dmi: 110000, potential: "mythic", gameShape: "proficient (9)", iq: 96, js: "prolific (14)", jr: "sensational (12)", od: "prominent (10)", handling: "prolific (14)", driving: "prolific (14)", passing: "sensational (12)", insideShot: "sensational (12)", insideDef: "respectable (7)", rebounding: "prominent (10)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "prominent (10)" }] },
-                { name: "Golden State Dynasty", wins: 0, losses: 0, roster: [{ name: "Steph Curry III", pos: "PG", age: 26, height: "6'3\" / 190 cm", tier: "Red Diamond", role: "franchise player", salary: 11500, dmi: 85000, potential: "superstar", gameShape: "proficient (9)", iq: 94, js: "prolific (14)", jr: "prolific (14)", od: "respectable (7)", handling: "prolific (14)", driving: "sensational (12)", passing: "sensational (12)", insideShot: "average (6)", insideDef: "average (6)", rebounding: "respectable (7)", shotBlocking: "awful (3)", stamina: "proficient (9)", freeThrow: "prolific (14)", experience: "sensational (12)" }] },
-                { name: "Brooklyn Knights", wins: 0, losses: 0, roster: [{ name: "Mikal Bridges Jr.", pos: "SF", age: 23, height: "6'6\" / 198 cm", tier: "Standard", role: "rotation player", salary: 7800, dmi: 19500, potential: "allstar", gameShape: "respectable (7)", iq: 80, js: "respectable (7)", jr: "respectable (7)", od: "sensational (12)", handling: "strong (8)", driving: "respectable (7)", passing: "respectable (7)", insideShot: "respectable (7)", insideDef: "prominent (10)", rebounding: "respectable (7)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "respectable (7)" }] },
-                { name: "Seattle Supersonics", wins: 0, losses: 0, roster: [{ name: "Gary Payton II", pos: "PG", age: 24, height: "6'3\" / 190 cm", tier: "Standard", role: "rotation player", salary: 6500, dmi: 16000, potential: "starter", gameShape: "respectable (7)", iq: 83, js: "respectable (7)", jr: "mediocre (5)", od: "sensational (12)", handling: "strong (8)", driving: "respectable (7)", passing: "respectable (7)", insideShot: "average (6)", insideDef: "prominent (10)", rebounding: "respectable (7)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "respectable (7)" }] },
-                { name: "Toronto Raptors North", wins: 0, losses: 0, roster: [{ name: "Pascal Siakam Jr.", pos: "PF", age: 25, height: "6'8\" / 203 cm", tier: "Standard", role: "star player", salary: 8900, dmi: 22000, potential: "allstar", gameShape: "respectable (7)", iq: 79, js: "respectable (7)", jr: "mediocre (5)", od: "respectable (7)", handling: "strong (8)", driving: "sensational (12)", passing: "respectable (7)", insideShot: "prolific (14)", insideDef: "prominent (10)", rebounding: "prolific (14)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "prominent (10)" }] },
-                { name: "Phoenix Suns Apex", wins: 0, losses: 0, roster: [{ name: "Devin Booker Jr.", pos: "SG", age: 23, height: "6'5\" / 196 cm", tier: "Regular Diamond", role: "star player", salary: 9800, dmi: 31000, potential: "superstar", gameShape: "respectable (7)", iq: 85, js: "prolific (14)", jr: "sensational (12)", od: "respectable (7)", handling: "prolific (14)", driving: "sensational (12)", passing: "prominent (10)", insideShot: "respectable (7)", insideDef: "respectable (7)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "prominent (10)" }] },
-                { name: "Denver Mountain Peaks", wins: 0, losses: 0, roster: [{ name: "Nikola Jokic Jr.", pos: "C", age: 26, height: "6'11\" / 211 cm", tier: "Black Diamond", role: "franchise player", salary: 13000, dmi: 95000, potential: "mythic", gameShape: "proficient (9)", iq: 98, js: "sensational (12)", jr: "respectable (7)", od: "respectable (7)", handling: "prolific (14)", driving: "respectable (7)", passing: "sensational (12)", insideShot: "prolific (14)", insideDef: "sensational (12)", rebounding: "prolific (14)", shotBlocking: "prominent (10)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "sensational (12)" }] }
+                { name: "Chicago Vipers", wins: 0, losses: 0, roster: [{ name: "Zach LaVine Jr.", pos: "SG", age: 24, height: "6'5\" / 196 cm", tier: "Standard", role: "star player", salary: 8500, dmi: 18000, potential: "allstar", gameShape: "respectable (7)", iq: 76, jsNum: 14, js: "prolific (14)", jr: "sensational (12)", odNum: 7, od: "respectable (7)", handlingNum: 8, handling: "strong (8)", driving: "prolific (14)", passingNum: 7, passing: "respectable (7)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "mediocre (5)", stamina: "proficient (9)", freeThrow: "proficient (9)", experience: "respectable (7)", isPhenom: false }] },
+                { name: "Los Angeles Apex", wins: 0, losses: 0, roster: [{ name: "Bronny Jr II", pos: "PG", age: 19, height: "6'2\" / 188 cm", tier: "Red Diamond", role: "star player", salary: 6000, dmi: 32000, potential: "superstar", gameShape: "respectable (7)", iq: 84, jsNum: 12, js: "sensational (12)", jr: "respectable (7)", odNum: 12, od: "sensational (12)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 10, passing: "prominent (10)", insideShot: "respectable (7)", insideDef: "respectable (7)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "average (6)", isPhenom: false }] },
+                { name: "New York Metros", wins: 0, losses: 0, roster: [{ name: "Julius Randle III", pos: "PF", age: 25, height: "6'8\" / 203 cm", tier: "Standard", role: "star player", salary: 9200, dmi: 29000, potential: "allstar", gameShape: "respectable (7)", iq: 77, jsNum: 7, js: "respectable (7)", jr: "mediocre (5)", odNum: 6, od: "average (6)", handlingNum: 8, handling: "strong (8)", driving: "sensational (12)", passingNum: 7, passing: "respectable (7)", insideShot: "prolific (14)", insideDef: "prominent (10)", rebounding: "prolific (14)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "prominent (10)", isPhenom: false }] },
+                { name: "Miami Heatwave", wins: 0, losses: 0, roster: [{ name: "Jimmy Butler V", pos: "SF", age: 27, height: "6'7\" / 201 cm", tier: "Regular Diamond", role: "franchise player", salary: 11000, dmi: 45000, potential: "superstar", gameShape: "proficient (9)", iq: 90, jsNum: 12, js: "sensational (12)", jr: "respectable (7)", odNum: 12, od: "sensational (12)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 10, passing: "prominent (10)", insideShot: "prominent (10)", insideDef: "sensational (12)", rebounding: "prominent (10)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "sensational (12)", isPhenom: false }] },
+                { name: "Dallas Mavericks X", wins: 0, losses: 0, roster: [{ name: "Luka Doncic Jr.", pos: "PG", age: 22, height: "6'7\" / 201 cm", tier: "Black Diamond", role: "franchise player", salary: 12500, dmi: 110000, potential: "mythic", gameShape: "proficient (9)", iq: 96, jsNum: 14, js: "prolific (14)", jr: "sensational (12)", odNum: 10, od: "prominent (10)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 12, passing: "sensational (12)", insideShot: "sensational (12)", insideDef: "respectable (7)", rebounding: "prominent (10)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "prominent (10)", isPhenom: false }] },
+                { name: "Golden State Dynasty", wins: 0, losses: 0, roster: [{ name: "Steph Curry III", pos: "PG", age: 26, height: "6'3\" / 190 cm", tier: "Red Diamond", role: "franchise player", salary: 11500, dmi: 85000, potential: "superstar", gameShape: "proficient (9)", iq: 94, jsNum: 14, js: "prolific (14)", jr: "prolific (14)", odNum: 7, od: "respectable (7)", handlingNum: 14, handling: "prolific (14)", driving: "sensational (12)", passingNum: 12, passing: "sensational (12)", insideShot: "average (6)", insideDef: "average (6)", rebounding: "respectable (7)", shotBlocking: "awful (3)", stamina: "proficient (9)", freeThrow: "prolific (14)", experience: "sensational (12)", isPhenom: false }] },
+                { name: "Brooklyn Knights", wins: 0, losses: 0, roster: [{ name: "Mikal Bridges Jr.", pos: "SF", age: 23, height: "6'6\" / 198 cm", tier: "Standard", role: "rotation player", salary: 7800, dmi: 19500, potential: "allstar", gameShape: "respectable (7)", iq: 80, jsNum: 7, js: "respectable (7)", jr: "respectable (7)", odNum: 12, od: "sensational (12)", handlingNum: 8, handling: "strong (8)", driving: "respectable (7)", passingNum: 7, passing: "respectable (7)", insideShot: "respectable (7)", insideDef: "prominent (10)", rebounding: "respectable (7)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "average (6)", isPhenom: false }] },
+                { name: "Phoenix Suns Apex", wins: 0, losses: 0, roster: [{ name: "Devin Booker Jr.", pos: "SG", age: 24, height: "6'5\" / 196 cm", tier: "Regular Diamond", role: "star player", salary: 9500, dmi: 41000, potential: "superstar", gameShape: "proficient (9)", iq: 86, jsNum: 14, js: "prolific (14)", jr: "sensational (12)", odNum: 7, od: "respectable (7)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 10, passing: "prominent (10)", insideShot: "respectable (7)", insideDef: "respectable (7)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "prominent (10)", isPhenom: false }] },
+                { name: "Seattle Supersonics X", wins: 0, losses: 0, roster: [{ name: "Kevin Durant III", pos: "PF", age: 26, height: "6'10\" / 208 cm", tier: "Black Diamond", role: "franchise player", salary: 13000, dmi: 115000, potential: "mythic", gameShape: "proficient (9)", iq: 95, jsNum: 14, js: "prolific (14)", jr: "sensational (12)", odNum: 10, od: "prominent (10)", handlingNum: 14, handling: "prolific (14)", driving: "prolific (14)", passingNum: 10, passing: "prominent (10)", insideShot: "sensational (12)", insideDef: "prominent (10)", rebounding: "sensational (12)", shotBlocking: "sensational (12)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "sensational (12)", isPhenom: false }] },
+                { name: "Toronto Huskies", wins: 0, losses: 0, roster: [{ name: "Scottie Barnes Jr.", pos: "PF", age: 21, height: "6'7\" / 201 cm", tier: "Standard", role: "star player", salary: 7200, dmi: 22000, potential: "allstar", gameShape: "respectable (7)", iq: 81, jsNum: 7, js: "respectable (7)", jr: "mediocre (5)", odNum: 10, od: "prominent (10)", handlingNum: 14, handling: "prolific (14)", driving: "respectable (7)", passingNum: 12, passing: "sensational (12)", insideShot: "prominent (10)", insideDef: "prominent (10)", rebounding: "prolific (14)", shotBlocking: "prominent (10)", stamina: "proficient (9)", freeThrow: "respectable (7)", experience: "average (6)", isPhenom: false }] },
+                { name: "Philadelphia 76ers Elite", wins: 0, losses: 0, roster: [{ name: "Joel Embiid Jr.", pos: "C", age: 26, height: "7'0\" / 213 cm", tier: "Red Diamond", role: "franchise player", salary: 12000, dmi: 92000, potential: "superstar", gameShape: "proficient (9)", iq: 88, jsNum: 12, js: "sensational (12)", jr: "respectable (7)", odNum: 7, od: "respectable (7)", handlingNum: 8, handling: "strong (8)", driving: "prominent (10)", passingNum: 10, passing: "prominent (10)", insideShot: "prolific (14)", insideDef: "prolific (14)", rebounding: "prolific (14)", shotBlocking: "prolific (14)", stamina: "proficient (9)", freeThrow: "sensational (12)", experience: "prominent (10)", isPhenom: false }] }
             ],
-            marketPlayers: [
-                { name: "Marcus Vance", pos: "SF", age: 22, height: "6'7\" / 201 cm", tier: "Standard", role: "rotation player", salary: 5500, dmi: 15500, potential: "allstar", gameShape: "respectable (7)", iq: 75, js: "respectable (7)", jr: "mediocre (5)", od: "prominent (10)", handling: "strong (8)", driving: "respectable (7)", passing: "respectable (7)", insideShot: "average (6)", insideDef: "respectable (7)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "pitiful (2)", price: 35000, timeLeft: 175 },
-                { name: "Deandre Ayayi", pos: "C", age: 24, height: "6'10\" / 208 cm", tier: "Regular Diamond", role: "star player", salary: 7200, dmi: 28000, potential: "superstar", gameShape: "respectable (7)", iq: 78, js: "awful (3)", jr: "atrocious (1)", od: "average (6)", handling: "average (6)", driving: "average (6)", passing: "awful (3)", insideShot: "sensational (12)", insideDef: "prolific (14)", rebounding: "prolific (14)", shotBlocking: "sensational (12)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "respectable (7)", price: 55000, timeLeft: 240 },
-                { name: "Tariq St. Patrick", pos: "PG", age: 21, height: "6'3\" / 190 cm", tier: "Red Diamond", role: "star player", salary: 8900, dmi: 41000, potential: "superstar", gameShape: "respectable (7)", iq: 86, js: "sensational (12)", jr: "respectable (7)", od: "prominent (10)", handling: "prolific (14)", driving: "sensational (12)", passing: "prominent (10)", insideShot: "respectable (7)", insideDef: "respectable (7)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "prominent (10)", experience: "average (6)", price: 75000, timeLeft: 120 }
-            ]
+            transferMarket: [
+                { name: "Zion Williamson Jr.", pos: "PF", age: 23, tier: "Regular Diamond", ovr: 88, currentBid: 68000, timeLeft: "03:45", id: 101 },
+                { name: "Ja Morant III", pos: "PG", age: 24, tier: "Standard", ovr: 82, currentBid: 34000, timeLeft: "01:20", id: 102 },
+                { name: "Victor Wembanyama X", pos: "C", age: 20, tier: "Black Diamond", ovr: 96, currentBid: 145000, timeLeft: "05:12", id: 103 },
+                { name: "Anthony Edwards Jr.", pos: "SG", age: 22, tier: "Red Diamond", ovr: 91, currentBid: 89000, timeLeft: "02:50", id: 104 }
+            ],
+            draftClass: []
         };
 
-        function switchTab(evt, tabName) {
-            let panels = document.getElementsByClassName("tab-panel");
-            for (let p of panels) p.classList.remove("active");
-            let buttons = document.getElementsByClassName("nav-button");
-            for (let b of buttons) b.classList.remove("active");
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
             
-            document.getElementById(tabName).classList.add("active");
-            if(evt) evt.currentTarget.classList.add("active");
-
-            if(tabName === 'roster') renderActiveTeamRoster();
-            if(tabName === 'standings') renderLeagueStandings();
-            if(tabName === 'transfer') renderTransferMarket();
-            if(tabName === 'med') populateMedicalDropdown();
+            if(tabId === 'roster') renderMasterRoster();
+            if(tabId === 'standings') renderStandings();
+            if(tabId === 'transfer') renderTransferMarket();
+            if(tabId === 'med') populateMedSelect();
+            if(tabId === 'gym') populateGymSelect();
         }
 
-        function updateFundsDisplay() {
-            document.getElementById("header-funds").innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
-        }
+        function renderMasterRoster() {
+            const grid = document.getElementById('master-roster-grid');
+            const team = gameData.teams[gameData.activeTeamIndex];
+            document.getElementById('active-roster-title').innerText = `${team.name} - Active Panini Roster Grid`;
+            document.getElementById('roster-count').innerText = team.roster.length;
+            
+            grid.innerHTML = '';
+            team.roster.forEach((p, idx) => {
+                let tierClass = 'card-tier-standard';
+                let tierBadgeBg = '#3b82f6';
+                if(p.tier === 'Red Diamond') { tierClass = 'card-tier-red'; tierBadgeBg = '#ef4444'; }
+                if(p.tier === 'Black Diamond' || p.tier === 'Regular Diamond') { tierClass = 'card-tier-black'; tierBadgeBg = '#fbbf24'; }
 
-        // Render Upgraded Panini Cards
-        function renderActiveTeamRoster() {
-            let team = gameData.teams[gameData.activeTeamIndex];
-            document.getElementById("header-team-name").innerText = team.name;
-            document.getElementById("active-roster-title").innerText = `${team.name} - Active Panini Roster Grid`;
-            document.getElementById("roster-count").innerText = team.roster.length;
-            
-            let grid = document.getElementById("master-roster-grid");
-            grid.innerHTML = "";
-            
-            team.roster.forEach(p => {
-                let tierClass = "card-tier-standard";
-                if(p.tier === "Red Diamond") tierClass = "card-tier-red";
-                if(p.tier === "Black Diamond") tierClass = "card-tier-black";
-                
-                let card = document.createElement("div");
-                card.className = `player-card ${tierClass}`;
-                card.onclick = () => openPlayerCardModal(p);
-                
-                card.innerHTML = `
-                    <div class="player-header">
-                        <span class="player-name">${p.name}</span>
-                        <span class="player-pos">${p.pos}</span>
-                    </div>
-                    <div class="player-photo-area">
-                        <span class="jersey-badge">${p.tier === "Black Diamond" ? "◆" : "★"}</span>
-                        <div class="player-face-art">
-                            <div class="eyes eye-left"></div>
-                            <div class="eyes eye-right"></div>
-                            <div class="jersey-fill"></div>
+                let phenomBadge = p.isPhenom ? ' 🌟[PHENOM 3X]' : '';
+
+                grid.innerHTML += `
+                    <div class="player-card ${tierClass}" onclick="openPlayerCard(${idx})">
+                        <div class="player-header">
+                            <span class="player-name">${p.name}${phenomBadge}</span>
+                            <span class="player-pos" style="background:${tierBadgeBg};">${p.pos} | ${p.tier}</span>
                         </div>
-                        <div class="meta-info" style="margin:0;">
-                            <p>Age: ${p.age} | ${p.height}</p>
-                            <p>Role: <strong style="color:var(--text-main);">${p.role}</strong></p>
-                            <p>Potential: <strong style="color:var(--accent-gold);">${p.potential}</strong></p>
+                        <div class="player-photo-area">
+                            <div class="jersey-badge">#${idx+1}</div>
+                            <div class="player-face-art">
+                                <div class="eyes eye-left"></div>
+                                <div class="eyes eye-right"></div>
+                                <div class="jersey-fill"></div>
+                            </div>
+                            <div class="meta-info">
+                                <p><strong>Age:</strong> ${p.age} | <strong>Height:</strong> ${p.height}</p>
+                                <p><strong>Role:</strong> ${p.role}</p>
+                                <p><strong>Potential:</strong> ${p.potential} | <strong>DMI:</strong> $${p.dmi.toLocaleString()}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="skills-grid-system">
-                        <div><span class="skill-lbl">DMI:</span> <span class="skill-val">${p.dmi.toLocaleString()}</span></div>
-                        <div><span class="skill-lbl">IQ:</span> <span class="skill-val" style="color:var(--accent-green);">${p.iq}</span></div>
-                        <div><span class="skill-lbl">Game Shape:</span> <span class="skill-val">${p.gameShape}</span></div>
-                        <div><span class="skill-lbl">Handling:</span> <span class="skill-val">${p.handling}</span></div>
-                        <div><span class="skill-lbl">Driving:</span> <span class="skill-val">${p.driving}</span></div>
-                        <div><span class="skill-lbl">Outside Def:</span> <span class="skill-val">${p.od}</span></div>
-                    </div>
-                    <div class="card-footer-info">
-                        <span>Tier: <strong style="color:var(--accent-gold);">${p.tier}</strong></span>
-                        <span>Salary: <strong style="color:var(--accent-green);">$${p.salary.toLocaleString()}</strong></span>
+                        <div class="skills-grid-system">
+                            <div><span class="skill-lbl">IQ:</span> <span class="skill-val">${p.iq}</span></div>
+                            <div><span class="skill-lbl">JS:</span> <span class="skill-val">${p.jsNum || 10}</span></div>
+                            <div><span class="skill-lbl">OD:</span> <span class="skill-val">${p.odNum || 10}</span></div>
+                            <div><span class="skill-lbl">Drive:</span> <span class="skill-val">${p.handlingNum || 10}</span></div>
+                        </div>
+                        <div class="card-footer-info">
+                            <span>Game Shape: ${p.gameShape}</span>
+                            <span>Salary: $${p.salary.toLocaleString()}/wk</span>
+                        </div>
                     </div>
                 `;
-                grid.appendChild(card);
             });
         }
 
-        function openPlayerCardModal(p) {
-            document.getElementById("modal-player-name").innerText = `${p.name} (${p.pos} - ${p.tier})`;
-            document.getElementById("modal-player-content").innerHTML = `
+        function openPlayerCard(playerIdx) {
+            const p = gameData.teams[gameData.activeTeamIndex].roster[playerIdx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) — ${p.tier} Card`;
+            document.getElementById('modal-player-content').innerHTML = `
                 <p><strong>Age:</strong> ${p.age} | <strong>Height:</strong> ${p.height}</p>
-                <p><strong>Role:</strong> ${p.role} | <strong>Potential:</strong> <span style="color:var(--accent-gold);">${p.potential}</span></p>
-                <p><strong>Weekly Salary:</strong> <span style="color:var(--accent-green);">$${p.salary.toLocaleString()}</span> | <strong>DMI:</strong> ${p.dmi.toLocaleString()}</p>
-                <p><strong>Game Shape:</strong> ${p.gameShape} | <strong>Basketball IQ:</strong> <span style="color:var(--accent-green); font-weight:bold;">${p.iq}</span></p>
-                <hr style="border-color:var(--border-color); margin: 10px 0;">
-                <p><strong>Attribute Breakdown:</strong></p>
-                <p>Jump Shot: ${p.js} | Jump Range: ${p.jr}</p>
-                <p>Outside Defense: ${p.od} | Handling: ${p.handling}</p>
-                <p>Driving: ${p.driving} | Passing: ${p.passing}</p>
-                <p>Inside Shot: ${p.insideShot} | Inside Defense: ${p.insideDef}</p>
-                <p>Rebounding: ${p.rebounding} | Shot Blocking: ${p.shotBlocking}</p>
-                <p>Stamina: ${p.stamina} | Free Throw: ${p.freeThrow} | Experience: ${p.experience}</p>
+                <p><strong>Role:</strong> ${p.role} | <strong>Potential:</strong> ${p.potential}</p>
+                <p><strong>Phenom 3X Status:</strong> ${p.isPhenom ? '<span style="color:var(--accent-gold);font-weight:bold;">ACTIVE (Triple Gym Progression)</span>' : 'Standard'}</p>
+                <p><strong>Salary:</strong> $${p.salary.toLocaleString()}/wk | <strong>DMI Rating:</strong> $${p.dmi.toLocaleString()}</p>
+                <hr style="border-color:var(--border-color);margin:10px 0;">
+                <p><strong>Attributes Matrix (1-20 Scale):</strong></p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-family:monospace;font-size:12px;color:#38bdf8;">
+                    <div>Match IQ: ${p.iq} / 20</div>
+                    <div>Jump Shot: ${p.jsNum || 10} / 20</div>
+                    <div>Perimeter Defense: ${p.odNum || 10} / 20</div>
+                    <div>Ball Handling: ${p.handlingNum || 10} / 20</div>
+                    <div>Passing: ${p.passingNum || 7} / 20</div>
+                    <div>Inside Shot: ${p.insideShot}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                    <div>Stamina: ${p.stamina}</div>
+                </div>
             `;
-            document.getElementById("player-modal").style.display = "flex";
+            document.getElementById('player-modal').style.display = 'flex';
         }
-        function closePlayerModal(e) { document.getElementById("player-modal").style.display = "none"; }
 
-        function renderLeagueStandings() {
-            let tbody = document.getElementById("league-standings-body");
-            tbody.innerHTML = "";
-            gameData.teams.forEach((t, idx) => {
-                let ovr = Math.round(t.roster.reduce((acc, curr) => acc + curr.iq, 0) / t.roster.length);
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><strong>#${idx + 1}</strong></td>
-                    <td style="color: ${idx === gameData.activeTeamIndex ? '#38bdf8' : '#fff'}; font-weight: bold;">${t.name} ${idx === gameData.activeTeamIndex ? '(YOUR TEAM)' : ''}</td>
-                    <td>${t.wins} - ${t.losses}</td>
-                    <td>-</td>
-                    <td><span style="color:var(--accent-green); font-weight:bold;">${ovr} IQ OVR</span></td>
-                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="switchToTeamHub(${idx})">Inspect Franchise HQ</button></td>
+        function closePlayerModal(e) {
+            if(e.target.id === 'player-modal') document.getElementById('player-modal').style.display = 'none';
+        }
+
+        function renderStandings() {
+            const tbody = document.getElementById('league-standings-body');
+            tbody.innerHTML = '';
+            gameData.teams.forEach((t, i) => {
+                let ratingOvr = Math.floor(70 + Math.random() * 20);
+                tbody.innerHTML += `
+                    <tr onclick="inspectTeamHub(${i})">
+                        <td>${i+1}</td>
+                        <td><strong>${t.name}</strong> ${i === gameData.activeTeamIndex ? '(You)' : ''}</td>
+                        <td>${t.wins} - ${t.losses}</td>
+                        <td>${i === 0 ? '-' : (i * 1.5).toFixed(1)}</td>
+                        <td><span style="color:var(--accent-gold);font-weight:bold;">${ratingOvr} OVR</span></td>
+                        <td><button class="btn" style="padding:4px 8px;font-size:11px;">Inspect Hub</button></td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function switchToTeamHub(idx) {
-            gameData.activeTeamIndex = idx;
-            switchTab(null, 'roster');
+        function inspectTeamHub(teamIdx) {
+            gameData.activeTeamIndex = teamIdx;
+            const team = gameData.teams[teamIdx];
+            document.getElementById('header-team-name').innerText = team.name;
+            alert(`Switched active management view to ${team.name}. Redirecting to Roster Grid.`);
+            switchTab({currentTarget: document.querySelector('.nav-button')}, 'roster');
         }
 
         function openActiveTeamHub() {
-            switchTab(null, 'roster');
+            switchTab({currentTarget: document.querySelector('.nav-button')}, 'roster');
         }
 
         function updateBlueprints() {
-            gameData.offensiveBlueprint = document.getElementById("blueprint-offense").value;
-            gameData.defensiveBlueprint = document.getElementById("blueprint-defense").value;
-            document.getElementById("blueprint-level").innerText = `Level ${Math.floor(gameData.blueprintXP / 100) + 1} (${gameData.blueprintXP} XP)`;
+            gameData.offensiveBlueprint = document.getElementById('blueprint-offense').value;
+            gameData.defensiveBlueprint = document.getElementById('blueprint-defense').value;
+            document.getElementById('blueprint-level').innerText = `Level ${Math.floor(gameData.blueprintXP/100) + 1} (${gameData.offensiveBlueprint} + ${gameData.defensiveBlueprint})`;
+            document.getElementById('blueprint-desc').innerText = `Active tactical synergy multipliers engaged. Team chemistry operating at optimal efficiency.`;
         }
 
-        function renderTransferMarket() {
-            let tbody = document.getElementById("transfer-market-body");
-            tbody.innerHTML = "";
-            gameData.marketPlayers.forEach((p, idx) => {
-                let m = Math.floor(p.timeLeft / 60);
-                let s = String(p.timeLeft % 60).padStart(2, '0');
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><strong style="cursor:pointer; color:#38bdf8;" onclick="openPlayerCardModal(marketPlayersData(${idx}))">${p.name}</strong></td>
-                    <td><span class="player-pos">${p.pos}</span></td>
-                    <td><span style="color:var(--accent-gold);">${p.tier}</span> (IQ ${p.iq})</td>
-                    <td style="color:var(--accent-green); font-weight:bold;">$${p.price.toLocaleString()}</td>
-                    <td><span id="timer-${idx}" style="color:var(--accent-red); font-weight:bold;">${m}:${s}</span></td>
-                    <td><input type="number" id="bid-input-${idx}" value="${p.price + 1000}" step="500" style="width:110px;"></td>
-                    <td><button class="btn btn-success" onclick="placeMarketBid(${idx})">Place Bid</button></td>
-                `;
-                tbody.appendChild(tr);
+        function populateGymSelect() {
+            const select = document.getElementById('gym-player-select');
+            select.innerHTML = '';
+            gameData.teams[gameData.activeTeamIndex].roster.forEach((p, idx) => {
+                select.innerHTML += `<option value="${idx}">${p.name} (${p.pos}) — Tier: ${p.tier}</option>`;
             });
         }
 
-        function marketPlayersData(idx) { return gameData.marketPlayers[idx]; }
+        function runGymTrainingSession() {
+            const pIdx = document.getElementById('gym-player-select').value;
+            const skillKey = document.getElementById('gym-skill-select').value;
+            const player = gameData.teams[gameData.activeTeamIndex].roster[pIdx];
 
-        function placeMarketBid(idx) {
-            let p = gameData.marketPlayers[idx];
-            let val = parseInt(document.getElementById(`bid-input-${idx}`).value);
-            if(val > gameData.funds) {
-                alert("Insufficient club funds for this bid!");
+            // Initialize fields if missing
+            if(player.jsNum === undefined) player.jsNum = 10;
+            if(player.odNum === undefined) player.odNum = 10;
+            if(player.handlingNum === undefined) player.handlingNum = 10;
+            if(player.passingNum === undefined) player.passingNum = 7;
+            if(player.isPhenom === undefined) {
+                // 1% chance for phenom mutation upon training trigger if not already rolled
+                player.isPhenom = Math.random() <= 0.01;
+            }
+
+            let currentVal = player[skillKey];
+            if(currentVal >= 20) {
+                document.getElementById('gym-terminal').innerHTML += `<br>[Gym Notice] ${player.name}'s ${skillKey} is already maxed at 20!`;
                 return;
             }
-            gameData.funds -= val;
-            updateFundsDisplay();
-            gameData.teams[gameData.activeTeamIndex].roster.push(p);
-            alert(`Successful acquisition! ${p.name} has been signed and added to your active franchise roster.`);
-            gameData.marketPlayers.splice(idx, 1);
+
+            // 40% base chance, tripled (1.20) if Phenom active
+            let baseChance = 0.40;
+            let multiplier = player.isPhenom ? 3.0 : 1.0;
+            let roll = Math.random();
+
+            if(roll <= (baseChance * multiplier)) {
+                player[skillKey] = Math.min(20, currentVal + 1);
+                document.getElementById('gym-terminal').innerHTML += `<br>💪 [GYM BREAKTHROUGH] <strong>${player.name}</strong> trained ${skillKey}! Rose from ${currentVal} to ${player[skillKey]} (Phenom Active: ${player.isPhenom})`;
+            } else {
+                document.getElementById('gym-terminal').innerHTML += `<br>🏋️ [GYM WORKOUT] ${player.name} put in reps for ${skillKey}, but no attribute bump this session (Phenom: ${player.isPhenom}).`;
+            }
+            renderMasterRoster();
+        }
+
+        function renderTransferMarket() {
+            const tbody = document.getElementById('transfer-market-body');
+            tbody.innerHTML = '';
+            gameData.transferMarket.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td><span class="player-pos">${item.pos}</span></td>
+                        <td>${item.ovr} OVR (${item.tier})</td>
+                        <td style="color:var(--accent-green);font-weight:bold;">$${item.currentBid.toLocaleString()}</td>
+                        <td style="color:var(--accent-gold);font-family:monospace;">${item.timeLeft}</td>
+                        <td><input type="number" id="bid-input-${item.id}" value="${item.currentBid + 500}" min="${item.currentBid + 500}" style="width:110px;padding:4px;"></td>
+                        <td><button class="btn btn-success" style="padding:5px 10px;font-size:11px;" onclick="placeBid(${item.id})">Place Bid (+$500 min)</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function placeBid(itemId) {
+            const inputVal = parseInt(document.getElementById(`bid-input-${itemId}`).value);
+            const item = gameData.transferMarket.find(x => x.id === itemId);
+            if(inputVal <= item.currentBid) {
+                alert("Bid must exceed current standing bid by at least $500!");
+                return;
+            }
+            if(gameData.funds < inputVal) {
+                alert("Insufficient club funds for this transaction!");
+                return;
+            }
+            gameData.funds -= inputVal;
+            item.currentBid = inputVal;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            alert(`Successful bid of $${inputVal.toLocaleString()} placed on ${item.name}! BuzzerBeater 3-minute extension clock triggered.`);
             renderTransferMarket();
         }
 
-        setInterval(() => {
-            gameData.marketPlayers.forEach(p => { if(p.timeLeft > 0) p.timeLeft--; });
-            let activeTab = document.getElementById("transfer");
-            if(activeTab.classList.contains("active")) {
-                gameData.marketPlayers.forEach((p, idx) => {
-                    let timerEl = document.getElementById(`timer-${idx}`);
-                    if(timerEl) {
-                        let m = Math.floor(p.timeLeft / 60);
-                        let s = String(p.timeLeft % 60).padStart(2, '0');
-                        timerEl.innerText = `${m}:${s}`;
-                    }
-                });
-            }
-        }, 1000);
-
         function pullYouthProspect() {
-            if(gameData.funds < 80000) { alert("Requires $80,000 in club funds."); return; }
+            if(gameData.funds < 80000) {
+                alert("Insufficient funds for $80,000 basketball school academy donation!");
+                return;
+            }
             gameData.funds -= 80000;
-            updateFundsDisplay();
-            let newP = { name: "Prospect " + Math.floor(Math.random()*900+100), pos: "PG", age: 17, height: "6'3\" / 190 cm", tier: "Standard", role: "backup", salary: 2832, dmi: 12500, potential: "superstar", gameShape: "respectable (7)", iq: 75, js: "awful (3)", jr: "inept (4)", od: "prominent (10)", handling: "strong (8)", driving: "respectable (7)", passing: "awful (3)", insideShot: "average (6)", insideDef: "mediocre (5)", rebounding: "average (6)", shotBlocking: "respectable (7)", stamina: "proficient (9)", freeThrow: "mediocre (5)", experience: "pitiful (2)" };
-            gameData.teams[gameData.activeTeamIndex].roster.push(newP);
-            document.getElementById("youth-terminal").innerHTML += `<br>[Drafted] ${newP.name} pulled successfully into academy & active roster!`;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            let roll = Math.random();
+            let tier = "Standard";
+            let namePrefix = "Academy Prospect";
+            let isPhenom = false;
+            if(roll <= 0.001) {
+                tier = "Red Diamond";
+                namePrefix = "MYTHIC 14-YEAR-OLD PRODIGY";
+                isPhenom = true;
+            } else if(roll <= 0.05) {
+                tier = "Regular Diamond";
+            }
+            
+            const newProspect = {
+                name: `${namePrefix} #${Math.floor(100+Math.random()*900)}`,
+                pos: ["PG", "SG", "SF", "PF", "C"][Math.floor(Math.random()*5)],
+                age: Math.floor(14 + Math.random() * 4),
+                height: "6'4\" / 193 cm",
+                tier: tier,
+                role: "developmental",
+                salary: 1500,
+                dmi: 15000,
+                potential: tier === "Red Diamond" ? "generational" : "superstar",
+                gameShape: "respectable (7)",
+                iq: Math.floor(65 + Math.random() * 30),
+                jsNum: 8, odNum: 8, handlingNum: 8, passingNum: 6,
+                js: "respectable (7)", jr: "average (6)", od: "respectable (7)", handling: "strong (8)", driving: "respectable (7)", passing: "average (6)", insideShot: "average (6)", insideDef: "average (6)", rebounding: "average (6)", shotBlocking: "average (6)", stamina: "proficient (9)", freeThrow: "average (6)", experience: "pitiful (2)",
+                isPhenom: isPhenom
+            };
+            
+            gameData.teams[gameData.activeTeamIndex].roster.push(newProspect);
+            document.getElementById('youth-terminal').innerHTML += `<br>[Success] Pulled new youth asset: <strong>${newProspect.name}</strong> (${newProspect.tier}, Age ${newProspect.age}).`;
+            alert(`Youth Prospect Pulled successfully! Tier: ${tier}`);
         }
 
         function simYouthMatch() {
-            document.getElementById("youth-terminal").innerHTML += `<br>[U21 Match] Executing 24-minute youth match clock... Victory secured! +15 Blueprint XP.`;
-            gameData.blueprintXP += 15;
-            updateBlueprints();
+            document.getElementById('youth-terminal').innerHTML += `<br>[U21 Match Simulation] Running 24-minute match clock (2 Halves of 12 Minutes)... Final Score: Boston Youth 84, Montreal Academics 79. Victory!`;
         }
 
         function scoutNCAAPipeline() {
-            if(gameData.funds < 15000) { alert("Requires $15,000."); return; }
+            if(gameData.funds < 15000) {
+                alert("Insufficient funds for NCAA scouting conference fee ($15,000)!");
+                return;
+            }
             gameData.funds -= 15000;
-            updateFundsDisplay();
-            document.getElementById("college-terminal").innerHTML = `[NCAA Report] ACC & SEC Collegiate conferences scouted. 5 Generational prospects flagged for the upcoming Offseason Draft.`;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            document.getElementById('college-terminal').innerHTML += `<br>[NCAA Scouting] Analyzed ACC & Big Ten conferences. Uncovered 3 elite freshman draft prospects with 5% Golden Generation spawn rate active.`;
         }
 
-        function populateMedicalDropdown() {
-            let sel = document.getElementById("med-player-select");
-            sel.innerHTML = "";
-            let team = gameData.teams[gameData.activeTeamIndex];
-            team.roster.forEach(p => {
-                let opt = document.createElement("option");
-                opt.value = p.name;
-                opt.innerText = `${p.name} (${p.pos}) - Game Shape: ${p.gameShape}`;
-                sel.appendChild(opt);
+        function populateMedSelect() {
+            const select = document.getElementById('med-player-select');
+            select.innerHTML = '';
+            gameData.teams[gameData.activeTeamIndex].roster.forEach((p, idx) => {
+                select.innerHTML += `<option value="${idx}">${p.name} (${p.pos}) - Shape: ${p.gameShape}</option>`;
             });
         }
 
         function assignRehabProtocol() {
-            let pName = document.getElementById("med-player-select").value;
-            let proto = document.getElementById("med-protocol-select").value;
-            document.getElementById("med-terminal").innerHTML = `[Medical Bay] ${pName} successfully assigned to ${proto} protocol. Rust and fatigue fully neutralized.`;
+            const pIdx = document.getElementById('med-player-select').value;
+            const protocol = document.getElementById('med-protocol-select').value;
+            const player = gameData.teams[gameData.activeTeamIndex].roster[pIdx];
+            document.getElementById('med-terminal').innerHTML += `<br>[Medical Bay] Assigned <strong>${player.name}</strong> to ${protocol} protocol. Attributes stabilized, rust tokens clearing.`;
+            alert(`Assigned ${player.name} to ${protocol} rehabilitation protocol successfully.`);
         }
 
         function runGlobalMatchSim() {
-            let log = document.getElementById("m-log");
-            let canvas = document.getElementById("court-canvas");
-            let ctx = canvas.getContext("2d");
-            
-            ctx.fillStyle = "#0f172a";
+            const canvas = document.getElementById('court-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0f172a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = "#374151";
+            
+            ctx.strokeStyle = '#334155';
             ctx.lineWidth = 2;
             ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
             ctx.beginPath();
-            ctx.arc(canvas.width / 2, canvas.height / 2, 40, 0, Math.PI * 2);
+            ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
             ctx.stroke();
 
-            log.innerHTML = `[Match Engine] Executing 100-Possession Pro Match (48M Clock)...<br>`;
-            log.innerHTML += `Tactics: Offense [${gameData.offensiveBlueprint}] vs Defense [${gameData.defensiveBlueprint}]<br>`;
+            let logBox = document.getElementById('m-log');
+            logBox.innerHTML = `[48M Pro Clock Match] Pre-calculating 100 possessions in background loop...<br>`;
             
-            setTimeout(() => {
-                let scoreA = Math.floor(102 + Math.random() * 12);
-                let scoreB = Math.floor(98 + Math.random() * 14);
-                log.innerHTML += `<strong>Final Score: Boston Titans ${scoreA} - Opponent ${scoreB}</strong><br>`;
-                log.innerHTML += `[Success] Match logged. Blueprint Synergy increased by +25 XP!`;
-                gameData.blueprintXP += 25;
-                updateBlueprints();
+            let possessionsSimulated = 0;
+            let teamAScore = 0;
+            let teamBScore = 0;
+            
+            const interval = setInterval(() => {
+                possessionsSimulated += 10;
+                let ptsA = Math.floor(Math.random() * 12);
+                let ptsB = Math.floor(Math.random() * 12);
+                teamAScore += ptsA;
+                teamBScore += ptsB;
                 
-                ctx.fillStyle = "#10b981";
+                logBox.innerHTML += `Possessions ${possessionsSimulated}/100: Score - Boston Titans ${teamAScore}, Opponent ${teamBScore} (Double-dice variance check passed)<br>`;
+                logBox.scrollTop = logBox.scrollHeight;
+                
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(30, 30, canvas.width - 60, canvas.height - 60);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+                
+                ctx.fillStyle = '#2563eb';
                 ctx.beginPath();
-                ctx.arc(150 + Math.random() * 300, 70 + Math.random() * 150, 8, 0, Math.PI * 2);
+                ctx.arc(100 + possessionsSimulated * 3, 150, 8, 0, Math.PI * 2);
                 ctx.fill();
-            }, 600);
+                
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(canvas.width - (100 + possessionsSimulated * 3), 150, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                if(possessionsSimulated >= 100) {
+                    clearInterval(interval);
+                    gameData.blueprintXP += 50;
+                    logBox.innerHTML += `<strong>[Final Score] Boston Titans ${teamAScore} - Opponent ${teamBScore}. Match successfully processed!</strong>`;
+                    updateBlueprints();
+                }
+            }, 250);
         }
 
         function simSundayCupMatch() {
-            let alertBox = document.getElementById("cup-alert");
-            alertBox.style.display = "block";
+            document.getElementById('cup-alert').style.display = 'block';
             gameData.funds += 50000;
-            updateFundsDisplay();
-            setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            alert("Sunday Cup Match Won! +$50,000 Prize Pool added to club funds.");
         }
 
         function triggerCoachUltimatum() {
-            document.getElementById("desk-terminal").innerHTML = "[Board Ultimatum] Front office and coaching staff stable. Board demands top-3 league placement.";
+            document.getElementById('desk-terminal').innerHTML = `[Board Confidence Check] Grandmaster Coach Red Diamond Contract Matrix: Team is meeting expectations. No $125M corporate rebuilding lawsuit triggered.`;
+            alert("Board confidence checked. Management stability confirmed.");
         }
 
         function generateDraftClass() {
-            document.getElementById("draft-container").innerHTML = `<div class="terminal-box">[Draft Class Generated] 30 Top-tier collegiate prospects loaded into Round 1 and Round 2 draft pools.</div>`;
+            gameData.draftClass = [
+                { name: "Cooper Flagg Jr.", pos: "SF", age: 19, tier: "Black Diamond", ovr: 94, potential: "mythic" },
+                { name: "Ace Bailey III", pos: "SG", age: 19, tier: "Red Diamond", ovr: 89, potential: "generational" },
+                { name: "Dylan Harper Jr.", pos: "PG", age: 19, tier: "Regular Diamond", ovr: 86, potential: "superstar" }
+            ];
+            
+            const container = document.getElementById('draft-container');
+            container.innerHTML = `<h4 style="color:var(--accent-gold);">Offseason 2-Round Draft Class Generated (5% Golden Generation Rate Active):</h4>`;
+            gameData.draftClass.forEach((d, i) => {
+                container.innerHTML += `
+                    <div style="background:var(--bg-surface);border:1px solid var(--border-color);padding:10px;margin-bottom:8px;border-radius:4px;display:flex;justify-content:space-between;align-items:center;">
+                        <div><strong>#${i+1} Pick: ${d.name}</strong> (${d.pos}, Age ${d.age}) — Tier: <span style="color:var(--accent-gold);">${d.tier}</span> (${d.ovr} OVR)</div>
+                        <button class="btn btn-success" style="padding:4px 8px;font-size:11px;" onclick="alert('Drafted ${d.name} successfully!')">Draft Prospect</button>
+                    </div>
+                `;
+            });
         }
 
         function accessAgency(tier) {
-            let term = document.getElementById("agency-terminal");
             if(tier === 'tier1') {
-                term.innerHTML = "[Sachkz Elite Firm] Agency connection established. High-end negotiation multipliers active.";
+                if(confirm("⚠️ USE AT YOUR OWN RISK WARNING SHIELD:\n\nAccessing Agency Tier 1 (Sachkz Elite Firm). Caps at $15,000/week agent fee maximum. Firing 3+ workers or dodging dues triggers a lawsuit with a 99.97% victory rate. Proceed?")) {
+                    document.getElementById('agency-terminal').innerHTML = `[Litigation Alert] Sachkz Elite Firm retained. Agency fees active. Warning shields engaged.`;
+                }
             } else {
-                term.innerHTML = "[Slimeball Desk Warning] Regulatory body notified due to aggressive contract practices!";
+                if(confirm("⚠️ USE AT YOUR OWN RISK WARNING SHIELD:\n\nAccessing Agency Tier 2 (Slimeball Desk - Kano's Management). $5,000 upfront buyouts, but weekly player salaries spike randomly. Firing triggers a 10% total team salary extortion lawsuit with 90% loss rate. Proceed?")) {
+                    document.getElementById('agency-terminal').innerHTML = `[Litigation Alert] Kano's Management retained. Volatile fee-spiking dice active.`;
+                }
             }
         }
+
+        // Initialize default view
+        renderMasterRoster();
+        renderStandings();
+        renderTransferMarket();
     </script>
 </body>
 </html>
