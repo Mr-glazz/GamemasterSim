@@ -20,13 +20,11 @@
 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; padding: 0; user-select: none; }
         
-        /* Header Layout */
         .header { background-color: var(--bg-surface); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
         .team-title-banner { font-size: 20px; font-weight: bold; color: var(--text-main); display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .finances { font-size: 16px; color: var(--accent-green); font-weight: bold; background: #064e3b; padding: 4px 10px; border-radius: 4px; border: 1px solid #059669; }
         .schedule { background: var(--bg-card); padding: 4px 10px; border-radius: 4px; font-size: 13px; color: var(--text-main); border: 1px solid var(--border-color); }
 
-        /* Container Layout */
         .container { display: flex; height: calc(100vh - 55px); }
         .sidebar { width: 260px; background-color: #080d19; padding: 15px 8px; border-right: 1px solid var(--border-color); overflow-y: auto; }
         .nav-section-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin: 12px 0 6px 10px; font-weight: bold; letter-spacing: 0.05em; }
@@ -40,7 +38,7 @@
         .tab-panel.active { display: block; }
 
         /* Panini Trading Cards Grid & Styles */
-        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
         .player-card { background: linear-gradient(145deg, #111827, #1f2937); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
         .player-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5); border-color: var(--accent-blue); }
         
@@ -52,8 +50,7 @@
         .player-name { font-weight: bold; font-size: 15px; color: #fff; }
         .player-pos { font-size: 11px; background: var(--accent-blue); padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: bold; }
         
-        /* 3D-Styled CSS Face Art */
-        .player-photo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .player-photo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         .jersey-badge { background: #374151; color: #fff; padding: 3px 7px; border-radius: 4px; font-weight: bold; font-size: 11px; border: 1px solid #4b5563; }
         .player-face-art { width: 42px; height: 42px; border-radius: 50%; position: relative; overflow: hidden; border: 2px solid #4b5563; background: #e5a954; }
         .eyes { width: 5px; height: 3px; background: #000; position: absolute; top: 15px; border-radius: 50%; }
@@ -61,16 +58,15 @@
         .eye-right { right: 11px; }
         .jersey-fill { position: absolute; bottom: 0; width: 100%; height: 16px; background: #2563eb; }
 
-        .meta-info { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
-        .meta-info p { margin: 3px 0; color: #d1d5db; }
+        .meta-info { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .meta-info p { margin: 2px 0; color: #d1d5db; }
         
-        .skills-grid { font-size: 11px; color: var(--text-muted); display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; margin-bottom: 10px; font-family: monospace; background: #030712; padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); }
-        .skill-val { font-weight: bold; }
-        .skill-elite { color: var(--accent-green); }
-        .skill-good { color: #38bdf8; }
-        .skill-avg { color: var(--accent-gold); }
+        .skills-grid-system { font-size: 11px; color: var(--text-muted); display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; margin-bottom: 8px; font-family: monospace; background: #030712; padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); }
+        .skill-lbl { color: #9ca3af; }
+        .skill-val { font-weight: bold; color: #38bdf8; }
 
-        /* General UI Elements */
+        .card-footer-info { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px; font-size: 11px; color: var(--text-muted); }
+
         .card { background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
         .btn { background-color: var(--accent-blue); color: white; border: none; padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .btn:hover { background-color: #1d4ed8; }
@@ -84,14 +80,13 @@
         input[type="number"], select { background-color: #1f2937; color: #fff; border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
         .terminal-box { background-color: #030712; border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; color: #38bdf8; min-height: 50px; margin-top: 10px; max-height: 200px; overflow-y: auto; }
         
-        /* Tables & Standings */
         .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .league-table th, .league-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
         .league-table th { background-color: var(--bg-card); color: var(--text-muted); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
         .league-table tr:hover { background-color: rgba(255, 255, 255, 0.02); cursor: pointer; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-card { background: var(--bg-surface); border: 2px solid var(--accent-blue); width: 450px; padding: 25px; border-radius: 10px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); position: relative; }
+        .modal-card { background: var(--bg-surface); border: 2px solid var(--accent-blue); width: 520px; padding: 25px; border-radius: 10px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); position: relative; max-height: 90vh; overflow-y: auto; }
         
         #court-canvas { background: #0f172a; border: 2px solid var(--border-color); display: block; margin: 0 auto; border-radius: 6px; }
     </style>
@@ -136,7 +131,7 @@
             <div id="roster" class="tab-panel active">
                 <div class="section-title">
                     <span id="active-roster-title">Boston Titans - Active Panini Roster Grid</span>
-                    <span style="font-size: 14px; color: var(--text-muted);">Squad Count: <span id="roster-count">5</span>/12</span>
+                    <span style="font-size: 14px; color: var(--text-muted);">Squad Count: <span id="roster-count">12</span>/15</span>
                 </div>
                 <div class="roster-grid" id="master-roster-grid"></div>
             </div>
@@ -145,7 +140,7 @@
             <div id="standings" class="tab-panel">
                 <div class="section-title">12-Team League Standings & Franchise Hubs</div>
                 <div class="card">
-                    <p style="color: var(--text-muted); font-size: 13px;">Click on any team in the league standings to instantly inspect their roster, finances, and tactical setup in their dedicated franchise page.</p>
+                    <p style="color: var(--text-muted); font-size: 13px;">Click on any team in the league standings to inspect their roster, finances, and tactical setup.</p>
                     <table class="league-table">
                         <thead>
                             <tr>
@@ -203,7 +198,7 @@
 
             <!-- 4. TRANSFER MARKET & FREE AGENCY TAB -->
             <div id="transfer" class="tab-panel">
-                <div class="section-title">Live Auction & Free Agency Market</div>
+                <div class="section-title">Live Auction & Free Agency Market (100+ Players)</div>
                 <div class="card">
                     <p style="color: var(--text-muted); font-size: 13px;">Every player features independent countdown timers. Click any player name to inspect their full Panini trading card before bidding!</p>
                     <table class="league-table">
@@ -241,10 +236,31 @@
             <div id="college" class="tab-panel">
                 <div class="section-title">NCAA Scouting & Collegiate Pipeline</div>
                 <div class="card">
-                    <h3>Collegiate Conference Scouting</h3>
-                    <p style="color: var(--text-muted); font-size: 13px;">Scout top college conferences to track future draft prospects, PPG averages, and efficiency ratings before they declare.</p>
+                    <h3>Collegiate Conference Scouting & Prospects</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Scout top college conferences to track future draft prospects, PPG averages, efficiency ratings, and form fluctuations. Click any prospect name to inspect their card dossier!</p>
                     <button class="btn btn-success" onclick="scoutNCAAPipeline()">Scout NCAA Pipeline ($15,000)</button>
-                    <div class="terminal-box" id="college-terminal">[NCAA Hub] Scouting database primed. Click above to analyze collegiate conferences.</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: var(--text-main); margin-bottom: 8px;">Active NCAA Scouting Watchlist</h4>
+                        <table class="league-table">
+                            <thead>
+                                <tr>
+                                    <th>Prospect Name</th>
+                                    <th>Pos</th>
+                                    <th>College</th>
+                                    <th>PPG / Form</th>
+                                    <th>Efficiency</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ncaa-pipeline-body">
+                                <tr>
+                                    <td colspan="6" style="color: var(--text-muted); text-align: center;">Click "Scout NCAA Pipeline" above to reveal and track collegiate prospects.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="terminal-box" id="college-terminal" style="margin-top: 15px;">[NCAA Hub] Scouting database primed. Click above to analyze collegiate conferences.</div>
                 </div>
             </div>
 
@@ -260,7 +276,7 @@
                         <label style="font-size: 13px; color: var(--text-muted);">Select Rehabilitation Protocol:</label>
                         <select id="med-protocol-select" style="margin-bottom: 15px;">
                             <option value="Conditioning">Cardio & Conditioning Rehab (Fatigue Recovery)</option>
-                            <option value="Rust">Skill Rust Removal (Sharpening 1-20 Attributes)</option>
+                            <option value="Rust">Skill Rust Removal (Sharpening Attributes)</option>
                             <option value="Load">Load Management & Rest Protocol</option>
                             <option value="Explosiveness">Explosive Athleticism & Recovery Bay</option>
                         </select>
@@ -287,10 +303,55 @@
             <div id="cup" class="tab-panel">
                 <div class="section-title">Sunday Cross-Division Cup Tournament</div>
                 <div class="card">
-                    <h3>Knockout Cup Brackets</h3>
-                    <p style="color: var(--text-muted); font-size: 13px;">Compete across divisions in sudden-death cup matches for prize money and global prestige.</p>
-                    <button class="btn btn-success" onclick="simSundayCupMatch()">Play Sunday Cup Match</button>
-                    <div id="cup-alert" style="display:none;background:rgba(16,185,129,0.2);border:1px solid var(--accent-green);color:var(--accent-green);padding:10px;border-radius:4px;margin-top:10px;">Cup Match Won! +$50,000 Prize Pool Awarded.</div>
+                    <h3>Knockout Cup Brackets & Live Match Scores</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Compete across divisions in sudden-death cup matches for prize money and global prestige. Click any completed cup matchup score below to inspect each team's individual player game box score performance!</p>
+                    <button class="btn btn-success" onclick="simSundayCupMatch()">Simulate Sunday Cup Round</button>
+                    <div id="cup-alert" style="display:none;background:rgba(16,185,129,0.2);border:1px solid var(--accent-green);color:var(--accent-green);padding:10px;border-radius:4px;margin-top:10px;">Sunday Cup Round Simulated! +$50,000 Prize Pool Awarded.</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: var(--text-main); margin-bottom: 8px;">Sunday Cup Matchup Bracket</h4>
+                        <table class="league-table">
+                            <thead>
+                                <tr>
+                                    <th>Match #</th>
+                                    <th>Home Team</th>
+                                    <th>Score</th>
+                                    <th>Away Team</th>
+                                    <th>Status / Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cup-bracket-body">
+                                <tr>
+                                    <td>Match 1</td>
+                                    <td>Boston Titans</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">104 - 98</td>
+                                    <td>Chicago Vipers</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(0)">View Box Score</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Match 2</td>
+                                    <td>Los Angeles Apex</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">112 - 105</td>
+                                    <td>New York Metros</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(1)">View Box Score</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Match 3</td>
+                                    <td>Miami Heatwave</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">96 - 91</td>
+                                    <td>Dallas Mavericks X</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(2)">View Box Score</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Match 4</td>
+                                    <td>Golden State Dynasty</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">118 - 110</td>
+                                    <td>Denver Mountain Lions</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(3)">View Box Score</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -331,7 +392,7 @@
         </div>
     </div>
 
-    <!-- Panini Player Card Detail Modal -->
+    <!-- Upgraded Panini Player Card Detail Modal -->
     <div class="modal-overlay" id="player-modal" onclick="closePlayerModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
             <h3 id="modal-player-name" style="margin-top:0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Player Profile</h3>
@@ -341,325 +402,552 @@
     </div>
 
     <script>
-        // Game State & League Initialization
+        // Procedural generator helpers for robust 10-15 player rosters and 100+ auction pool
+        const firstNamesList = ["Marcus", "Tavion", "Kobe", "Deuce", "Zavier", "Darius", "Malachi", "Jaylen", "Devonte", "Cade", "Jayson", "Trae", "De'Aaron", "Tyrese", "Paolo", "Chet", "Evan", "Scottie", "Anfernee", "Mikal", "OG", "Jarrett", "Desmond", "Bennedict", "Josh", "Franz", "Tyrese", "Immanuel", "Keldon", "Tre", "Walker", "Ochai", "Jalen", "Jabari", "Keegan", "Shaedon", "Ayo", "Herb", "Quentin", "Naji"];
+        const lastNamesList = ["Vance", "Starks", "Booker", "O'Neal", "Ivey", "Aldridge", "Giddey", "Brown", "Tatum", "Young", "Fox", "Haliburton", "Banchero", "Holmgren", "Mobley", "Barnes", "Simons", "Bridges", "Anunoby", "Allen", "Bane", "Mathurin", "Giddey", "Wagner", "Maxey", "Quickley", "Johnson", "Jones", "Kessler", "Agbaji", "Green", "Smith Jr.", "Murray", "Sharpe", "Dosunmu", "Jones", "Grimes", "Marshall", "White", "Williams"];
+        const positionsList = ["PG", "SG", "SF", "PF", "C"];
+        const tiersList = ["Standard", "Standard", "Red Diamond", "Regular Diamond", "Black Diamond"];
+        const collegesList = ["Kentucky", "Duke", "UNC", "Kansas", "UCLA", "Gonzaga", "Villanova", "Arizona", "Houston", "Baylor", "Texas", "Michigan State", "UConn", "Purdue", "Arkansas"];
+
+        function generateRandomPlayer(forcedTier = null) {
+            const fName = firstNamesList[Math.floor(Math.random() * firstNamesList.length)];
+            const lName = lastNamesList[Math.floor(Math.random() * lastNamesList.length)];
+            const pos = positionsList[Math.floor(Math.random() * positionsList.length)];
+            const tier = forcedTier || tiersList[Math.floor(Math.random() * tiersList.length)];
+            const age = Math.floor(Math.random() * 10) + 19; // 19 to 28
+            const iq = Math.floor(Math.random() * 30) + 70;
+            
+            return {
+                name: `${fName} ${lName}`,
+                pos: pos,
+                age: age,
+                height: `${Math.floor(Math.random() * 3) + 6}'${Math.floor(Math.random() * 11)}\" / ${Math.floor(Math.random() * 25) + 185} cm`,
+                tier: tier,
+                role: age < 22 ? "rotation player" : (iq > 88 ? "franchise player" : "star player"),
+                salary: Math.floor(Math.random() * 8000) + 3000,
+                potential: age < 22 ? "superstar" : "allstar",
+                gameShape: "proficient (9)",
+                iq: iq,
+                chemistry: Math.floor(Math.random() * 20) + 80, // Dynamic chemistry %
+                marketValuePct: Math.floor(Math.random() * 40) + 85, // NBA-style market value relative %
+                mood: "Content & Motivated",
+                xp: Math.floor(Math.random() * 500),
+                js: ["respectable (7)", "prominent (10)", "sensational (12)", "prolific (14)"][Math.floor(Math.random()*4)],
+                jr: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                od: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                handling: ["strong (8)", "prolific (14)", "sensational (12)"][Math.floor(Math.random()*3)],
+                driving: ["respectable (7)", "prolific (14)", "sensational (12)"][Math.floor(Math.random()*3)],
+                passing: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                insideShot: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                insideDef: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                rebounding: ["respectable (7)", "prominent (10)", "prominent (10)"][Math.floor(Math.random()*3)],
+                shotBlocking: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                stamina: "proficient (9)",
+                freeThrow: ["respectable (7)", "prolific (14)"][Math.floor(Math.random()*2)],
+                experience: age > 24 ? "respectable (7)" : "pitiful (2)"
+            };
+        }
+
+        // Initialize 100+ players for Transfer Market and 10-15 players for all 12 teams
+        let initialTransferMarket = [];
+        for(let i=0; i<105; i++) {
+            let p = generateRandomPlayer();
+            p.currentBid = Math.floor(Math.random() * 60000) + 20000;
+            p.timeLeft = Math.floor(Math.random() * 300) + 30;
+            initialTransferMarket.push(p);
+        }
+
+        let initialTeams = [
+            { name: "Boston Titans", wins: 0, losses: 0, roster: [] },
+            { name: "Chicago Vipers", wins: 0, losses: 0, roster: [] },
+            { name: "Los Angeles Apex", wins: 0, losses: 0, roster: [] },
+            { name: "New York Metros", wins: 0, losses: 0, roster: [] },
+            { name: "Miami Heatwave", wins: 0, losses: 0, roster: [] },
+            { name: "Dallas Mavericks X", wins: 0, losses: 0, roster: [] },
+            { name: "Golden State Dynasty", wins: 0, losses: 0, roster: [] },
+            { name: "Brooklyn Knights", wins: 0, losses: 0, roster: [] },
+            { name: "Seattle Supersonics X", wins: 0, losses: 0, roster: [] },
+            { name: "Denver Mountain Lions", wins: 0, losses: 0, roster: [] },
+            { name: "Phoenix Sunsational", wins: 0, losses: 0, roster: [] },
+            { name: "Philadelphia Bell", wins: 0, losses: 0, roster: [] }
+        ];
+
+        // Fill each team roster to 12-15 players
+        initialTeams.forEach(team => {
+            const rosterSize = Math.floor(Math.random() * 4) + 12; // 12 to 15 players
+            for(let j=0; j<rosterSize; j++) {
+                team.roster.push(generateRandomPlayer());
+            }
+        });
+
         let gameData = {
             funds: 525000,
             activeTeamIndex: 0,
             offensiveBlueprint: "Base Offense",
             defensiveBlueprint: "Man-to-Man",
             blueprintXP: 0,
-            teams: [
-                {
-                    name: "Boston Titans",
-                    wins: 0, losses: 0,
-                    roster: [
-                        { id: 1, name: "Dorian Freeman", pos: "PF", age: 26, height: "6'10\"", tier: "Standard", salary: 9784, ppg: 18.4, js: 16, od: 14, id: 13, hd: 15, dr: 15, ps: 12, rb: 14 },
-                        { id: 2, name: "King Bronny", pos: "SF", age: 18, height: "6'9\"", tier: "Red Diamond", salary: 4250, ppg: 24.2, js: 14, od: 20, id: 20, hd: 20, dr: 20, ps: 20, rb: 18 },
-                        { id: 3, name: "RJ Mobley", pos: "SG", age: 18, height: "6'5\"", tier: "Regular Diamond", salary: 4250, ppg: 15.1, js: 12, od: 11, id: 8, hd: 13, dr: 14, ps: 11, rb: 10 },
-                        { id: 4, name: "Icetee Marrow", pos: "PG", age: 18, height: "6'2\"", tier: "Black Diamond", salary: 4250, ppg: 28.5, js: 20, od: 20, id: 20, hd: 20, dr: 20, ps: 20, rb: 20 },
-                        { id: 5, name: "Malik Cunningham", pos: "PG", age: 18, height: "6'3\"", tier: "Standard", salary: 4250, ppg: 9.3, js: 10, od: 9, id: 7, hd: 11, dr: 12, ps: 10, rb: 6 }
-                    ]
-                },
-                { name: "Chicago Vipers", wins: 0, losses: 0, roster: [{ id: 101, name: "Zach LaVine Jr.", pos: "SG", age: 24, height: "6'5\"", tier: "Standard", salary: 8500, ppg: 21.0, js: 17, od: 12, id: 9, hd: 15, dr: 16, ps: 10, rb: 8 }] },
-                { name: "Los Angeles Apex", wins: 0, losses: 0, roster: [{ id: 102, name: "Bronny Jr II", pos: "PG", age: 19, height: "6'2\"", tier: "Red Diamond", salary: 6000, ppg: 19.4, js: 15, od: 18, id: 12, hd: 18, dr: 17, ps: 16, rb: 9 }] },
-                { name: "New York Metros", wins: 0, losses: 0, roster: [{ id: 103, name: "Julius Randle III", pos: "PF", age: 25, height: "6'8\"", tier: "Standard", salary: 9200, ppg: 17.8, js: 13, od: 11, id: 15, hd: 14, dr: 13, ps: 11, rb: 15 }] },
-                { name: "Miami Heatwave", wins: 0, losses: 0, roster: [{ id: 104, name: "Jimmy Butler V", pos: "SF", age: 27, height: "6'7\"", tier: "Regular Diamond", salary: 11000, ppg: 22.1, js: 16, od: 19, id: 16, hd: 18, dr: 15, ps: 14, rb: 11 }] },
-                { name: "Dallas Mavericks X", wins: 0, losses: 0, roster: [{ id: 105, name: "Luka Doncic Jr.", pos: "PG", age: 22, height: "6'7\"", tier: "Black Diamond", salary: 12500, ppg: 31.0, js: 19, od: 15, id: 14, hd: 20, dr: 19, ps: 20, rb: 13 }] },
-                { name: "Golden State Dynasty", wins: 0, losses: 0, roster: [{ id: 106, name: "Steph Curry III", pos: "PG", age: 26, height: "6'3\"", tier: "Red Diamond", salary: 11500, ppg: 27.4, js: 20, od: 13, id: 8, hd: 19, dr: 16, ps: 18, rb: 6 }] },
-                { name: "Brooklyn Knights", wins: 0, losses: 0, roster: [{ id: 107, name: "Mikal Bridges Jr.", pos: "SF", age: 23, height: "6'6\"", tier: "Standard", salary: 7800, ppg: 16.2, js: 14, od: 17, id: 12, hd: 13, dr: 14, ps: 10, rb: 9 }] },
-                { name: "Seattle Supersonics", wins: 0, losses: 0, roster: [{ id: 108, name: "Gary Payton II", pos: "PG", age: 24, height: "6'3\"", tier: "Standard", salary: 6500, ppg: 12.8, js: 11, od: 20, id: 10, hd: 14, dr: 15, ps: 13, rb: 7 }] },
-                { name: "Toronto Raptors North", wins: 0, losses: 0, roster: [{ id: 109, name: "Pascal Siakam Jr.", pos: "PF", age: 25, height: "6'8\"", tier: "Standard", salary: 8900, ppg: 18.9, js: 13, od: 15, id: 15, hd: 15, dr: 16, ps: 12, rb: 12 }] },
-                { name: "Phoenix Suns Apex", wins: 0, losses: 0, roster: [{ id: 110, name: "Devin Booker Jr.", pos: "SG", age: 23, height: "6'5\"", tier: "Regular Diamond", salary: 9800, ppg: 25.0, js: 18, od: 14, id: 10, hd: 17, dr: 18, ps: 15, rb: 8 }] },
-                { name: "Denver Mountain Peaks", wins: 0, losses: 0, roster: [{ id: 111, name: "Nikola Jokic Jr.", pos: "C", age: 26, height: "6'11\"", tier: "Black Diamond", salary: 13000, ppg: 26.5, js: 17, od: 13, id: 18, hd: 20, dr: 17, ps: 20, rb: 20 }] }
-            ],
-            marketPlayers: [
-                { id: 201, name: "Marcus Vance", pos: "SF", tier: "Standard", ovr: 15, price: 35000, timeLeft: 175, js: 14, od: 13, id_skill: 12, hd: 14, dr: 14, ps: 11, rb: 10, ppg: 14.5, salary: 5500 },
-                { id: 202, name: "Deandre Ayayi", pos: "C", tier: "Regular Diamond", ovr: 17, price: 55000, timeLeft: 240, js: 10, od: 11, id_skill: 19, hd: 13, dr: 12, ps: 10, rb: 18, ppg: 16.2, salary: 7200 },
-                { id: 203, name: "Tariq St. Patrick", pos: "PG", tier: "Red Diamond", ovr: 18, price: 75000, timeLeft: 120, js: 18, od: 16, id_skill: 10, hd: 18, dr: 18, ps: 17, rb: 8, ppg: 21.4, salary: 8900 }
-            ]
+            teams: initialTeams,
+            transferMarket: initialTransferMarket,
+            ncaaProspects: []
         };
 
-        // Navigation & Tab Switcher
-        function switchTab(evt, tabName) {
-            let panels = document.getElementsByClassName("tab-panel");
-            for (let p of panels) p.classList.remove("active");
-            let buttons = document.getElementsByClassName("nav-button");
-            for (let b of buttons) b.classList.remove("active");
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
             
-            document.getElementById(tabName).classList.add("active");
-            if(evt) evt.currentTarget.classList.add("active");
-
-            if(tabName === 'roster') renderActiveTeamRoster();
-            if(tabName === 'standings') renderLeagueStandings();
-            if(tabName === 'transfer') renderTransferMarket();
-            if(tabName === 'med') populateMedicalDropdown();
+            if (tabId === 'roster') renderMasterRoster();
+            if (tabId === 'standings') renderStandings();
+            if (tabId === 'transfer') renderTransferMarket();
+            if (tabId === 'med') populateMedSelect();
         }
 
-        function updateFundsDisplay() {
-            document.getElementById("header-funds").innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
-        }
+        function renderMasterRoster() {
+            const team = gameData.teams[gameData.activeTeamIndex];
+            document.getElementById('header-team-name').innerText = team.name;
+            document.getElementById('active-roster-title').innerText = `${team.name} - Active Panini Roster Grid`;
+            document.getElementById('roster-count').innerText = team.roster.length;
+            
+            const grid = document.getElementById('master-roster-grid');
+            grid.innerHTML = '';
 
-        // Render Active Team Roster Cards (Panini Style)
-        function renderActiveTeamRoster() {
-            let team = gameData.teams[gameData.activeTeamIndex];
-            document.getElementById("header-team-name").innerText = team.name;
-            document.getElementById("active-roster-title").innerText = `${team.name} - Active Panini Roster Grid`;
-            document.getElementById("roster-count").innerText = team.roster.length;
-            
-            let grid = document.getElementById("master-roster-grid");
-            grid.innerHTML = "";
-            
-            team.roster.forEach(p => {
+            team.roster.forEach((p, idx) => {
                 let tierClass = "card-tier-standard";
-                if(p.tier === "Red Diamond") tierClass = "card-tier-red";
-                if(p.tier === "Black Diamond") tierClass = "card-tier-black";
-                
-                let card = document.createElement("div");
-                card.className = `player-card ${tierClass}`;
-                card.onclick = () => openPlayerCardModal(p);
-                
-                card.innerHTML = `
-                    <div class="player-header">
-                        <span class="player-name">${p.name}</span>
-                        <span class="player-pos">${p.pos}</span>
-                    </div>
-                    <div class="player-photo-area">
-                        <span class="jersey-badge">${p.tier === "Black Diamond" ? "◆" : "★"}</span>
-                        <div class="player-face-art">
-                            <div class="eyes eye-left"></div>
-                            <div class="eyes eye-right"></div>
-                            <div class="jersey-fill"></div>
+                if (p.tier === "Red Diamond") tierClass = "card-tier-red";
+                if (p.tier === "Black Diamond" || p.tier === "Regular Diamond") tierClass = "card-tier-black";
+
+                grid.innerHTML += `
+                    <div class="player-card ${tierClass}" onclick="openPlayerDetail(${gameData.activeTeamIndex}, ${idx})">
+                        <div class="player-header">
+                            <span class="player-name">${p.name}</span>
+                            <span class="player-pos">${p.pos}</span>
                         </div>
-                        <div class="meta-info" style="margin:0;">
-                            <p>Age: ${p.age} | ${p.height}</p>
-                            <p>Tier: <strong style="color:var(--accent-gold);">${p.tier}</strong></p>
+                        <div class="player-photo-area">
+                            <div class="jersey-badge">#${idx + 1}</div>
+                            <div class="player-face-art">
+                                <div class="eyes eye-left"></div>
+                                <div class="eyes eye-right"></div>
+                                <div class="jersey-fill"></div>
+                            </div>
+                            <div class="meta-info">
+                                <p><strong>Tier:</strong> ${p.tier}</p>
+                                <p><strong>Age:</strong> ${p.age} | <strong>Chem:</strong> <span style="color:var(--accent-green);">${p.chemistry}%</span></p>
+                            </div>
+                        </div>
+                        <div class="skills-grid-system">
+                            <div><span class="skill-lbl">OVR IQ:</span> <span class="skill-val">${p.iq}</span></div>
+                            <div><span class="skill-lbl">J. Shot:</span> <span class="skill-val">${p.js.split(' ')[0]}</span></div>
+                            <div><span class="skill-lbl">Defense:</span> <span class="skill-val">${p.od.split(' ')[0]}</span></div>
+                            <div><span class="skill-lbl">Market Val:</span> <span class="skill-val">${p.marketValuePct}%</span></div>
+                        </div>
+                        <div class="card-footer-info">
+                            <span>Role: ${p.role}</span>
+                            <span style="color: var(--accent-green);">Salary: $${p.salary.toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="skills-grid">
-                        <div>JS: <span class="skill-val skill-elite">${p.js}</span> | OD: <span class="skill-val skill-good">${p.od}</span></div>
-                        <div>ID: <span class="skill-val skill-avg">${p.id}</span> | HD: <span class="skill-val skill-elite">${p.hd}</span></div>
-                        <div>DR: <span class="skill-val skill-good">${p.dr}</span> | PS: <span class="skill-val skill-elite">${p.ps}</span></div>
-                        <div>RB: <span class="skill-val skill-good">${p.rb}</span> | PPG: <span class="skill-val skill-elite">${p.ppg}</span></div>
-                    </div>
-                    <div style="font-size:11px; color:var(--text-muted); text-align:right;">Weekly Salary: $${p.salary.toLocaleString()}</div>
                 `;
-                grid.appendChild(card);
             });
         }
 
-        // Open Player Modal Details
-        function openPlayerCardModal(p) {
-            document.getElementById("modal-player-name").innerText = `${p.name} (#${p.id || 23} - ${p.pos})`;
-            document.getElementById("modal-player-content").innerHTML = `
-                <p><strong>Age:</strong> ${p.age} | <strong>Height:</strong> ${p.height}</p>
-                <p><strong>Tier / Class:</strong> <span style="color:var(--accent-gold); font-weight:bold;">${p.tier}</span></p>
-                <p><strong>Points Per Game (PPG):</strong> <span style="color:var(--accent-green); font-weight:bold;">${p.ppg} PPG</span></p>
-                <p><strong>Weekly Salary:</strong> $${p.salary.toLocaleString()}</p>
+        function openPlayerDetail(teamIdx, playerIdx) {
+            const p = gameData.teams[teamIdx].roster[playerIdx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - Complete Panini Dossier`;
+            
+            let content = `
+                <p><strong>Team:</strong> ${gameData.teams[teamIdx].name}</p>
+                <p><strong>Tier / Potential:</strong> ${p.tier} / <span style="color:var(--accent-gold);">${p.potential}</span></p>
+                <p><strong>Age & Height:</strong> ${p.age} years old | ${p.height}</p>
+                <p><strong>Role & Salary:</strong> ${p.role} | $${p.salary.toLocaleString()} per week</p>
+                <p><strong>Dynamic Chemistry (Tactic Fit):</strong> <span style="color:var(--accent-green);">${p.chemistry}%</span> | <strong>Mood / Morale:</strong> ${p.mood}</p>
+                <p><strong>NBA-Style Market Valuation Index:</strong> <span style="color:var(--accent-gold);">${p.marketValuePct}%</span> of Positional Peak</p>
                 <hr style="border-color:var(--border-color); margin: 10px 0;">
-                <p><strong>1-20 Attribute Matrix:</strong></p>
-                <p>Jumpshot (JS): ${p.js} | Perimeter Defense (OD): ${p.od}</p>
-                <p>Interior Defense (ID): ${p.id} | Handling (HD): ${p.hd}</p>
-                <p>Driving (DR): ${p.dr} | Passing (PS): ${p.ps} | Rebounding (RB): ${p.rb}</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family:monospace;">
+                    <div>Tactical IQ: ${p.iq}</div>
+                    <div>Dynamic XP: ${p.xp}</div>
+                    <div>Jump Shot: ${p.js}</div>
+                    <div>Jump Range: ${p.jr}</div>
+                    <div>Outside Def.: ${p.od}</div>
+                    <div>Handling: ${p.handling}</div>
+                    <div>Driving: ${p.driving}</div>
+                    <div>Passing: ${p.passing}</div>
+                    <div>Inside Shot: ${p.insideShot}</div>
+                    <div>Inside Def.: ${p.insideDef}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                    <div>Shot Blocking: ${p.shotBlocking}</div>
+                    <div>Stamina: ${p.stamina}</div>
+                    <div>Free Throw: ${p.freeThrow}</div>
+                    <div>Experience: ${p.experience}</div>
+                </div>
             `;
-            document.getElementById("player-modal").style.display = "flex";
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
         }
-        function closePlayerModal(e) { document.getElementById("player-modal").style.display = "none"; }
 
-        // League Standings & Team Hub Clicker
-        function renderLeagueStandings() {
-            let tbody = document.getElementById("league-standings-body");
-            tbody.innerHTML = "";
-            gameData.teams.forEach((t, idx) => {
-                let ovr = Math.round(t.roster.reduce((acc, curr) => acc + curr.js + curr.od + curr.hd, 0) / (t.roster.length * 3) + 10);
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><strong>#${idx + 1}</strong></td>
-                    <td style="color: ${idx === gameData.activeTeamIndex ? '#38bdf8' : '#fff'}; font-weight: bold;">${t.name} ${idx === gameData.activeTeamIndex ? '(YOUR TEAM)' : ''}</td>
-                    <td>${t.wins} - ${t.losses}</td>
-                    <td>-</td>
-                    <td><span style="color:var(--accent-green); font-weight:bold;">${ovr} OVR</span></td>
-                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="switchToTeamHub(${idx})">Inspect Franchise HQ</button></td>
+        function openCollegePlayerDetail(prospectIdx) {
+            const p = gameData.ncaaProspects[prospectIdx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - NCAA Collegiate Dossier`;
+            
+            let content = `
+                <p><strong>Collegiate Program:</strong> ${p.college}</p>
+                <p><strong>Prospect Potential:</strong> <span style="color:var(--accent-gold);">${p.potential}</span></p>
+                <p><strong>Age & Height:</strong> ${p.age} years old | ${p.height}</p>
+                <p><strong>Performance Form:</strong> ${p.ppg} PPG | Efficiency: <span style="color:var(--accent-green);">${p.efficiency}</span></p>
+                <hr style="border-color:var(--border-color); margin: 10px 0;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family:monospace;">
+                    <div>Tactical IQ: ${p.iq}</div>
+                    <div>Jump Shot: ${p.js}</div>
+                    <div>Jump Range: ${p.jr}</div>
+                    <div>Outside Def.: ${p.od}</div>
+                    <div>Handling: ${p.handling}</div>
+                    <div>Driving: ${p.driving}</div>
+                    <div>Passing: ${p.passing}</div>
+                    <div>Inside Shot: ${p.insideShot}</div>
+                    <div>Inside Def.: ${p.insideDef}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                    <div>Shot Blocking: ${p.shotBlocking}</div>
+                    <div>Stamina: ${p.stamina}</div>
+                    <div>Free Throw: ${p.freeThrow}</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
+
+        function closePlayerModal(e) {
+            if (e.target.id === 'player-modal') {
+                document.getElementById('player-modal').style.display = 'none';
+            }
+        }
+
+        function renderStandings() {
+            const tbody = document.getElementById('league-standings-body');
+            tbody.innerHTML = '';
+            
+            let sortedTeams = [...gameData.teams].map((t, originalIndex) => ({...t, originalIndex})).sort((a, b) => b.wins - a.wins);
+
+            sortedTeams.forEach((t, index) => {
+                let totalOvr = Math.round(t.roster.reduce((acc, p) => acc + p.iq, 0) / (t.roster.length || 1));
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${index + 1}</td>
+                        <td style="font-weight:bold; color:#fff;" onclick="inspectTeamHub(${t.originalIndex})">${t.name}</td>
+                        <td>${t.wins} - ${t.losses}</td>
+                        <td>${index === 0 ? '-' : (sortedTeams[0].wins - t.wins)}</td>
+                        <td><span style="color:var(--accent-blue); font-weight:bold;">${totalOvr} OVR</span></td>
+                        <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="inspectTeamHub(${t.originalIndex})">Inspect Hub</button></td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function switchToTeamHub(idx) {
-            gameData.activeTeamIndex = idx;
-            switchTab(null, 'roster');
+        function inspectTeamHub(originalIndex) {
+            gameData.activeTeamIndex = originalIndex;
+            switchTab({ currentTarget: document.querySelectorAll('.nav-button')[0] }, 'roster');
+            renderMasterRoster();
         }
 
         function openActiveTeamHub() {
-            switchTab(null, 'roster');
+            inspectTeamHub(gameData.activeTeamIndex);
         }
 
-        // Blueprints & Tactics
         function updateBlueprints() {
-            gameData.offensiveBlueprint = document.getElementById("blueprint-offense").value;
-            gameData.defensiveBlueprint = document.getElementById("blueprint-defense").value;
-            document.getElementById("blueprint-level").innerText = `Level ${Math.floor(gameData.blueprintXP / 100) + 1} (${gameData.blueprintXP} XP)`;
-        }
-
-        // Transfer Market & Free Agency with Individual Timers
-        function renderTransferMarket() {
-            let tbody = document.getElementById("transfer-market-body");
-            tbody.innerHTML = "";
-            gameData.marketPlayers.forEach((p, idx) => {
-                let m = Math.floor(p.timeLeft / 60);
-                let s = String(p.timeLeft % 60).padStart(2, '0');
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><strong style="cursor:pointer; color:#38bdf8;" onclick="openPlayerCardModal(marketPlayersData(${idx}))">${p.name}</strong></td>
-                    <td><span class="player-pos">${p.pos}</span></td>
-                    <td><span style="color:var(--accent-gold);">${p.tier}</span> (OVR ${p.ovr})</td>
-                    <td style="color:var(--accent-green); font-weight:bold;">$${p.price.toLocaleString()}</td>
-                    <td><span id="timer-${idx}" style="color:var(--accent-red); font-weight:bold;">${m}:${s}</span></td>
-                    <td><input type="number" id="bid-input-${idx}" value="${p.price + 1000}" step="500" style="width:110px;"></td>
-                    <td><button class="btn btn-success" onclick="placeMarketBid(${idx})">Place Bid</button></td>
-                `;
-                tbody.appendChild(tr);
+            gameData.offensiveBlueprint = document.getElementById('blueprint-offense').value;
+            gameData.defensiveBlueprint = document.getElementById('blueprint-defense').value;
+            document.getElementById('blueprint-level').innerText = `Level 1 (${gameData.offensiveBlueprint} + ${gameData.defensiveBlueprint})`;
+            document.getElementById('blueprint-desc').innerText = `Active chemistry locked in. Run simulated matches to gain XP and scale team execution multipliers.`;
+            
+            // Adjust team chemistry dynamically based on tactics
+            gameData.teams[gameData.activeTeamIndex].roster.forEach(p => {
+                p.chemistry = Math.min(100, Math.max(65, p.chemistry + (Math.random() > 0.5 ? 3 : -2)));
             });
         }
 
-        function marketPlayersData(idx) { return gameData.marketPlayers[idx]; }
+        function renderTransferMarket() {
+            const tbody = document.getElementById('transfer-market-body');
+            tbody.innerHTML = '';
+            gameData.transferMarket.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:#fff; cursor:pointer;" onclick="openMarketPlayerModal(${idx})">${p.name}</td>
+                        <td><span class="player-pos">${p.pos}</span></td>
+                        <td>${p.tier}</td>
+                        <td style="color:var(--accent-green); font-weight:bold;">$${p.currentBid.toLocaleString()}</td>
+                        <td id="auction-timer-${idx}" style="color:var(--accent-gold); font-family:monospace;">${p.timeLeft}s</td>
+                        <td><input type="number" id="bid-input-${idx}" value="${p.currentBid + 5000}" style="width:110px; padding:4px;"></td>
+                        <td><button class="btn btn-success" style="padding:4px 10px; font-size:12px;" onclick="placeBid(${idx})">Bid Now</button></td>
+                    </tr>
+                `;
+            });
+        }
 
-        function placeMarketBid(idx) {
-            let p = gameData.marketPlayers[idx];
-            let val = parseInt(document.getElementById(`bid-input-${idx}`).value);
-            if(val > gameData.funds) {
-                alert("Insufficient club funds for this bid!");
+        function openMarketPlayerModal(idx) {
+            const p = gameData.transferMarket[idx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - Transfer Market Dossier`;
+            let content = `
+                <p><strong>Tier / Potential:</strong> ${p.tier} / <span style="color:var(--accent-gold);">${p.potential}</span></p>
+                <p><strong>Age & Height:</strong> ${p.age} years old | ${p.height}</p>
+                <p><strong>Current Bid:</strong> $${p.currentBid.toLocaleString()} | NBA Market Val Index: <span style="color:var(--accent-gold);">${p.marketValuePct}%</span></p>
+                <hr style="border-color:var(--border-color); margin: 10px 0;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family:monospace;">
+                    <div>Tactical IQ: ${p.iq}</div>
+                    <div>Jump Shot: ${p.js}</div>
+                    <div>Perimeter Def: ${p.od}</div>
+                    <div>Handling: ${p.handling}</div>
+                    <div>Driving: ${p.driving}</div>
+                    <div>Passing: ${p.passing}</div>
+                    <div>Inside Def: ${p.insideDef}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
+
+        function placeBid(idx) {
+            const val = parseInt(document.getElementById(`bid-input-${idx}`).value);
+            if (isNaN(val) || val <= gameData.transferMarket[idx].currentBid) {
+                alert("Bid must be higher than current standing bid!");
+                return;
+            }
+            if (gameData.funds < val) {
+                alert("Insufficient club funds!");
                 return;
             }
             gameData.funds -= val;
-            updateFundsDisplay();
-            gameData.teams[gameData.activeTeamIndex].roster.push(p);
-            alert(`Successful acquisition! ${p.name} has been signed and added to your active franchise roster.`);
-            gameData.marketPlayers.splice(idx, 1);
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            // Move player to active team roster
+            let wonPlayer = gameData.transferMarket.splice(idx, 1)[0];
+            gameData.teams[gameData.activeTeamIndex].roster.push(wonPlayer);
+            
+            alert(`Successful acquisition! ${wonPlayer.name} has joined your franchise roster.`);
             renderTransferMarket();
+            renderMasterRoster();
         }
 
-        // Timer Tick for Auction House
-        setInterval(() => {
-            gameData.marketPlayers.forEach(p => {
-                if(p.timeLeft > 0) p.timeLeft--;
-            });
-            let activeTab = document.getElementById("transfer");
-            if(activeTab.classList.contains("active")) {
-                gameData.marketPlayers.forEach((p, idx) => {
-                    let timerEl = document.getElementById(`timer-${idx}`);
-                    if(timerEl) {
-                        let m = Math.floor(p.timeLeft / 60);
-                        let s = String(p.timeLeft % 60).padStart(2, '0');
-                        timerEl.innerText = `${m}:${s}`;
-                    }
-                });
-            }
-        }, 1000);
-
-        // Youth Academy & U21 Matches
         function pullYouthProspect() {
-            if(gameData.funds < 80000) { alert("Requires $80,000 in club funds."); return; }
+            if (gameData.funds < 80000) {
+                alert("Insufficient funds for youth academy prospect pull ($80,000 required)!");
+                return;
+            }
             gameData.funds -= 80000;
-            updateFundsDisplay();
-            let newP = { id: 999, name: "Prospect " + Math.floor(Math.random()*900+100), pos: "PG", age: 17, height: "6'3\"", tier: "Standard", salary: 3500, ppg: 11.2, js: 12, od: 11, id: 8, hd: 13, dr: 13, ps: 12, rb: 7 };
-            gameData.teams[gameData.activeTeamIndex].roster.push(newP);
-            document.getElementById("youth-terminal").innerHTML += `<br>[Drafted] ${newP.name} pulled successfully into academy & active roster!`;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            let newProspect = generateRandomPlayer();
+            gameData.teams[gameData.activeTeamIndex].roster.push(newProspect);
+            document.getElementById('youth-terminal').innerHTML += `<br>[Prospect Pulled] Elite U19 Prospect <strong>${newProspect.name} (${newProspect.pos})</strong> added directly to active franchise roster!`;
+            renderMasterRoster();
         }
 
         function simYouthMatch() {
-            document.getElementById("youth-terminal").innerHTML += `<br>[U21 Match] Executing 24-minute youth match clock... Victory secured! +15 Blueprint XP.`;
-            gameData.blueprintXP += 15;
-            updateBlueprints();
+            document.getElementById('youth-terminal').innerHTML += `<br>[U21 Match Simulation] 24M Clock Active... Academy squad secures a hard-fought 58-52 victory. Development XP distributed!`;
         }
 
-        // NCAA Scouting Pipeline
         function scoutNCAAPipeline() {
-            if(gameData.funds < 15000) { alert("Requires $15,000."); return; }
+            if (gameData.funds < 15000) {
+                alert("Insufficient funds for NCAA scouting report ($15,000 required)!");
+                return;
+            }
             gameData.funds -= 15000;
-            updateFundsDisplay();
-            document.getElementById("college-terminal").innerHTML = `[NCAA Report] ACC & SEC Collegiate conferences scouted. 5 Generational prospects flagged for the upcoming Offseason Draft.`;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            gameData.ncaaProspects = [];
+            for(let i=0; i<8; i++) {
+                let p = generateRandomPlayer();
+                p.college = collegesList[Math.floor(Math.random() * collegesList.length)];
+                p.ppg = (Math.random() * 12 + 12).toFixed(1);
+                p.efficiency = (Math.random() * 8 + 45).toFixed(1) + "%";
+                gameData.ncaaProspects.push(p);
+            }
+
+            const tbody = document.getElementById('ncaa-pipeline-body');
+            tbody.innerHTML = '';
+            gameData.ncaaProspects.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:#fff; cursor:pointer;" onclick="openCollegePlayerDetail(${idx})">${p.name}</td>
+                        <td><span class="player-pos">${p.pos}</span></td>
+                        <td>${p.college}</td>
+                        <td style="color:var(--accent-gold); font-weight:bold;">${p.ppg} PPG (Form Up)</td>
+                        <td>${p.efficiency}</td>
+                        <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCollegePlayerDetail(${idx})">Inspect Prospect</button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('college-terminal').innerHTML += `<br>[NCAA Pipeline] Scouting report generated: ACC, Big East & SEC sleeper prospects analyzed. 8 collegiate talents added to draft board watchlist.`;
         }
 
-        // Medical & Rust Rehab Bay
-        function populateMedicalDropdown() {
-            let sel = document.getElementById("med-player-select");
-            sel.innerHTML = "";
-            let team = gameData.teams[gameData.activeTeamIndex];
-            team.roster.forEach(p => {
-                let opt = document.createElement("option");
-                opt.value = p.name;
-                opt.innerText = `${p.name} (${p.pos}) - 100% Condition`;
-                sel.appendChild(opt);
+        function populateMedSelect() {
+            const select = document.getElementById('med-player-select');
+            select.innerHTML = '';
+            const roster = gameData.teams[gameData.activeTeamIndex].roster;
+            roster.forEach((p, idx) => {
+                select.innerHTML += `<option value="${idx}">${p.name} (${p.pos}) - Shape: ${p.gameShape}</option>`;
             });
         }
 
         function assignRehabProtocol() {
-            let pName = document.getElementById("med-player-select").value;
-            let proto = document.getElementById("med-protocol-select").value;
-            document.getElementById("med-terminal").innerHTML = `[Medical Bay] ${pName} successfully assigned to ${proto} protocol. Rust and fatigue fully neutralized.`;
+            const pIndex = document.getElementById('med-player-select').value;
+            const protocol = document.getElementById('med-protocol-select').value;
+            if (pIndex === "") {
+                alert("Please select a valid player.");
+                return;
+            }
+            const player = gameData.teams[gameData.activeTeamIndex].roster[pIndex];
+            player.gameShape = "proficient (9)";
+            player.mood = "Peak Condition";
+            document.getElementById('med-terminal').innerHTML += `<br>[Rehab Assigned] Protocol "${protocol}" successfully completed for <strong>${player.name}</strong>. Game Shape restored and mood optimized!`;
+            alert(`Rehab protocol completed for ${player.name}. Fitness optimized.`);
         }
 
-        // Matchday Live Stream & Canvas Court
         function runGlobalMatchSim() {
-            let log = document.getElementById("m-log");
-            let canvas = document.getElementById("court-canvas");
-            let ctx = canvas.getContext("2d");
+            const canvas = document.getElementById('court-canvas');
+            const ctx = canvas.getContext('2d');
             
-            ctx.fillStyle = "#0f172a";
+            ctx.fillStyle = '#0f172a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = "#374151";
+            
+            ctx.strokeStyle = '#334155';
             ctx.lineWidth = 2;
-            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            
             ctx.beginPath();
             ctx.arc(canvas.width / 2, canvas.height / 2, 40, 0, Math.PI * 2);
             ctx.stroke();
 
-            log.innerHTML = `[Match Engine] Executing 100-Possession Pro Match (48M Clock)...<br>`;
-            log.innerHTML += `Tactics: Offense [${gameData.offensiveBlueprint}] vs Defense [${gameData.defensiveBlueprint}]<br>`;
+            ctx.beginPath();
+            ctx.arc(0, canvas.height / 2, 110, -Math.PI/2, Math.PI/2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(canvas.width, canvas.height / 2, 110, Math.PI/2, -Math.PI/2);
+            ctx.stroke();
+
+            let ballX = 50, ballY = 150;
+            let targetX = canvas.width - 50, targetY = 150;
             
-            setTimeout(() => {
-                let scoreA = Math.floor(102 + Math.random() * 12);
-                let scoreB = Math.floor(98 + Math.random() * 14);
-                log.innerHTML += `<strong>Final Score: Boston Titans ${scoreA} - Opponent ${scoreB}</strong><br>`;
-                log.innerHTML += `[Success] Match logged. Blueprint Synergy increased by +25 XP!`;
-                gameData.blueprintXP += 25;
-                updateBlueprints();
+            let animStep = 0;
+            const interval = setInterval(() => {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                ctx.fillStyle = "#10b981";
+                ctx.strokeStyle = '#334155';
+                ctx.beginPath(); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, 40, 0, Math.PI * 2); ctx.stroke();
+
+                ballX += (targetX - ballX) * 0.1;
+                ballY += (targetY - ballY) * 0.1;
+
+                ctx.fillStyle = '#f97316';
                 ctx.beginPath();
-                ctx.arc(150 + Math.random() * 300, 70 + Math.random() * 150, 8, 0, Math.PI * 2);
+                ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
                 ctx.fill();
-            }, 600);
+
+                animStep++;
+                if (animStep > 35) {
+                    clearInterval(interval);
+                    const activeTeam = gameData.teams[gameData.activeTeamIndex];
+                    activeTeam.wins += 1;
+                    renderStandings();
+                    document.getElementById('m-log').innerHTML = `[Match Completed] <strong>${activeTeam.name}</strong> executes flawless ${gameData.offensiveBlueprint} and defeats opponent 108 - 94! +1 Win recorded to league standings.`;
+                }
+            }, 40);
         }
 
-        // Sunday Cup
+        // Sunday Cup Box Score System
+        let cupMatchups = [
+            { home: "Boston Titans", away: "Chicago Vipers", homeScore: 104, awayScore: 98 },
+            { home: "Los Angeles Apex", away: "New York Metros", homeScore: 112, awayScore: 105 },
+            { home: "Miami Heatwave", away: "Dallas Mavericks X", homeScore: 96, awayScore: 91 },
+            { home: "Golden State Dynasty", away: "Denver Mountain Lions", homeScore: 118, awayScore: 110 }
+        ];
+
         function simSundayCupMatch() {
-            let alertBox = document.getElementById("cup-alert");
-            alertBox.style.display = "block";
+            document.getElementById('cup-alert').style.display = 'block';
             gameData.funds += 50000;
-            updateFundsDisplay();
-            setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            // Randomize scores slightly on simulation
+            cupMatchups.forEach(m => {
+                m.homeScore = Math.floor(Math.random() * 25) + 95;
+                m.awayScore = Math.floor(Math.random() * 25) + 90;
+            });
+
+            // Update bracket table UI dynamically
+            const tbody = document.getElementById('cup-bracket-body');
+            tbody.innerHTML = '';
+            cupMatchups.forEach((m, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>Match ${idx + 1}</td>
+                        <td>${m.home}</td>
+                        <td style="color:var(--accent-gold); font-weight:bold; cursor:pointer;" onclick="openCupGameDetail(${idx})">${m.homeScore} - ${m.awayScore}</td>
+                        <td>${m.away}</td>
+                        <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(${idx})">View Box Score</button></td>
+                    </tr>
+                `;
+            });
         }
 
-        // Franchise Desk
+        function openCupGameDetail(matchIdx) {
+            const match = cupMatchups[matchIdx];
+            document.getElementById('modal-player-name').innerText = `Sunday Cup Box Score: ${match.home} vs ${match.away} (${match.homeScore} - ${match.awayScore})`;
+            
+            // Generate simulated player stats for this game
+            let content = `
+                <p style="color:var(--text-main); font-weight:bold;">${match.home} Player Game Performance</p>
+                <div style="font-family:monospace; font-size:12px; margin-bottom:12px; background:#030712; padding:8px; border-radius:4px;">
+                    <div>Dorian Freeman (PF): 24 PTS, 11 REB, 4 AST, 36 MIN</div>
+                    <div>King Bronny (SF): 28 PTS, 7 REB, 9 AST, 38 MIN</div>
+                    <div>RJ Mobley (SG): 14 PTS, 3 REB, 2 AST, 24 MIN</div>
+                    <div>Icetee Marrow (PG): 22 PTS, 6 REB, 11 AST, 35 MIN</div>
+                </div>
+                <p style="color:var(--text-main); font-weight:bold;">${match.away} Player Game Performance</p>
+                <div style="font-family:monospace; font-size:12px; background:#030712; padding:8px; border-radius:4px;">
+                    <div>Zach LaVine Jr. (SG): 31 PTS, 5 REB, 4 AST, 37 MIN</div>
+                    <div>Starting Forward (SF): 19 PTS, 8 REB, 2 AST, 33 MIN</div>
+                    <div>Floor General (PG): 15 PTS, 4 REB, 12 AST, 35 MIN</div>
+                    <div>Center Anchor (C): 12 PTS, 14 REB, 1 BLK, 30 MIN</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
+
         function triggerCoachUltimatum() {
-            document.getElementById("desk-terminal").innerHTML = "[Board Ultimatum] Front office and coaching staff stable. Board demands top-3 league placement.";
+            document.getElementById('desk-terminal').innerHTML = `[Board Ultimatum] Directors are pleased with recent squad synergy. Contract extension unlocked for Coaching Staff Tier 11.`;
+            alert("Board confidence stable. Franchise security confirmed.");
         }
 
-        // Offseason Draft
         function generateDraftClass() {
-            document.getElementById("draft-container").innerHTML = `<div class="terminal-box">[Draft Class Generated] 30 Top-tier collegiate prospects loaded into Round 1 and Round 2 draft pools.</div>`;
+            const container = document.getElementById('draft-container');
+            container.innerHTML = `
+                <h4 style="color:var(--accent-green);">2-Round Collegiate Draft Board Generated</h4>
+                <p style="font-size:13px; color:var(--text-muted);">Round 1, Pick 1: <strong>Cade Miller Jr. (PG, 19, Kentucky)</strong></p>
+                <p style="font-size:13px; color:var(--text-muted);">Round 1, Pick 2: <strong>Julian Vance (PF, 20, Duke)</strong></p>
+                <p style="font-size:13px; color:var(--text-muted);">Round 2, Pick 1: <strong>Treyvion Scott (SG, 19, UNC)</strong></p>
+            `;
         }
 
-        // Talent Agencies
         function accessAgency(tier) {
-            let term = document.getElementById("agency-terminal");
-            if(tier === 'tier1') {
-                term.innerHTML = "[Sachkz Elite Firm] Agency connection established. High-end negotiation multipliers active.";
+            if (tier === 'tier1') {
+                document.getElementById('agency-terminal').innerHTML = `<span style="color:var(--accent-red);">[ALERT] Sachkz Elite Firm engaged. Elite player acquisition unsealed, but league regulatory scrutiny triggered (+10% salary tax).</span>`;
             } else {
-                term.innerHTML = "[Slimeball Desk Warning] Regulatory body notified due to aggressive contract practices!";
+                document.getElementById('agency-terminal').innerHTML = `<span style="color:var(--accent-red);">[CRITICAL] Slimeball Desk engaged. High-risk player management active. Proceed with extreme caution!</span>`;
             }
         }
+
+        // Initialize view on load
+        window.onload = function() {
+            renderMasterRoster();
+            renderStandings();
+            renderTransferMarket();
+        };
     </script>
 </body>
 </html>
