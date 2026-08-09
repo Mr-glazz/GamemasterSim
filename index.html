@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Master Sim - Complete Universe Master Architecture</title>
+    <title>Game Master Sim - Complete Roster & Match Engine (Master Architecture)</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #1a2230; color: #d1d5db; margin: 0; padding: 0; user-select: none; }
         .header { background-color: #111827; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4b5563; }
@@ -11,8 +11,8 @@
         .finances { font-size: 16px; color: #10b981; font-weight: bold; }
         .schedule { background: #374151; padding: 4px 10px; border-radius: 4px; font-size: 13px; color: #f3f4f6; }
         .container { display: flex; height: calc(100vh - 50px); }
-        .sidebar { width: 255px; background-color: #0f172a; padding: 15px 5px; border-right: 1px solid #374151; overflow-y: auto; }
-        .nav-button { display: block; width: 90%; padding: 10px; margin-bottom: 8px; background: none; border: none; color: #9ca3af; text-align: left; font-size: 13px; cursor: pointer; border-radius: 4px; }
+        .sidebar { width: 240px; background-color: #0f172a; padding: 15px 5px; border-right: 1px solid #374151; overflow-y: auto; }
+        .nav-button { display: block; width: 90%; padding: 10px; margin-bottom: 8px; background: none; border: none; color: #9ca3af; text-align: left; font-size: 14px; cursor: pointer; border-radius: 4px; }
         .nav-button:hover { background-color: #1f2937; color: #fff; }
         .nav-button.active { background-color: #2563eb; color: #ffffff; font-weight: bold; }
         .main-content { flex: 1; padding: 25px; overflow-y: auto; }
@@ -22,24 +22,7 @@
 
         /* Unified Roster & Card Styles */
         .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
-        .player-card { background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; position: relative; counter-increment: player-counter; }
-        
-        #master-roster-grid { counter-reset: player-counter; }
-        .player-card::before {
-            content: "#" counter(player-counter);
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #1f2937;
-            color: #9ca3af;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-family: monospace;
-            font-weight: bold;
-            border: 1px solid #374151;
-        }
-
+        .player-card { background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; }
         .player-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 8px; margin-bottom: 10px; }
         .player-name { font-weight: bold; font-size: 16px; color: #fff; }
         .player-pos { font-size: 12px; background: #2563eb; padding: 2px 6px; border-radius: 4px; color: #fff; }
@@ -99,9 +82,6 @@
         .market-table th { background-color: #1f2937; color: #9ca3af; text-transform: uppercase; font-size: 12px; }
         .market-container { max-height: 400px; overflow-y: auto; border: 1px solid #374151; border-radius: 4px; }
         #court-canvas { background: #0f172a; border: 2px solid #374151; display: block; margin: 0 auto; border-radius: 4px; }
-        
-        .forum-board { background: #0b0f19; border: 1px solid #374151; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
-        .forum-title { font-weight: bold; color: #38bdf8; font-size: 14px; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -113,38 +93,40 @@
     
     <div class="container">
         <div class="sidebar">
-            <button class="nav-button active" onclick="switchTab(event, 'roster')">📋 #1 Core Roster Matrix</button>
-            <button class="nav-button" onclick="switchTab(event, 'teams')">🏟️ #2 12 Generic Teams Hub</button>
-            <button class="nav-button" onclick="switchTab(event, 'tactics')">⚡ #3 15-Scheme Tactics</button>
-            <button class="nav-button" onclick="switchTab(event, 'cup')">🏆 #4 Sunday Cup & Match Clock</button>
-            <button class="nav-button" onclick="switchTab(event, 'youth')">🏫 #5 Youth Academy Pool</button>
-            <button class="nav-button" onclick="switchTab(event, 'transfer')">🏪 #6 Live Auction House & Ticker</button>
-            <button class="nav-button" onclick="switchTab(event, 'match')">📺 #7 Matchday Dual View</button>
-            <button class="nav-button" onclick="switchTab(event, 'desk')">💼 #8 Coaching Desk & Forums</button>
-            <button class="nav-button" onclick="switchTab(event, 'med')">🏥 #9 Sports Medicine & Therapy</button>
-            <button class="nav-button" onclick="switchTab(event, 'draft')">🎓 #10 Offseason Draft & Awards</button>
-            <button class="nav-button" onclick="switchTab(event, 'agencies')">⚖️ #11 Talent Agencies & Court</button>
+            <button class="nav-button active" onclick="switchTab(event, 'roster')">📋 Master Roster & Cards</button>
+            <button class="nav-button" onclick="switchTab(event, 'tactics')">⚡ 15-Scheme Tactics</button>
+            <button class="nav-button" onclick="switchTab(event, 'cup')">🏆 Sunday Cup</button>
+            <button class="nav-button" onclick="switchTab(event, 'youth')">🏫 Youth Academy</button>
+            <button class="nav-button" onclick="switchTab(event, 'transfer')">🏪 Live Auction House</button>
+            <button class="nav-button" onclick="switchTab(event, 'match')">📺 Matchday Live View</button>
+            <button class="nav-button" onclick="switchTab(event, 'desk')">💼 Franchise Desk</button>
+            <button class="nav-button" onclick="switchTab(event, 'med')">🏥 Medical & Rust Rehab</button>
+            <button class="nav-button" onclick="switchTab(event, 'draft')">🎓 Offseason Draft</button>
+            <button class="nav-button" onclick="switchTab(event, 'agencies')">⚖️ Talent Agencies</button>
         </div>
         
         <div class="main-content">
             
-            <!-- 1. ROSTER TAB -->
+            <!-- 1. ROSTER TAB (Includes all integrated master tier cards) -->
             <div id="roster" class="tab-panel active">
                 <div class="section-title">
-                    <span>Active Team Roster & Tier Showcase (1-20 Scale)</span>
+                    <span>Active Team Roster & Tier Showcase</span>
                     <span>Pro Count: <span id="pro-roster-count">6</span>/12</span>
                 </div>
 
+                <!-- SYSTEM CONTROL BAR -->
                 <div style="background:#2c3e50;padding:12px;display:flex;justify-content:space-between;align-items:center;color:#fff;border-radius:4px;margin-bottom:20px">
                     <div><strong>💎 Global Scouting Matrix Engine</strong></div>
                     <div>
                         <button onclick="restoreStats()" style="background:#27ae60;color:#fff;border:none;padding:6px 12px;font-weight:bold;border-radius:3px;cursor:pointer;margin-right:8px">🔥 Restore Max Stats</button>
                         <button onclick="decaySkills()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;font-weight:bold;border-radius:3px;cursor:pointer;margin-right:8px">⚠️ Simulate Decay</button>
+                        <button onclick="runGlobalMatchSim()" style="background:#e67e22;color:#fff;border:none;padding:6px 12px;font-weight:bold;border-radius:3px;cursor:pointer">🏀 Run Match Sim</button>
                     </div>
                 </div>
 
                 <div class="roster-grid" id="master-roster-grid">
-                    <!-- Player Card 1: Dorian Freeman -->
+                    
+                    <!-- Player Card 2: Dorian Freeman -->
                     <div class="player-card">
                         <div class="player-photo-area">
                             <span class="jersey-badge">#23</span>
@@ -157,31 +139,31 @@
                         <div class="player-details">
                             <div class="meta-info">
                                 <p><strong>Dorian Freeman</strong> (ID: 49705446)</p>
-                                <p>Age: 26 | Height: 6'10" | Weight: 250 lbs</p>
+                                <p>Age: 26 | Height: 6'10" / 208 cm</p>
                                 <p>Weekly Salary: $9,784</p>
                                 <p>Potential Limit: <span style="color:#27ae60; font-weight:bold;">Allstar</span></p>
                                 <div>
-                                    <span style="font-size: 10px; color:#9ca3af;">Soft Cap Headroom (96%):</span>
+                                    <span style="font-size: 10px; color:#9ca3af;">Soft Cap Headroom (96% - NEAR CAP):</span>
                                     <div class="cap-wrapper"><div class="cap-fill" style="width: 96%; background: #dc2626;"></div></div>
                                 </div>
                             </div>
                             <div class="skills-grid">
-                                <div>JS: <span class="skill-val skill-elite">prolific</span></div>
-                                <div>OD: <span class="skill-val skill-good">prominent</span></div>
+                                <div>JS: <span class="skill-val skill-elite" id="p2-js">prolific</span></div>
+                                <div>OD: <span class="skill-val skill-good" id="p2-od">prominent</span></div>
                                 <div>ID: <span class="skill-val skill-avg">average</span></div>
                                 <div>HD: <span class="skill-val skill-good">sensational</span></div>
                             </div>
                             <div class="zone-analysis-box">
                                 <div>🎯 <strong>Zone Efficiency Rating:</strong></div>
                                 <div>
-                                    <span style="font-weight: bold; color: #8e44ad;">52% Match Form</span>
-                                    <div class="zone-bar-container"><div class="zone-bar-fill" style="width: 52%;"></div></div>
+                                    <span style="font-weight: bold; color: #8e44ad;" id="p2-zone-txt">52% Match Form</span>
+                                    <div class="zone-bar-container"><div class="zone-bar-fill" id="p2-zone-bar" style="width: 52%;"></div></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Player Card 2: Malik Cunningham -->
+                    <!-- Player Card 3: Malik Cunningham (Rookie Draft Asset) -->
                     <div class="player-card" style="border-left: 4px solid #27ae60;">
                         <div class="player-photo-area">
                             <span class="jersey-badge" style="background:#27ae60;">ROOK</span>
@@ -193,12 +175,12 @@
                         </div>
                         <div class="player-details">
                             <div class="meta-info">
-                                <p><strong>Malik Cunningham</strong> (Draft Asset)</p>
-                                <p>Age: 18 | Position: PG | Weight: 185 lbs</p>
+                                <p><strong>Malik Cunningham</strong> (Draft Acquisition)</p>
+                                <p>Age: 18 | Position: PG</p>
                                 <p>Weekly Salary: $4,250 Scale</p>
-                                <p>Ceiling: <span class="badge-pchs black-diamond">Generational [Black Diamond]</span></p>
+                                <p>Ceiling: <span class="badge-pchs black-diamond" style="font-size:9px; padding:2px 4px;">Generational [Black Diamond]</span></p>
                                 <div>
-                                    <span style="font-size: 10px; color:#9ca3af;">Development Profile:</span>
+                                    <span style="font-size: 10px; color:#9ca3af;">Development Profile Progression:</span>
                                     <div class="cap-wrapper"><div class="cap-fill" style="width: 20%; background:#27ae60;"></div></div>
                                 </div>
                             </div>
@@ -218,24 +200,27 @@
                         </div>
                     </div>
 
-                    <!-- Player Card 3: King Bronny -->
-                    <div class="player-card" style="border-left:5px solid #dc2626;background:linear-gradient(180deg,#111827,#1f2937);">
+                    <!-- Premium Generational Red Diamond Player Card (LeBron James Build) -->
+                    <div class="player-card" style="border-left:5px solid #dc2626;background:linear-gradient(180deg,#111827,#1f2937);box-shadow:0 10px 15px -3px rgba(220,38,38,0.15);">
                         <div class="player-photo-area">
-                            <span class="jersey-badge" style="background:linear-gradient(135deg,#dc2626,#7f1d1d);color:#fff;">#23</span>
+                            <span class="jersey-badge" style="background:linear-gradient(135deg,#dc2626,#7f1d1d);color:#fff;border:1px solid #fee2e2">#23</span>
                             <div class="player-face-art skin-rookie"><div class="eyes eye-left"></div><div class="eyes eye-right"></div><div class="jersey-fill" style="background:linear-gradient(to top,#dc2626,#991b1b)"></div></div>
                         </div>
                         <div class="player-details">
                             <div class="meta-info">
-                                <p><strong>King Bronny</strong> <span style="font-size:10px;color:#dc2626;font-weight:bold">[MYTHIC]</span></p>
-                                <p>Age: 18 | Height: 6'9" | Weight: 250 lbs</p>
-                                <p>Salary: $4,250 | <span class="badge-pchs red-diamond">♦ RED DIAMOND</span></p>
+                                <p><strong>King Bronny</strong> <span style="font-size:10px;color:#dc2626;font-weight:bold">[30-SEASON MYTHIC]</span></p>
+                                <p>Age: 18 | Height: 6'9" / 206 cm</p>
+                                <p>Salary: $4,250 | <span class="badge-pchs red-diamond" style="font-size:9px;padding:2px 5px;">♦ RED DIAMOND</span></p>
                                 <div><small style="color:#9ca3af">Generational Ceiling Room:</small><div class="cap-wrapper"><div class="cap-fill" style="width:15%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div></div>
                             </div>
                             <div class="skills-grid">
-                                <div>JS: <span style="font-weight:bold;color:#d35400">14</span> | JR: <span style="font-weight:bold;color:#d35400">11</span></div>
-                                <div>OD: <span style="font-weight:bold;color:#27ae60">20</span> | HD: <span style="font-weight:bold;color:#27ae60">20</span></div>
-                                <div>DR: <span style="font-weight:bold;color:#27ae60">20</span> | PS: <span style="font-weight:bold;color:#27ae60">20</span></div>
-                                <div>IS: <span style="font-weight:bold;color:#27ae60">20</span> | ID: <span style="font-weight:bold;color:#27ae60">20</span></div>
+                                <div>JS: <span class="s-v r-d" data-orig="14" style="font-weight:bold;color:#d35400">14</span> | JR: <span class="s-v r-d" data-orig="11" style="font-weight:bold;color:#d35400">11</span></div>
+                                <div>OD: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | HD: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                                <div>DR: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | PS: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                                <div>IS: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | ID: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                                <div>RB: <span class="s-v r-d" data-orig="18" style="font-weight:bold;color:#27ae60">18</span> | SB: <span class="s-v r-d" data-orig="16" style="font-weight:bold;color:#27ae60">16</span></div>
+                                <div>ST: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | FT: <span class="s-v r-d" data-orig="15" style="font-weight:bold;color:#2980b9">15</span></div>
+                                <div>EX: <span class="s-v" data-orig="01" style="font-weight:bold;color:#95a5a6">01</span> | GS: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
                             </div>
                             <div class="zone-analysis-box" style="background:#1a2230;border-color:#fca5a5;">
                                 <div>🎯 <strong style="color:#ef4444">Zone Efficiency:</strong></div>
@@ -243,24 +228,45 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- 2. 12 GENERIC TEAMS HUB TAB -->
-            <div id="teams" class="tab-panel">
-                <div class="section-title">🏟️ 12 Generic Universe League Teams Hub</div>
-                <div class="card">
-                    <h3>League Competitor Registry</h3>
-                    <p>The universe universe features 12 standardized professional clubs competing across the 34-game calendar schedule.</p>
-                    <div id="generic-teams-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 15px;">
-                        <!-- Injected via script -->
+                    <!-- 1. REGULAR DIAMOND -->
+                    <div class="player-card" style="border-top:5px solid #34d399;">
+                        <div style="font-weight:bold;font-size:13px;color:#fff">#11 ✳️ RJ Mobley <span style="font-size:9px;color:#34d399">[3-SEASON]</span></div>
+                        <div style="background:linear-gradient(135deg,#34d399,#047857);color:#fff;font-size:9px;padding:2px 5px;font-weight:bold;margin:5px 0;display:inline-block;border-radius:3px">💎 REGULAR DIAMOND</div>
+                        <p style="margin:4px 0; font-size:13px; color:#9ca3af;">Age: 18 | Pos: SG</p>
+                        <div class="skills-grid">
+                            <div>JS: <span class="s-v r-s" data-orig="12" style="font-weight:bold;color:#2980b9">12</span> | JR: <span class="s-v r-s" data-orig="10" style="font-weight:bold;color:#2980b9">10</span></div>
+                            <div>OD: <span class="s-v r-s" data-orig="11" style="font-weight:bold;color:#2980b9">11</span> | HD: <span class="s-v r-s" data-orig="13" style="font-weight:bold;color:#2980b9">13</span></div>
+                            <div>DR: <span class="s-v r-s" data-orig="14" style="font-weight:bold;color:#2980b9">14</span> | PS: <span class="s-v r-s" data-orig="11" style="font-weight:bold;color:#2980b9">11</span></div>
+                            <div>IS: <span class="s-v r-s" data-orig="09" style="font-weight:bold;color:#2980b9">09</span> | ID: <span class="s-v r-s" data-orig="08" style="font-weight:bold;color:#2980b9">08</span></div>
+                            <div>RB: <span class="s-v r-s" data-orig="10" style="font-weight:bold;color:#2980b9">10</span> | SB: <span class="s-v r-s" data-orig="07" style="font-weight:bold;color:#2980b9">07</span></div>
+                            <div>ST: <span class="s-v r-s" data-orig="12" style="font-weight:bold;color:#2980b9">12</span> | FT: <span class="s-v r-s" data-orig="11" style="font-weight:bold;color:#2980b9">11</span></div>
+                            <div>EX: <span class="s-v" data-orig="01" style="font-weight:bold;color:#95a5a6">01</span> | GS: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                        </div>
                     </div>
+
+                    <!-- 2. BLACK DIAMOND -->
+                    <div class="player-card" style="border-top:5px solid #fbbf24;">
+                        <div style="font-weight:bold;font-size:13px;color:#fff">#67 ◆ Icetee “OG” Marrow <span style="font-size:9px;color:#fbbf24">[20-SEASON]</span></div>
+                        <div style="background:linear-gradient(135deg,#111827,#000);color:#fbbf24;font-size:9px;padding:2px 5px;font-weight:bold;margin:5px 0;display:inline-block;border-radius:3px;border:1px solid #fbbf24">◆ BLACK DIAMOND</div>
+                        <p style="margin:4px 0; font-size:13px; color:#9ca3af;">Age: 18 | Pos: PG</p>
+                        <div class="skills-grid">
+                            <div>JS: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | JR: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                            <div>OD: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | HD: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                            <div>DR: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | PS: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                            <div>IS: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | ID: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                            <div>RB: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | SB: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                            <div>ST: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | FT: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                            <div>EX: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | GS: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- 3. TACTICS BOARD TAB -->
+            <!-- 2. TACTICS BOARD TAB -->
             <div id="tactics" class="tab-panel">
-                <div class="section-title">⚡ 15-Scheme Tactical Playbook Engine</div>
+                <div class="section-title">15-Scheme Tactical Playbook Engine</div>
                 <div class="card">
                     <h3>Blueprint Playbook Settings</h3>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px;">
@@ -284,7 +290,7 @@
                                 <option value="2-3 Zone">2-3 Zone</option>
                                 <option value="3-2 Zone">3-2 Zone</option>
                                 <option value="1-3-1 Zone">1-3-1 Zone</option>
-                                <option value="Full-Court Press">Full-Court Press (High Fatigue)</option>
+                                <option value="Full-Court Press">Full-Court Press (High Fatigue/Turnovers)</option>
                                 <option value="Half-Court Trap">Half-Court Trap</option>
                                 <option value="2-3 Syracuse Matchup Zone">2-3 Syracuse Matchup Zone</option>
                             </select>
@@ -294,9 +300,9 @@
                 </div>
             </div>
 
-            <!-- 4. SUNDAY CUP TAB -->
+            <!-- 3. SUNDAY CUP TAB -->
             <div id="cup" class="tab-panel">
-                <div class="section-title">🏆 Sunday Cross-Division Cup & Match Clocks</div>
+                <div class="section-title">Sunday Cross-Division Cup & Match Clocks</div>
                 <div class="card">
                     <h3>Match Velocity & Competition Settings</h3>
                     <p>Pro League Matches: <strong style="color:#60a5fa;">Standard 48-Minute Game Clock</strong></p>
@@ -307,24 +313,20 @@
                 </div>
             </div>
 
-            <!-- 5. YOUTH ACADEMY TAB -->
+            <!-- 4. YOUTH ACADEMY TAB -->
             <div id="youth" class="tab-panel">
-                <div class="section-title">🏫 BasketSim Youth Academy Pool (Max 8 Prospects)</div>
+                <div class="section-title">Basetsim Youth Academy Pool (Max 8 Prospects)</div>
                 <div class="card">
-                    <h3>Academy Operations ($80,000 Flat Donation Fee)</h3>
-                    <p>Pulls prospects aged 14 to 17. Includes an ultra-rare 0.1% chance for a 14-year-old Red Diamond prodigy.</p>
+                    <h3>Academy Operations ($80,000 Flat Fee per Pull)</h3>
                     <button class="btn btn-success" onclick="pullYouthProspect()">Pull Youth Prospect ($80,000)</button>
                     <div class="terminal-box" id="youth-terminal" style="margin-top: 15px;">[Academy Ready] Click above to draft youth prospects.</div>
                 </div>
             </div>
 
-            <!-- 6. TRANSFER LIST TAB -->
+            <!-- 5. TRANSFER LIST TAB -->
             <div id="transfer" class="tab-panel">
-                <div class="section-title">🏪 Live Open Manual Auction House & Ticker</div>
+                <div class="section-title">Live Open Manual Auction House</div>
                 <div class="card">
-                    <div style="background:#030712;padding:10px;border:1px solid #374151;border-radius:4px;font-family:monospace;font-size:12px;margin-bottom:15px;color:#10b981;">
-                        📈 <strong>WALL STREET MARKET TICKER:</strong> <span id="market-ticker-text">ETH: +4.2% | TOP DEAL: Marcus Vance C 17/Elite ($45,000) | AVG TAX: 22%</span>
-                    </div>
                     <h3>Manual Entry Bidding (+ $500 min increment, 3-min Anti-Snip Clock)</h3>
                     <p>Active Auction Timer: <strong id="auction-timer" style="color: #ef4444;">02:59</strong></p>
                     <div class="market-container">
@@ -333,7 +335,7 @@
                                 <tr>
                                     <th>Player Name</th>
                                     <th>Pos</th>
-                                    <th>OVR / PER</th>
+                                    <th>1–20 OVR / PER</th>
                                     <th>Asking Price</th>
                                     <th>Manual Bid Input ($)</th>
                                     <th>Action</th>
@@ -345,88 +347,54 @@
                 </div>
             </div>
 
-            <!-- 7. MATCHDAY LIVE VIEW TAB -->
+            <!-- 6. MATCHDAY LIVE VIEW TAB -->
             <div id="match" class="tab-panel">
-                <div class="section-title">📺 Dual-Style Matchday Viewer Dashboard</div>
+                <div class="section-title">Matchday Broadcast & Background Pre-Calculation Loop</div>
                 <div class="card">
-                    <h3>100-Possession Pre-Calculated Streamer & Display Mode</h3>
+                    <h3>100-Possession Pre-Calculated Streamer</h3>
                     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                         <button class="btn btn-success" onclick="runGlobalMatchSim()">Simulate & Stream Match</button>
                     </div>
                     <canvas id="court-canvas" width="600" height="300"></canvas>
-                    <div class="terminal-box" id="m-log" style="margin-top: 15px; height: 140px;">[System] Press "Run Match Sim" to see 100-possession execution.</div>
+                    <div class="terminal-box" id="m-log" style="margin-top: 15px; height: 140px;">[System] Press "Run Match Sim" to see play-by-play execution.</div>
                 </div>
             </div>
 
-            <!-- 8. FRANCHISE DESK TAB -->
+            <!-- 7. FRANCHISE DESK TAB -->
             <div id="desk" class="tab-panel">
-                <div class="section-title">💼 Franchise Desk, Coaching Matrix & Left-Wall Forums</div>
+                <div class="section-title">Franchise Desk & 11-Tier Coaching Matrix</div>
                 <div class="card">
                     <h3>Coaching Contracts & Red Diamond Ultimatum</h3>
                     <button class="btn btn-warning" onclick="triggerCoachUltimatum()">Check Coach Status / Trigger Ultimatum</button>
                     <div class="terminal-box" id="desk-terminal" style="margin-top: 15px;">[Desk Active] Management contracts stable.</div>
                 </div>
-                <div class="card" style="margin-top: 15px;">
-                    <h3>📋 BasketSim-Exact Text Forum Category Tree</h3>
-                    <div class="forum-board"><div class="forum-title">Board 1: 📋 Non-Tactical (General Announcements & Help Desk)</div><div style="font-size:12px;color:#9ca3af">Community discussions regarding marketplace taxes and stadium upgrades.</div></div>
-                    <div class="forum-board"><div class="forum-title">Board 2: 🏀 Tactical & Theory (The User-Generated Strategy Lab)</div><div style="font-size:12px;color:#9ca3af">Debates on 2-3 Syracuse Matchup Zone efficiency vs 5-Out Iso tactics.</div></div>
-                    <div class="forum-board"><div class="forum-title">Board 3: 👑 National Teams & U21 Campaign Thread (Elections/Manifestos)</div><div style="font-size:12px;color:#9ca3af">Active election manifestos and coach candidate voting rosters.</div></div>
-                    <div class="forum-board"><div class="forum-title">Board 4: 🤪 Kano's Lounge (Shady Office/Extortion Stories)</div><div style="font-size:12px;color:#9ca3af">Sharing nightmare stories about agency litigation and Slimeball Desk shakedowns.</div></div>
-                </div>
             </div>
 
-            <!-- 9. MEDICAL & THERAPY REHAB TAB -->
+            <!-- 8. MEDICAL & RUST REHAB TAB -->
             <div id="med" class="tab-panel">
-                <div class="section-title">🏥 Sports Medicine, Therapy Rehab & Player Selection</div>
+                <div class="section-title">Sports Medicine & Rust Rehab (5-Level System)</div>
                 <div class="card">
-                    <h3>Medical Facility Status & Targeted Therapy Selection</h3>
-                    <p>Select a player from your roster to assign into the 5-Level Sports Medicine & Rust Rehab bay:</p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                        <div>
-                            <label style="font-size: 13px; color: #9ca3af;">Select Player for Therapy:</label>
-                            <select id="therapy-player-select">
-                                <option value="Dorian Freeman">Dorian Freeman (#23 - C)</option>
-                                <option value="Malik Cunningham">Malik Cunningham (#2 - PG)</option>
-                                <option value="King Bronny">King Bronny (#23 - SF)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size: 13px; color: #9ca3af;">Therapy Program Level:</label>
-                            <select id="therapy-level-select">
-                                <option value="Level 1: Basic Rest">Level 1: Basic Rest & Ice</option>
-                                <option value="Level 2: Hydro Therapy">Level 2: Hydro Therapy</option>
-                                <option value="Level 3: Biomechanical Reset">Level 3: Biomechanical Reset</option>
-                                <option value="Level 4: Advanced Stem Cell">Level 4: Advanced Stem Cell</option>
-                                <option value="Level 5: White Diamond Apex">Level 5: White Diamond Apex (35% Healed Stronger)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn btn-success" onclick="assignPlayerTherapy()">Admit Player to Therapy Bay</button>
-                    <div class="terminal-box" id="med-terminal" style="margin-top: 15px;">[Medical Bay] Select player and therapy level above to process rehabilitation.</div>
+                    <h3>Medical Facility Status</h3>
+                    <button class="btn btn-success" onclick="simulateInjuryCheck()">Simulate Medical Recovery & Check Apex Bonus</button>
+                    <div class="terminal-box" id="med-terminal" style="margin-top: 15px;">[Medical Bay] All players healthy or resting safely.</div>
                 </div>
             </div>
 
-            <!-- 10. OFFSEASON DRAFT & AWARDS TAB -->
+            <!-- 9. OFFSEASON DRAFT TAB -->
             <div id="draft" class="tab-panel">
-                <div class="section-title">🎓 Offseason College Entry Draft & End-of-Season Awards</div>
+                <div class="section-title">2-Round Offseason College Entry Draft</div>
                 <div class="card">
-                    <h3>Annual Rookie Selection & Award Registry</h3>
-                    <p>Requires minimum 25 games played with the franchise to be eligible for End-of-Season awards (MVP, DPOY, ROY, 6th Man of the Year, All-Rookie, All-Conference, All-Division, All-Country, All-World).</p>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <button class="btn btn-success" onclick="generateDraftClass()">Generate Annual Draft Class</button>
-                        <button class="btn btn-warning" onclick="calculateEndSeasonAwards()">Calculate End-of-Season Awards</button>
-                    </div>
+                    <h3>Annual Rookie Selection</h3>
+                    <button class="btn btn-success" onclick="generateDraftClass()">Generate Annual Draft Class</button>
                     <div id="draft-container" style="margin-top: 15px;"></div>
-                    <div class="terminal-box" id="awards-terminal" style="margin-top: 15px;">[Awards Desk] Ready to calculate league MVP, DPOY, 6th Man, and All-World teams.</div>
                 </div>
             </div>
 
-            <!-- 11. AGENCIES & REGULATION TAB -->
+            <!-- 10. AGENCIES & REGULATION TAB -->
             <div id="agencies" class="tab-panel">
-                <div class="section-title">⚖️ Talent Agencies, Free Agency & Double-Gated Warning Shields</div>
+                <div class="section-title">Talent Agencies & Double-Gated Warning Shields</div>
                 <div class="card" style="border-color: #ef4444;">
                     <h3 style="color: #ef4444;">⚠️ RESTRICTED TALENT AGENCIES (USE AT YOUR OWN RISK)</h3>
-                    <p>Accessing restricted talent agencies forces a double-click gate through a bright crimson Warning Shield.</p>
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
                         <button class="btn btn-danger" onclick="accessAgency('tier1')">Tier 1: Sachkz Elite Firm</button>
                         <button class="btn btn-danger" onclick="accessAgency('tier2')">Tier 2: Slimeball Desk (Kano's Management)</button>
@@ -445,15 +413,12 @@
             defensiveBlueprint: "Man-to-Man",
             secondsLeft: 179,
             strikes: 0,
-            marketPlayers: []
+            marketPlayers: [
+                { name: "Marcus Vance", pos: "PG", ovr: 16, price: 35000 },
+                { name: "DeAndre Brooks", pos: "C", ovr: 18, price: 55000 },
+                { name: "Tyler Higgins", pos: "SF", ovr: 14, price: 22000 }
+            ]
         };
-
-        const genericTeams = [
-            "New York Sentinels", "Chicago Vipers", "Los Angeles monarchs", 
-            "Miami Heatwaves", "Dallas Outlaws", "Seattle Mariners", 
-            "Toronto Raptors", "Houston Rockets", "Philadelphia 76ers", 
-            "Golden State Warriors", "Phoenix Suns", "Denver Nuggets"
-        ];
 
         function switchTab(evt, tabName) {
             let panels = document.getElementsByClassName("tab-panel");
@@ -465,104 +430,113 @@
         }
 
         function updateBlueprints() {
-            gameData.offensiveBlueprint = document.getElementById('blueprint-offense').value;
-            gameData.defensiveBlueprint = document.getElementById('blueprint-defense').value;
-            document.getElementById('active-blueprint-display').innerText = 
-                `Offense: ${gameData.offensiveBlueprint} | Defense: ${gameData.defensiveBlueprint}`;
+            gameData.offensiveBlueprint = document.getElementById("blueprint-offense").value;
+            gameData.defensiveBlueprint = document.getElementById("blueprint-defense").value;
+            document.getElementById("active-blueprint-display").innerText = `Offense: ${gameData.offensiveBlueprint} | Defense: ${gameData.defensiveBlueprint}`;
         }
 
         function restoreStats() {
-            alert("Global Scouting Matrix: Max stats restored successfully!");
+            document.querySelectorAll('.s-v').forEach(el => {
+                el.innerText = el.getAttribute('data-orig');
+            });
+            alert("Player stats restored to maximum template baseline!");
         }
 
         function decaySkills() {
-            alert("Simulation Decay applied to non-active players.");
+            document.querySelectorAll('.s-v').forEach(el => {
+                let current = parseInt(el.innerText);
+                if(current > 3) el.innerText = current - 2;
+            });
+            alert("Simulated seasonal/aging skill decay applied.");
         }
 
         function runGlobalMatchSim() {
-            const log = document.getElementById('m-log');
-            log.innerHTML = "[Match Engine] Tip-off! Boston Titans vs Opponent...<br>[100-Possession Pre-Calc Complete] Possession 1-100 processed instantly.<br>[Final Score] Titans 102 - Opponent 98. Win secured!";
-        }
-
-        function simSundayCupMatch() {
-            document.getElementById('cup-alert').style.display = 'block';
-        }
-
-        function pullYouthProspect() {
-            const term = document.getElementById('youth-terminal');
-            if (gameData.funds >= 80000) {
-                gameData.funds -= 80000;
-                document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
-                term.innerHTML = "[Success] Youth prospect scouted, age verified (14-17), and signed to Academy Pool!";
-            } else {
-                term.innerHTML = "[Error] Insufficient club funds ($80,000 donation required).";
+            let log = document.getElementById("m-log");
+            log.innerHTML = "[Tipoff] Match underway between Boston Titans and rival squad...<br>";
+            let possessions = ["Titans drive hard, scoring an easy layup!", "Opponent sinks a deep 3-pointer.", "Turnover forced by intense full-court press!", "Foul called, successful free-throw bonus conversion."];
+            for(let i=1; i<=5; i++) {
+                setTimeout(() => {
+                    log.innerHTML += `Possession ${i*20}: ${possessions[Math.floor(Math.random()*possessions.length)]}<br>`;
+                    log.scrollTop = log.scrollHeight;
+                }, i * 400);
             }
         }
 
+        function simSundayCupMatch() {
+            let alertBox = document.getElementById("cup-alert");
+            alertBox.style.display = "block";
+            setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+        }
+
+        function pullYouthProspect() {
+            if(gameData.funds < 80000) {
+                alert("Insufficient club funds!");
+                return;
+            }
+            gameData.funds -= 80000;
+            document.getElementById("header-funds").innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            let names = ["Jalen Smith", "Treyvion Miller", "Darius Cole", "Kobe Henderson"];
+            let chosen = names[Math.floor(Math.random()*names.length)];
+            document.getElementById("youth-terminal").innerText = `[Success] Drafted youth prospect ${chosen} into Academy pipeline! -$80,000 processed.`;
+        }
+
+        function initMarket() {
+            let tbody = document.getElementById("transfer-market-body");
+            tbody.innerHTML = "";
+            gameData.marketPlayers.forEach((p, index) => {
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${p.name}</td>
+                    <td>${p.pos}</td>
+                    <td>${p.ovr} / 20</td>
+                    <td>$${p.price.toLocaleString()}</td>
+                    <td><input type="number" id="bid-input-${index}" placeholder="Enter bid..." style="width:130px;"></td>
+                    <td><button class="btn btn-success" onclick="placeBid(${index})">Place Bid</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function placeBid(index) {
+            let inputVal = parseInt(document.getElementById(`bid-input-${index}`).value);
+            let p = gameData.marketPlayers[index];
+            if(isNaN(inputVal) || inputVal < p.price + 500) {
+                alert("Bid must exceed current asking price by at least $500!");
+                return;
+            }
+            if(gameData.funds < inputVal) {
+                alert("You do not have enough funds for this bid!");
+                return;
+            }
+            gameData.funds -= inputVal;
+            document.getElementById("header-funds").innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            alert(`Successful manual bid placed for ${p.name}! Funds updated.`);
+        }
+
         function triggerCoachUltimatum() {
-            document.getElementById('desk-terminal').innerHTML = "[Desk Alert] Red Diamond Coaching Ultimatum reviewed. Contracts stable.";
+            document.getElementById("desk-terminal").innerText = "[Ultimatum] Board of Directors demands a 5-match win streak or risk staff termination.";
         }
 
-        function assignPlayerTherapy() {
-            const player = document.getElementById('therapy-player-select').value;
-            const level = document.getElementById('therapy-level-select').value;
-            const term = document.getElementById('med-terminal');
-            term.innerHTML = `[Medical Bay] Admitted <strong>${player}</strong> to <strong>${level}</strong>. Rust tokens cleared, checking 35% Apex breakthrough probability...`;
-        }
-
-        function calculateEndSeasonAwards() {
-            const term = document.getElementById('awards-terminal');
-            term.innerHTML = `[Awards Results Verified] 
-            • MVP: Dorian Freeman (Boston Titans)<br>
-            • Defensive Player of the Year: King Bronny<br>
-            • 6th Man of the Year: Marcus Vance<br>
-            • Rookie of the Year: Malik Cunningham<br>
-            • All-World Team Top 10 Selected. All minimum 25 game requirements verified.`;
+        function simulateInjuryCheck() {
+            document.getElementById("med-terminal").innerText = "[Medical Bay] Rehab cycle processed. All muscle fatigue indicators cleared.";
         }
 
         function generateDraftClass() {
-            document.getElementById('draft-container').innerHTML = "<div class='terminal-box'>[Draft] 2026 Rookie class generated via Random Player Skill Generator. 30 prospects available with 5% Golden Generation rate.</div>";
+            let container = document.getElementById("draft-container");
+            container.innerHTML = `<div class="terminal-box">[Draft Class Generated] 30 top collegiate prospects loaded for Round 1 & Round 2 selection pool.</div>`;
         }
 
         function accessAgency(tier) {
-            const confirmed = confirm("⚠️ WARNING: Accessing restricted talent agencies holds severe litigation risks (Sachkz / Kano's Slimeball Desk). Proceed?");
-            if (confirmed) {
-                document.getElementById('agency-terminal').innerHTML = `[Warning] Secure link established with ${tier.toUpperCase()}. Double-click shield bypassed. Monitor your ledger!`;
+            let term = document.getElementById("agency-terminal");
+            if(tier === 'tier1') {
+                term.innerText = "[Warning] Sachkz Elite Firm accessed. High-roller representation options unlocked.";
+            } else {
+                term.innerText = "[Danger] Slimeball Desk engaged. Shady back-alley transfer options are active with heightened litigation risk.";
             }
         }
 
         window.onload = function() {
-            // Populate Generic Teams Hub
-            const teamsContainer = document.getElementById('generic-teams-container');
-            genericTeams.forEach((team, idx) => {
-                teamsContainer.innerHTML += `
-                    <div style="background:#030712;padding:12px;border:1px solid #374151;border-radius:4px;text-align:center;">
-                        <div style="font-size:12px;color:#9ca3af">Team #${idx + 1}</div>
-                        <div style="font-weight:bold;color:#f3f4f6;margin-top:4px;">🏀 ${team}</div>
-                    </div>
-                `;
-            });
-
-            // Populate Transfer Market Initial Load
-            const tbody = document.getElementById('transfer-market-body');
-            const sampleMarket = [
-                { name: "Marcus 'The Wall' Vance", pos: "C", ovr: "17 / Elite", price: 45000 },
-                { name: "Devonte Quick", pos: "PG", ovr: "14 / Good", price: 28000 }
-            ];
-            
-            tbody.innerHTML = "";
-            sampleMarket.forEach((p, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>#${idx + 1}</strong> ${p.name}</td>
-                        <td>${p.pos}</td>
-                        <td>${p.ovr}</td>
-                        <td>$${p.price.toLocaleString()}</td>
-                        <td><input type="number" placeholder="Enter Bid" id="bid-${idx}" style="width:110px;"></td>
-                        <td><button class="btn btn-success" onclick="alert('Bid placed on ${p.name} with +$500 min increment rule!')">Place Bid</button></td>
-                    </tr>
-                `;
-            });
+            initMarket();
         };
     </script>
 </body>
