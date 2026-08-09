@@ -1,543 +1,596 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Master Sim - Complete Roster & Match Engine (Master Architecture)</title>
+    <title>Hattrick Hoops Pro | USA Division IV.6 Command Nexus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#070a12',
+                        cardBg: '#0f172a',
+                        cardBorder: '#1e293b',
+                        accentBlue: '#3b82f6',
+                        accentGold: '#f59e0b',
+                        dangerRed: '#ef4444'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1a2230; color: #d1d5db; margin: 0; padding: 0; user-select: none; }
-        .header { background-color: #111827; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4b5563; }
-        .team-name { font-size: 20px; font-weight: bold; color: #f3f4f6; }
-        .finances { font-size: 16px; color: #10b981; font-weight: bold; }
-        .schedule { background: #374151; padding: 4px 10px; border-radius: 4px; font-size: 13px; color: #f3f4f6; }
-        .container { display: flex; height: calc(100vh - 50px); }
-        .sidebar { width: 240px; background-color: #0f172a; padding: 15px 5px; border-right: 1px solid #374151; overflow-y: auto; }
-        .nav-button { display: block; width: 90%; padding: 10px; margin-bottom: 8px; background: none; border: none; color: #9ca3af; text-align: left; font-size: 14px; cursor: pointer; border-radius: 4px; }
-        .nav-button:hover { background-color: #1f2937; color: #fff; }
-        .nav-button.active { background-color: #2563eb; color: #ffffff; font-weight: bold; }
-        .main-content { flex: 1; padding: 25px; overflow-y: auto; }
-        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid #374151; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-
-        /* Unified Roster & Card Styles */
-        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
-        .player-card { background-color: #111827; border: 1px solid #374151; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; }
-        .player-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 8px; margin-bottom: 10px; }
-        .player-name { font-weight: bold; font-size: 16px; color: #fff; }
-        .player-pos { font-size: 12px; background: #2563eb; padding: 2px 6px; border-radius: 4px; color: #fff; }
-        
-        /* Face Art & Photo Area */
-        .player-photo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .jersey-badge { background: #3b82f6; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
-        .player-face-art { width: 45px; height: 45px; border-radius: 50%; position: relative; overflow: hidden; border: 2px solid #4b5563; }
-        .skin-light { background: #fcd34d; }
-        .skin-rookie { background: #fde68a; }
-        .eyes { width: 6px; height: 4px; background: #000; position: absolute; top: 16px; border-radius: 50%; }
-        .eye-left { left: 12px; }
-        .eye-right { right: 12px; }
-        .jersey-fill { position: absolute; bottom: 0; width: 100%; height: 18px; }
-
-        /* Meta and Cap Wrappers */
-        .meta-info { font-size: 13px; color: #9ca3af; margin-bottom: 10px; }
-        .meta-info p { margin: 4px 0; color: #d1d5db; }
-        .cap-wrapper { background: #1f2937; border-radius: 3px; height: 6px; width: 100%; margin-top: 4px; overflow: hidden; }
-        .cap-fill { height: 100%; }
-
-        /* Skills Grid */
-        .skills-grid { font-size: 12px; color: #9ca3af; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-bottom: 10px; font-family: monospace; background: #030712; padding: 8px; border-radius: 4px; border: 1px solid #1f2937; }
-        .skill-val { font-weight: bold; }
-        .skill-elite { color: #27ae60; }
-        .skill-good { color: #2980b9; }
-        .skill-avg { color: #d35400; }
-        .skill-poor { color: #95a5a6; }
-
-        /* Zone Analysis Box */
-        .zone-analysis-box { background: #0f172a; padding: 8px; border-radius: 4px; border: 1px solid #374151; font-size: 12px; margin-top: 5px; }
-        .zone-bar-container { background: #1f2937; border-radius: 3px; height: 5px; width: 100%; margin-top: 4px; overflow: hidden; }
-        .zone-bar-fill { height: 100%; background: #8e44ad; }
-
-        /* Badges */
-        .badge-pchs { font-size: 9px; padding: 2px 5px; border-radius: 3px; font-weight: bold; display: inline-block; }
-        .red-diamond { background: linear-gradient(135deg,#dc2626,#7f1d1d); color:#fff; border:1px solid #fca5a5; }
-        .black-diamond { background: linear-gradient(135deg,#111827,#000); color:#fbbf24; border:1px solid #fbbf24; }
-
-        /* UI Elements & Controls */
-        .card { background-color: #111827; border: 1px solid #374151; padding: 20px; border-radius: 6px; margin-bottom: 15px; }
-        .btn { background-color: #2563eb; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .btn:hover { background-color: #1d4ed8; }
-        .btn-success { background-color: #10b981; }
-        .btn-success:hover { background-color: #059669; }
-        .btn-danger { background-color: #ef4444; }
-        .btn-danger:hover { background-color: #dc2626; }
-        .btn-warning { background-color: #f59e0b; color: #000; }
-        .btn-warning:hover { background-color: #d97706; }
-        
-        input[type="number"], select { background-color: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        .terminal-box { background-color: #030712; border: 1px solid #374151; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; color: #38bdf8; min-height: 50px; margin-top: 10px; max-height: 200px; overflow-y: auto; }
-        
-        /* Market Table */
-        .market-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .market-table th, .market-table td { padding: 10px; text-align: left; border-bottom: 1px solid #374151; font-size: 14px; }
-        .market-table th { background-color: #1f2937; color: #9ca3af; text-transform: uppercase; font-size: 12px; }
-        .market-container { max-height: 400px; overflow-y: auto; border: 1px solid #374151; border-radius: 4px; }
-        #court-canvas { background: #0f172a; border: 2px solid #374151; display: block; margin: 0 auto; border-radius: 4px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #070a12; color: #f8fafc; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #070a12; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.06); }
+        @keyframes glowPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4)); } }
+        .live-badge { animation: glowPulse 2s infinite ease-in-out; }
     </style>
 </head>
-<body>
-    <div class="header">
-        <div class="team-name" id="header-team">🏀 Boston Titans</div>
-        <div class="schedule" id="header-schedule">Season 1 | Week 2 | Pro 48M Clock</div>
-        <div class="finances" id="header-funds">Club Funds: $120,000</div>
-    </div>
-    
-    <div class="container">
-        <div class="sidebar">
-            <button class="nav-button active" onclick="switchTab(event, 'roster')">📋 Master Roster & Cards</button>
-            <button class="nav-button" onclick="switchTab(event, 'tactics')">⚡ 15-Scheme Tactics</button>
-            <button class="nav-button" onclick="switchTab(event, 'cup')">🏆 Sunday Cup</button>
-            <button class="nav-button" onclick="switchTab(event, 'youth')">🏫 Youth Academy</button>
-            <button class="nav-button" onclick="switchTab(event, 'transfer')">🏪 Live Auction House</button>
-            <button class="nav-button" onclick="switchTab(event, 'match')">📺 Matchday Live View</button>
-            <button class="nav-button" onclick="switchTab(event, 'desk')">💼 Franchise Desk</button>
-            <button class="nav-button" onclick="switchTab(event, 'med')">🏥 Medical & Rust Rehab</button>
-            <button class="nav-button" onclick="switchTab(event, 'draft')">🎓 Offseason Draft</button>
-            <button class="nav-button" onclick="switchTab(event, 'agencies')">⚖️ Talent Agencies</button>
+<body class="bg-obsidian text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+
+    <!-- TOP TELEMETRY HEADER -->
+    <header class="h-16 bg-cardBg/90 border-b border-cardBorder px-6 flex items-center justify-between sticky top-0 z-40 shadow-xl">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2.5">
+                <span class="w-3.5 h-3.5 rounded-full bg-blue-500 live-badge inline-block"></span>
+                <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">USA Division IV.6 Hub</span>
+            </div>
+            <span class="text-xs px-3 py-1 rounded-full bg-blue-950/80 text-blue-300 border border-blue-800/50 mono font-semibold">Season 73 • Live Feed</span>
         </div>
+        <div class="flex items-center space-x-6 text-xs font-medium text-slate-400">
+            <div>Active League: <span class="text-slate-200 font-bold">Big 8 & Great 8</span></div>
+            <div>Market Window: <span class="text-emerald-400 font-bold mono">Open</span></div>
+            <button onclick="toggleModal('info-modal')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition border border-slate-700">League Rules</button>
+        </div>
+    </header>
+
+    <!-- MAIN INTERFACE CONTAINER -->
+    <div class="flex flex-1 overflow-hidden">
         
-        <div class="main-content">
+        <!-- SIDEBAR NAVIGATION -->
+        <nav class="w-72 bg-cardBg/40 border-r border-cardBorder p-4 flex flex-col justify-between select-none">
+            <div class="space-y-1.5">
+                <div class="px-3 py-2 text-[10px] font-bold tracking-wider text-slate-500 uppercase">Division IV.6 Nav</div>
+                <button onclick="switchTab(event, 'standings')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition bg-blue-600 text-white shadow-lg shadow-blue-600/20" data-target="standings">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span>Standings & Conferences</span>
+                </button>
+                <button onclick="switchTab(event, 'rosters')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:bg-blue-600/10 hover:text-blue-400 transition" data-target="rosters">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span>Teams & Full Rosters</span>
+                </button>
+                <button onclick="switchTab(event, 'schedule')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:bg-blue-600/10 hover:text-blue-400 transition" data-target="schedule">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span>Match Results & Playoffs</span>
+                </button>
+                <button onclick="switchTab(event, 'stats')" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:bg-blue-600/10 hover:text-blue-400 transition" data-target="stats">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    <span>Stat Leaders & Reports</span>
+                </button>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-cardBorder text-xs space-y-2">
+                <div class="font-bold text-slate-200">Featured Record</div>
+                <div class="text-slate-400 text-[11px]">Francis Leggett holds the division record with <strong class="text-amber-400">77 Points</strong> in a single matchup.</div>
+            </div>
+        </nav>
+
+        <!-- MAIN DYNAMIC CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto p-8 relative space-y-8">
             
-            <!-- 1. ROSTER TAB (Includes all integrated master tier cards) -->
-            <div id="roster" class="tab-panel active">
-                <div class="section-title">
-                    <span>Active Team Roster & Tier Showcase</span>
-                    <span>Pro Count: <span id="pro-roster-count">6</span>/12</span>
-                </div>
-
-                <!-- SYSTEM CONTROL BAR -->
-                <div style="background:#2c3e50;padding:12px;display:flex;justify-content:space-between;align-items:center;color:#fff;border-radius:4px;margin-bottom:20px">
-                    <div><strong>💎 Global Scouting Matrix Engine</strong></div>
+            <!-- 1. STANDINGS TAB -->
+            <div id="standings" class="tab-panel space-y-8">
+                <div class="flex items-center justify-between pb-4 border-b border-cardBorder">
                     <div>
-                        <button onclick="restoreStats()" style="background:#27ae60;color:#fff;border:none;padding:6px 12px;font-weight:bold;border-radius:3px;cursor:pointer;margin-right:8px">🔥 Restore Max Stats</button>
-                        <button onclick="decaySkills()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;font-weight:bold;border-radius:3px;cursor:pointer;margin-right:8px">⚠️ Simulate Decay</button>
-                        <button onclick="runGlobalMatchSim()" style="background:#e67e22;color:#fff;border:none;padding:6px 12px;font-weight:bold;border-radius:3px;cursor:pointer">🏀 Run Match Sim</button>
+                        <h1 class="text-2xl font-black tracking-tight text-white">Conference Standings (Season 73)</h1>
+                        <p class="text-xs text-slate-400 mt-1">Real-time conference table breaking down Big 8 and Great 8 records.</p>
                     </div>
                 </div>
 
-                <div class="roster-grid" id="master-roster-grid">
-                    
-                    <!-- Player Card 2: Dorian Freeman -->
-                    <div class="player-card">
-                        <div class="player-photo-area">
-                            <span class="jersey-badge">#23</span>
-                            <div class="player-face-art skin-light">
-                                <div class="eyes eye-left"></div>
-                                <div class="eyes eye-right"></div>
-                                <div class="jersey-fill" style="background: #2980b9;"></div>
-                            </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <!-- Big 8 Table -->
+                    <div class="glass p-6 rounded-2xl space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-base text-white">Big 8 Conference</h3>
+                            <span class="text-xs px-2.5 py-1 rounded bg-blue-950 text-blue-400 border border-blue-900 mono">8 Teams</span>
                         </div>
-                        <div class="player-details">
-                            <div class="meta-info">
-                                <p><strong>Dorian Freeman</strong> (ID: 49705446)</p>
-                                <p>Age: 26 | Height: 6'10" / 208 cm</p>
-                                <p>Weekly Salary: $9,784</p>
-                                <p>Potential Limit: <span style="color:#27ae60; font-weight:bold;">Allstar</span></p>
-                                <div>
-                                    <span style="font-size: 10px; color:#9ca3af;">Soft Cap Headroom (96% - NEAR CAP):</span>
-                                    <div class="cap-wrapper"><div class="cap-fill" style="width: 96%; background: #dc2626;"></div></div>
-                                </div>
-                            </div>
-                            <div class="skills-grid">
-                                <div>JS: <span class="skill-val skill-elite" id="p2-js">prolific</span></div>
-                                <div>OD: <span class="skill-val skill-good" id="p2-od">prominent</span></div>
-                                <div>ID: <span class="skill-val skill-avg">average</span></div>
-                                <div>HD: <span class="skill-val skill-good">sensational</span></div>
-                            </div>
-                            <div class="zone-analysis-box">
-                                <div>🎯 <strong>Zone Efficiency Rating:</strong></div>
-                                <div>
-                                    <span style="font-weight: bold; color: #8e44ad;" id="p2-zone-txt">52% Match Form</span>
-                                    <div class="zone-bar-container"><div class="zone-bar-fill" id="p2-zone-bar" style="width: 52%;"></div></div>
-                                </div>
-                            </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="border-b border-cardBorder text-slate-400 uppercase tracking-wider">
+                                        <th class="py-2.5 px-3">Team</th>
+                                        <th class="py-2.5 px-3 text-center">W</th>
+                                        <th class="py-2.5 px-3 text-center">L</th>
+                                        <th class="py-2.5 px-3 text-center">PCT</th>
+                                        <th class="py-2.5 px-3 text-right">PD</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-cardBorder/40 font-medium">
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">1. Orlando Aphilliates</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+942</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">2. Midwest Thunderstorm</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+70</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">3. Philadelphia Pirates</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+50</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">4. birneys weekenders</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+40</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">5. 78ers</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-40</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">6. NSB</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-70</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">7. Motorama Radicais</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-94</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">8. Profs</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-50</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- Player Card 3: Malik Cunningham (Rookie Draft Asset) -->
-                    <div class="player-card" style="border-left: 4px solid #27ae60;">
-                        <div class="player-photo-area">
-                            <span class="jersey-badge" style="background:#27ae60;">ROOK</span>
-                            <div class="player-face-art skin-rookie">
-                                <div class="eyes eye-left"></div>
-                                <div class="eyes eye-right"></div>
-                                <div class="jersey-fill" style="background: #27ae60;"></div>
-                            </div>
+                    <!-- Great 8 Table -->
+                    <div class="glass p-6 rounded-2xl space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-base text-white">Great 8 Conference</h3>
+                            <span class="text-xs px-2.5 py-1 rounded bg-indigo-950 text-indigo-400 border border-indigo-900 mono">8 Teams</span>
                         </div>
-                        <div class="player-details">
-                            <div class="meta-info">
-                                <p><strong>Malik Cunningham</strong> (Draft Acquisition)</p>
-                                <p>Age: 18 | Position: PG</p>
-                                <p>Weekly Salary: $4,250 Scale</p>
-                                <p>Ceiling: <span class="badge-pchs black-diamond" style="font-size:9px; padding:2px 4px;">Generational [Black Diamond]</span></p>
-                                <div>
-                                    <span style="font-size: 10px; color:#9ca3af;">Development Profile Progression:</span>
-                                    <div class="cap-wrapper"><div class="cap-fill" style="width: 20%; background:#27ae60;"></div></div>
-                                </div>
-                            </div>
-                            <div class="skills-grid">
-                                <div>JS: <span class="skill-val skill-avg">average</span></div>
-                                <div>OD: <span class="skill-val skill-poor">poor</span></div>
-                                <div>ID: <span class="skill-val skill-poor">poor</span></div>
-                                <div>HD: <span class="skill-val skill-avg">average</span></div>
-                            </div>
-                            <div class="zone-analysis-box">
-                                <div>🎯 <strong>Zone Efficiency Rating:</strong></div>
-                                <div>
-                                    <span style="font-weight: bold; color: #8e44ad;">45% Match Form</span>
-                                    <div class="zone-bar-container"><div class="zone-bar-fill" style="width: 45%;"></div></div>
-                                </div>
-                            </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="border-b border-cardBorder text-slate-400 uppercase tracking-wider">
+                                        <th class="py-2.5 px-3">Team</th>
+                                        <th class="py-2.5 px-3 text-center">W</th>
+                                        <th class="py-2.5 px-3 text-center">L</th>
+                                        <th class="py-2.5 px-3 text-center">PCT</th>
+                                        <th class="py-2.5 px-3 text-right">PD</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-cardBorder/40 font-medium">
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">1. The Rhinos</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+50</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">2. Bammablue</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+13</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">3. Clarksville Ursine</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+84</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-white">4. Shadownight</td><td class="py-2.5 px-3 text-center">10</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-emerald-400">1.000</td><td class="py-2.5 px-3 text-right mono text-emerald-400">+25</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">5. LynxCats</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-26</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">6. John 3:16</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-87</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">7. Classics</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-138</td></tr>
+                                    <tr class="hover:bg-slate-800/40"><td class="py-2.5 px-3 font-bold text-slate-300">8. Las Vegas Silver Stars</td><td class="py-2.5 px-3 text-center">0</td><td class="py-2.5 px-3 text-center">1</td><td class="py-2.5 px-3 text-center mono text-slate-500">.000</td><td class="py-2.5 px-3 text-right mono text-rose-400">-50</td></tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-
-                    <!-- Premium Generational Red Diamond Player Card (LeBron James Build) -->
-                    <div class="player-card" style="border-left:5px solid #dc2626;background:linear-gradient(180deg,#111827,#1f2937);box-shadow:0 10px 15px -3px rgba(220,38,38,0.15);">
-                        <div class="player-photo-area">
-                            <span class="jersey-badge" style="background:linear-gradient(135deg,#dc2626,#7f1d1d);color:#fff;border:1px solid #fee2e2">#23</span>
-                            <div class="player-face-art skin-rookie"><div class="eyes eye-left"></div><div class="eyes eye-right"></div><div class="jersey-fill" style="background:linear-gradient(to top,#dc2626,#991b1b)"></div></div>
-                        </div>
-                        <div class="player-details">
-                            <div class="meta-info">
-                                <p><strong>King Bronny</strong> <span style="font-size:10px;color:#dc2626;font-weight:bold">[30-SEASON MYTHIC]</span></p>
-                                <p>Age: 18 | Height: 6'9" / 206 cm</p>
-                                <p>Salary: $4,250 | <span class="badge-pchs red-diamond" style="font-size:9px;padding:2px 5px;">♦ RED DIAMOND</span></p>
-                                <div><small style="color:#9ca3af">Generational Ceiling Room:</small><div class="cap-wrapper"><div class="cap-fill" style="width:15%;background:linear-gradient(90deg,#dc2626,#ef4444)"></div></div></div>
-                            </div>
-                            <div class="skills-grid">
-                                <div>JS: <span class="s-v r-d" data-orig="14" style="font-weight:bold;color:#d35400">14</span> | JR: <span class="s-v r-d" data-orig="11" style="font-weight:bold;color:#d35400">11</span></div>
-                                <div>OD: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | HD: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                                <div>DR: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | PS: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                                <div>IS: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | ID: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                                <div>RB: <span class="s-v r-d" data-orig="18" style="font-weight:bold;color:#27ae60">18</span> | SB: <span class="s-v r-d" data-orig="16" style="font-weight:bold;color:#27ae60">16</span></div>
-                                <div>ST: <span class="s-v r-d" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | FT: <span class="s-v r-d" data-orig="15" style="font-weight:bold;color:#2980b9">15</span></div>
-                                <div>EX: <span class="s-v" data-orig="01" style="font-weight:bold;color:#95a5a6">01</span> | GS: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            </div>
-                            <div class="zone-analysis-box" style="background:#1a2230;border-color:#fca5a5;">
-                                <div>🎯 <strong style="color:#ef4444">Zone Efficiency:</strong></div>
-                                <div><span style="font-weight:bold;color:#f87171">92% Physical Dominance</span><div class="zone-bar-container"><div class="zone-bar-fill" style="width:92%;background:#dc2626"></div></div></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 1. REGULAR DIAMOND -->
-                    <div class="player-card" style="border-top:5px solid #34d399;">
-                        <div style="font-weight:bold;font-size:13px;color:#fff">#11 ✳️ RJ Mobley <span style="font-size:9px;color:#34d399">[3-SEASON]</span></div>
-                        <div style="background:linear-gradient(135deg,#34d399,#047857);color:#fff;font-size:9px;padding:2px 5px;font-weight:bold;margin:5px 0;display:inline-block;border-radius:3px">💎 REGULAR DIAMOND</div>
-                        <p style="margin:4px 0; font-size:13px; color:#9ca3af;">Age: 18 | Pos: SG</p>
-                        <div class="skills-grid">
-                            <div>JS: <span class="s-v r-s" data-orig="12" style="font-weight:bold;color:#2980b9">12</span> | JR: <span class="s-v r-s" data-orig="10" style="font-weight:bold;color:#2980b9">10</span></div>
-                            <div>OD: <span class="s-v r-s" data-orig="11" style="font-weight:bold;color:#2980b9">11</span> | HD: <span class="s-v r-s" data-orig="13" style="font-weight:bold;color:#2980b9">13</span></div>
-                            <div>DR: <span class="s-v r-s" data-orig="14" style="font-weight:bold;color:#2980b9">14</span> | PS: <span class="s-v r-s" data-orig="11" style="font-weight:bold;color:#2980b9">11</span></div>
-                            <div>IS: <span class="s-v r-s" data-orig="09" style="font-weight:bold;color:#2980b9">09</span> | ID: <span class="s-v r-s" data-orig="08" style="font-weight:bold;color:#2980b9">08</span></div>
-                            <div>RB: <span class="s-v r-s" data-orig="10" style="font-weight:bold;color:#2980b9">10</span> | SB: <span class="s-v r-s" data-orig="07" style="font-weight:bold;color:#2980b9">07</span></div>
-                            <div>ST: <span class="s-v r-s" data-orig="12" style="font-weight:bold;color:#2980b9">12</span> | FT: <span class="s-v r-s" data-orig="11" style="font-weight:bold;color:#2980b9">11</span></div>
-                            <div>EX: <span class="s-v" data-orig="01" style="font-weight:bold;color:#95a5a6">01</span> | GS: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                        </div>
-                    </div>
-
-                    <!-- 2. BLACK DIAMOND -->
-                    <div class="player-card" style="border-top:5px solid #fbbf24;">
-                        <div style="font-weight:bold;font-size:13px;color:#fff">#67 ◆ Icetee “OG” Marrow <span style="font-size:9px;color:#fbbf24">[20-SEASON]</span></div>
-                        <div style="background:linear-gradient(135deg,#111827,#000);color:#fbbf24;font-size:9px;padding:2px 5px;font-weight:bold;margin:5px 0;display:inline-block;border-radius:3px;border:1px solid #fbbf24">◆ BLACK DIAMOND</div>
-                        <p style="margin:4px 0; font-size:13px; color:#9ca3af;">Age: 18 | Pos: PG</p>
-                        <div class="skills-grid">
-                            <div>JS: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | JR: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            <div>OD: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | HD: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            <div>DR: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | PS: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            <div>IS: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | ID: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            <div>RB: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | SB: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            <div>ST: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | FT: <span class="s-v b-s" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                            <div>EX: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span> | GS: <span class="s-v" data-orig="20" style="font-weight:bold;color:#27ae60">20</span></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- 2. TACTICS BOARD TAB -->
-            <div id="tactics" class="tab-panel">
-                <div class="section-title">15-Scheme Tactical Playbook Engine</div>
-                <div class="card">
-                    <h3>Blueprint Playbook Settings</h3>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px;">
-                        <div>
-                            <label style="font-size: 13px; color: #9ca3af;">Offensive Scheme (8 Options):</label>
-                            <select id="blueprint-offense" onchange="updateBlueprints()">
-                                <option value="Base Offense">Base Offense</option>
-                                <option value="Run and Gun">Run and Gun</option>
-                                <option value="Look Inside">Look Inside</option>
-                                <option value="Motion">Motion</option>
-                                <option value="Push the Ball">Push the Ball</option>
-                                <option value="Patient">Patient</option>
-                                <option value="Pick and Roll">Pick and Roll</option>
-                                <option value="5-Out Iso">5-Out Iso</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size: 13px; color: #9ca3af;">Defensive Scheme (7 Options):</label>
-                            <select id="blueprint-defense" onchange="updateBlueprints()">
-                                <option value="Man-to-Man">Man-to-Man</option>
-                                <option value="2-3 Zone">2-3 Zone</option>
-                                <option value="3-2 Zone">3-2 Zone</option>
-                                <option value="1-3-1 Zone">1-3-1 Zone</option>
-                                <option value="Full-Court Press">Full-Court Press (High Fatigue/Turnovers)</option>
-                                <option value="Half-Court Trap">Half-Court Trap</option>
-                                <option value="2-3 Syracuse Matchup Zone">2-3 Syracuse Matchup Zone</option>
-                            </select>
-                        </div>
-                    </div>
-                    <p>Active Loadout: <strong id="active-blueprint-display" style="color: #3b82f6;">Offense: Base Offense | Defense: Man-to-Man</strong></p>
-                </div>
-            </div>
-
-            <!-- 3. SUNDAY CUP TAB -->
-            <div id="cup" class="tab-panel">
-                <div class="section-title">Sunday Cross-Division Cup & Match Clocks</div>
-                <div class="card">
-                    <h3>Match Velocity & Competition Settings</h3>
-                    <p>Pro League Matches: <strong style="color:#60a5fa;">Standard 48-Minute Game Clock</strong></p>
-                    <p>Youth Academy / U21 Matches: <strong style="color:#60a5fa;">2 Halves of 12 Minutes (24 min total)</strong></p>
-                    <hr style="border-color:#374151; margin: 15px 0;">
-                    <button class="btn btn-success" onclick="simSundayCupMatch()">Simulate Sunday Cup Match</button>
-                    <div id="cup-alert" style="display:none;background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#10b981;padding:10px;border-radius:4px;margin-top:10px;">Match Won! +2 Goal Differential Secured.</div>
-                </div>
-            </div>
-
-            <!-- 4. YOUTH ACADEMY TAB -->
-            <div id="youth" class="tab-panel">
-                <div class="section-title">Basetsim Youth Academy Pool (Max 8 Prospects)</div>
-                <div class="card">
-                    <h3>Academy Operations ($80,000 Flat Fee per Pull)</h3>
-                    <button class="btn btn-success" onclick="pullYouthProspect()">Pull Youth Prospect ($80,000)</button>
-                    <div class="terminal-box" id="youth-terminal" style="margin-top: 15px;">[Academy Ready] Click above to draft youth prospects.</div>
-                </div>
-            </div>
-
-            <!-- 5. TRANSFER LIST TAB -->
-            <div id="transfer" class="tab-panel">
-                <div class="section-title">Live Open Manual Auction House</div>
-                <div class="card">
-                    <h3>Manual Entry Bidding (+ $500 min increment, 3-min Anti-Snip Clock)</h3>
-                    <p>Active Auction Timer: <strong id="auction-timer" style="color: #ef4444;">02:59</strong></p>
-                    <div class="market-container">
-                        <table class="market-table">
-                            <thead>
-                                <tr>
-                                    <th>Player Name</th>
-                                    <th>Pos</th>
-                                    <th>1–20 OVR / PER</th>
-                                    <th>Asking Price</th>
-                                    <th>Manual Bid Input ($)</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transfer-market-body"></tbody>
-                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- 6. MATCHDAY LIVE VIEW TAB -->
-            <div id="match" class="tab-panel">
-                <div class="section-title">Matchday Broadcast & Background Pre-Calculation Loop</div>
-                <div class="card">
-                    <h3>100-Possession Pre-Calculated Streamer</h3>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <button class="btn btn-success" onclick="runGlobalMatchSim()">Simulate & Stream Match</button>
+            <!-- 2. ROSTERS TAB -->
+            <div id="rosters" class="tab-panel space-y-8 hidden">
+                <div class="flex items-center justify-between pb-4 border-b border-cardBorder">
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight text-white">Division IV.6 Club Rosters & Players</h1>
+                        <p class="text-xs text-slate-400 mt-1">Explore all 16 teams. Click any team or player for deep scouting attributes.</p>
                     </div>
-                    <canvas id="court-canvas" width="600" height="300"></canvas>
-                    <div class="terminal-box" id="m-log" style="margin-top: 15px; height: 140px;">[System] Press "Run Match Sim" to see play-by-play execution.</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="team-cards-grid">
+                    <!-- Populated dynamically via JS -->
                 </div>
             </div>
 
-            <!-- 7. FRANCHISE DESK TAB -->
-            <div id="desk" class="tab-panel">
-                <div class="section-title">Franchise Desk & 11-Tier Coaching Matrix</div>
-                <div class="card">
-                    <h3>Coaching Contracts & Red Diamond Ultimatum</h3>
-                    <button class="btn btn-warning" onclick="triggerCoachUltimatum()">Check Coach Status / Trigger Ultimatum</button>
-                    <div class="terminal-box" id="desk-terminal" style="margin-top: 15px;">[Desk Active] Management contracts stable.</div>
-                </div>
-            </div>
-
-            <!-- 8. MEDICAL & RUST REHAB TAB -->
-            <div id="med" class="tab-panel">
-                <div class="section-title">Sports Medicine & Rust Rehab (5-Level System)</div>
-                <div class="card">
-                    <h3>Medical Facility Status</h3>
-                    <button class="btn btn-success" onclick="simulateInjuryCheck()">Simulate Medical Recovery & Check Apex Bonus</button>
-                    <div class="terminal-box" id="med-terminal" style="margin-top: 15px;">[Medical Bay] All players healthy or resting safely.</div>
-                </div>
-            </div>
-
-            <!-- 9. OFFSEASON DRAFT TAB -->
-            <div id="draft" class="tab-panel">
-                <div class="section-title">2-Round Offseason College Entry Draft</div>
-                <div class="card">
-                    <h3>Annual Rookie Selection</h3>
-                    <button class="btn btn-success" onclick="generateDraftClass()">Generate Annual Draft Class</button>
-                    <div id="draft-container" style="margin-top: 15px;"></div>
-                </div>
-            </div>
-
-            <!-- 10. AGENCIES & REGULATION TAB -->
-            <div id="agencies" class="tab-panel">
-                <div class="section-title">Talent Agencies & Double-Gated Warning Shields</div>
-                <div class="card" style="border-color: #ef4444;">
-                    <h3 style="color: #ef4444;">⚠️ RESTRICTED TALENT AGENCIES (USE AT YOUR OWN RISK)</h3>
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button class="btn btn-danger" onclick="accessAgency('tier1')">Tier 1: Sachkz Elite Firm</button>
-                        <button class="btn btn-danger" onclick="accessAgency('tier2')">Tier 2: Slimeball Desk (Kano's Management)</button>
+            <!-- 3. SCHEDULE TAB -->
+            <div id="schedule" class="tab-panel space-y-8 hidden">
+                <div class="flex items-center justify-between pb-4 border-b border-cardBorder">
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight text-white">Match Results & Playoff Bracket</h1>
+                        <p class="text-xs text-slate-400 mt-1">Saturday, August 8, 2026 game results and upcoming postseason matchups.</p>
                     </div>
-                    <div class="terminal-box" id="agency-terminal" style="margin-top: 15px;">[Secure] No agency litigation currently pending.</div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 glass p-6 rounded-2xl space-y-4">
+                        <h3 class="font-bold text-base text-white">Recent Matchday Scores (Aug 8, 2026)</h3>
+                        <div class="space-y-2 text-xs mono" id="recent-scores-list">
+                            <!-- Injected scores -->
+                        </div>
+                    </div>
+
+                    <div class="glass p-6 rounded-2xl space-y-4">
+                        <h3 class="font-bold text-base text-white">Playoff Bracket Preview</h3>
+                        <div class="p-4 rounded-xl bg-slate-900/60 border border-cardBorder text-xs space-y-3">
+                            <div class="font-bold text-blue-400">Quarterfinals Projection</div>
+                            <div class="text-slate-300">Orlando Aphilliates vs The Rhinos</div>
+                            <div class="text-slate-300">birneys weekenders vs Shadownight</div>
+                            <div class="text-slate-300">Midwest Thunderstorm vs Bammablue</div>
+                            <div class="text-slate-300">Philadelphia Pirates vs Clarksville Ursine</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 4. STATS & REPORTS TAB -->
+            <div id="stats" class="tab-panel space-y-8 hidden">
+                <div class="flex items-center justify-between pb-4 border-b border-cardBorder">
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight text-white">League Leaders & Injury Report</h1>
+                        <p class="text-xs text-slate-400 mt-1">Top scorers, rebounders, assist leaders, and active transfer market values.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Scoring Leaders -->
+                    <div class="glass p-6 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-white border-b border-cardBorder pb-2">Points Per Game (PPG)</h3>
+                        <div class="space-y-2 text-xs" id="ppg-leaders">
+                            <!-- JS injected -->
+                        </div>
+                    </div>
+                    <!-- Rebound Leaders -->
+                    <div class="glass p-6 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-white border-b border-cardBorder pb-2">Rebounds Per Game (RPG)</h3>
+                        <div class="space-y-2 text-xs" id="rpg-leaders">
+                            <!-- JS injected -->
+                        </div>
+                    </div>
+                    <!-- Assist Leaders -->
+                    <div class="glass p-6 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-white border-b border-cardBorder pb-2">Assists Per Game (APG)</h3>
+                        <div class="space-y-2 text-xs" id="apg-leaders">
+                            <!-- JS injected -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- TEAM ROSTER INSPECT MODAL -->
+    <div id="team-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass w-full max-w-2xl rounded-2xl p-6 relative border border-blue-500/30 space-y-5 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-cardBorder">
+                <div>
+                    <h3 id="modal-team-name" class="font-bold text-xl text-white">Team Roster</h3>
+                    <p id="modal-team-conf" class="text-xs text-blue-400 font-semibold uppercase tracking-wider">Conference Roster</p>
+                </div>
+                <button onclick="closeModal('team-modal')" class="text-slate-400 hover:text-white font-bold text-xl px-2">&times;</button>
+            </div>
+            <div id="modal-roster-list" class="space-y-3">
+                <!-- Clickable player cards injected here -->
+            </div>
         </div>
     </div>
 
+    <!-- PLAYER PROFILE INSPECT MODAL -->
+    <div id="player-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass w-full max-w-md rounded-2xl p-6 relative border border-emerald-500/30 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-cardBorder">
+                <div>
+                    <h3 id="modal-player-name" class="font-bold text-lg text-white">Player Profile</h3>
+                    <p id="modal-player-pos" class="text-xs text-emerald-400 font-semibold uppercase tracking-wider">Position • Team</p>
+                </div>
+                <button onclick="closeModal('player-modal')" class="text-slate-400 hover:text-white font-bold text-xl px-2">&times;</button>
+            </div>
+            <div class="space-y-3 text-xs text-slate-300">
+                <div class="grid grid-cols-2 gap-2 mono bg-black/40 p-3 rounded-xl border border-cardBorder">
+                    <div>Scoring Rating: <span class="text-emerald-400 font-bold" id="p-stat-score">18 / 20</span></div>
+                    <div>Defense Rating: <span class="text-emerald-400 font-bold" id="p-stat-def">17 / 20</span></div>
+                    <div>Playmaking: <span class="text-blue-400 font-bold" id="p-stat-pass">16 / 20</span></div>
+                    <div>Rebounding: <span class="text-blue-400 font-bold" id="p-stat-reb">15 / 20</span></div>
+                </div>
+                <p><strong>Salary:</strong> <span id="p-stat-salary" class="text-white mono">$12,450 / wk</span></p>
+                <p><strong>Condition:</strong> <span class="text-emerald-400 font-bold">100% Peak Game Shape</span></p>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal('player-modal')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition">Close Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RULES MODAL -->
+    <div id="info-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass w-full max-w-lg rounded-2xl p-6 relative border border-cardBorder space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-cardBorder">
+                <h3 class="font-bold text-lg text-white">USA Division IV.6 Information</h3>
+                <button onclick="closeModal('info-modal')" class="text-slate-400 hover:text-white font-bold text-xl px-2">&times;</button>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Welcome to USA Division IV.6 command center. Track your conference standings, inspect every team's complete player roster with full attribute breakdowns, and review recent matchday scores from August 8, 2026.
+            </p>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal('info-modal')" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition">Got It</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION CONTROLLER SCRIPT -->
     <script>
-        let gameData = {
-            funds: 120000,
-            offensiveBlueprint: "Base Offense",
-            defensiveBlueprint: "Man-to-Man",
-            secondsLeft: 179,
-            strikes: 0,
-            marketPlayers: [
-                { name: "Marcus Vance", pos: "PG", ovr: 16, price: 35000 },
-                { name: "DeAndre Brooks", pos: "C", ovr: 18, price: 55000 },
-                { name: "Tyler Higgins", pos: "SF", ovr: 14, price: 22000 }
+        // Full team and player database for USA Division IV.6
+        const divisionTeams = {
+            "Orlando Aphilliates": {
+                conf: "Big 8 Conference", record: "10-1", pd: "+942",
+                roster: [
+                    { name: "Aadu Lilloveer", pos: "C", score: 19, def: 20, pass: 14, reb: 23, salary: "$14,200" },
+                    { name: "Waqas Muhammed", pos: "PG", score: 18, def: 18, pass: 20, reb: 8, salary: "$12,800" },
+                    { name: "Syun Gupta", pos: "SG", score: 20, def: 17, pass: 19, reb: 6, salary: "$15,100" },
+                    { name: "Dorival Hernandarias", pos: "SF", score: 17, def: 19, pass: 17, reb: 11, salary: "$11,400" },
+                    { name: "Francis Leggett", pos: "PF", score: 20, def: 20, pass: 16, reb: 16, salary: "$19,500" }
+                ]
+            },
+            "Midwest Thunderstorm": {
+                conf: "Big 8 Conference", record: "10-1", pd: "+70",
+                roster: [
+                    { name: "Mikey Choate", pos: "PG", score: 20, def: 18, pass: 19, reb: 5, salary: "$16,400" },
+                    { name: "Stu Schaeffer", pos: "SG", score: 20, def: 17, pass: 18, reb: 7, salary: "$15,900" },
+                    { name: "Talivaldis Bekers", pos: "SF", score: 16, def: 16, pass: 14, reb: 10, salary: "$15,129" },
+                    { name: "Marco Johnson", pos: "PF", score: 15, def: 19, pass: 13, reb: 15, salary: "$13,200" },
+                    { name: "Tony Fortin", pos: "C", score: 14, def: 20, pass: 12, reb: 14, salary: "$12,900" }
+                ]
+            },
+            "Philadelphia Pirates": {
+                conf: "Big 8 Conference", record: "10-1", pd: "+50",
+                roster: [
+                    { name: "Damian Vance", pos: "PG", score: 19, def: 17, pass: 18, reb: 4, salary: "$13,500" },
+                    { name: "Cole Henderson", pos: "SG", score: 18, def: 16, pass: 15, reb: 6, salary: "$12,100" },
+                    { name: "Marcus Thorne", pos: "SF", score: 17, def: 18, pass: 14, reb: 9, salary: "$11,800" },
+                    { name: "Julian Ross", pos: "PF", score: 16, def: 19, pass: 13, reb: 12, salary: "$12,400" },
+                    { name: "Marinel Cosasu", pos: "C", score: 15, def: 20, pass: 11, reb: 20, salary: "$14,000" }
+                ]
+            },
+            "birneys weekenders": {
+                conf: "Big 8 Conference", record: "10-1", pd: "+40",
+                roster: [
+                    { name: "Tony Mahaut", pos: "C", score: 17, def: 19, pass: 12, reb: 16, salary: "$13,800" },
+                    { name: "Bobby Birney", pos: "PG", score: 18, def: 17, pass: 18, reb: 5, salary: "$12,500" },
+                    { name: "Kenny O'Shea", pos: "SG", score: 17, def: 16, pass: 14, reb: 7, salary: "$11,200" },
+                    { name: "Darnell Vance", pos: "SF", score: 16, def: 18, pass: 15, reb: 9, salary: "$11,900" },
+                    { name: "Gary Higgins", pos: "PF", score: 15, def: 17, pass: 13, reb: 11, salary: "$10,800" }
+                ]
+            },
+            "78ers": {
+                conf: "Big 8 Conference", record: "0-1", pd: "-40",
+                roster: [
+                    { name: "Franklin Peck", pos: "C", score: 16, def: 18, pass: 11, reb: 18, salary: "$12,000" },
+                    { name: "Se7en Adams", pos: "PG", score: 15, def: 16, pass: 16, reb: 4, salary: "$10,500" },
+                    { name: "Eighty Miller", pos: "SG", score: 14, def: 15, pass: 13, reb: 5, salary: "$9,800" },
+                    { name: "Ererson Davis", pos: "SF", score: 15, def: 17, pass: 12, reb: 8, salary: "$10,200" },
+                    { name: "Numenius Cox", pos: "PF", score: 13, def: 16, pass: 10, reb: 10, salary: "$9,500" }
+                ]
+            },
+            "NSB": {
+                conf: "Big 8 Conference", record: "0-1", pd: "-70",
+                roster: [
+                    { name: "Mikey Rader", pos: "SG", score: 19, def: 15, pass: 16, reb: 6, salary: "$14,000" },
+                    { name: "Jacob Braden", pos: "PG", score: 16, def: 17, pass: 19, reb: 5, salary: "$12,300" },
+                    { name: "Devin Brooks", pos: "SF", score: 15, def: 16, pass: 14, reb: 8, salary: "$10,900" },
+                    { name: "Travis Cole", pos: "PF", score: 14, def: 18, pass: 12, reb: 11, salary: "$11,100" },
+                    { name: "Mason Reed", pos: "C", score: 13, def: 19, pass: 10, reb: 13, salary: "$11,500" }
+                ]
+            },
+            "Motorama Radicais": {
+                conf: "Big 8 Conference", record: "0-1", pd: "-94",
+                roster: [
+                    { name: "Rico Moto", pos: "PG", score: 15, def: 15, pass: 16, reb: 4, salary: "$9,900" },
+                    { name: "Axel Turbo", pos: "SG", score: 14, def: 14, pass: 13, reb: 5, salary: "$9,200" },
+                    { name: "Val Diesel", pos: "SF", score: 13, def: 16, pass: 11, reb: 7, salary: "$9,400" },
+                    { name: "Chicane Silva", pos: "PF", score: 13, def: 15, pass: 10, reb: 9, salary: "$9,100" },
+                    { name: "Piston Petrov", pos: "C", score: 12, def: 17, pass: 9, reb: 11, salary: "$9,600" }
+                ]
+            },
+            "Profs": {
+                conf: "Big 8 Conference", record: "0-1", pd: "-50",
+                roster: [
+                    { name: "Dr. James Baldwin", pos: "PG", score: 16, def: 16, pass: 18, reb: 5, salary: "$11,000" },
+                    { name: "Prof. Sterling", pos: "SG", score: 15, def: 15, pass: 15, reb: 6, salary: "$10,400" },
+                    { name: "Dean Moriarty", pos: "SF", score: 14, def: 17, pass: 13, reb: 8, salary: "$10,100" },
+                    { name: "Scholar Davis", pos: "PF", score: 14, def: 16, pass: 12, reb: 10, salary: "$10,300" },
+                    { name: "Fellow Wright", pos: "C", score: 13, def: 18, pass: 10, reb: 12, salary: "$10,800" }
+                ]
+            },
+            "The Rhinos": {
+                conf: "Great 8 Conference", record: "10-1", pd: "+50",
+                roster: [
+                    { name: "Tank Horn", pos: "C", score: 18, def: 20, pass: 11, reb: 19, salary: "$15,000" },
+                    { name: "Bruno Charger", pos: "PF", score: 17, def: 19, pass: 13, reb: 15, salary: "$13,900" },
+                    { name: "Spike Vance", pos: "SF", score: 18, def: 17, pass: 15, reb: 9, salary: "$12,800" },
+                    { name: "Rider Brooks", pos: "SG", score: 17, def: 16, pass: 16, reb: 6, salary: "$12,200" },
+                    { name: "Rex Morgan", pos: "PG", score: 16, def: 17, pass: 19, reb: 5, salary: "$13,100" }
+                ]
+            },
+            "Bammablue": {
+                conf: "Great 8 Conference", record: "10-1", pd: "+13",
+                roster: [
+                    { name: "Cedrik Stevelinck", pos: "SG", score: 20, def: 17, pass: 16, reb: 7, salary: "$16,000" },
+                    { name: "Bam Adebayo Jr.", pos: "C", score: 17, def: 19, pass: 13, reb: 16, salary: "$14,500" },
+                    { name: "Blue Henderson", pos: "PG", score: 17, def: 16, pass: 18, reb: 5, salary: "$12,900" },
+                    { name: "Sky Walker", pos: "SF", score: 16, def: 18, pass: 14, reb: 9, salary: "$11,800" },
+                    { name: "Jasper Blue", pos: "PF", score: 15, def: 18, pass: 12, reb: 11, salary: "$12,000" }
+                ]
+            },
+            "Clarksville Ursine": {
+                conf: "Great 8 Conference", record: "10-1", pd: "+84",
+                roster: [
+                    { name: "Hannes Univer", pos: "SG", score: 20, def: 18, pass: 17, reb: 8, salary: "$16,500" },
+                    { name: "Stergios Toskas", pos: "PG", score: 18, def: 18, pass: 20, reb: 6, salary: "$15,800" },
+                    { name: "Johan Knölling", pos: "SF", score: 19, def: 17, pass: 16, reb: 9, salary: "$14,200" },
+                    { name: "Grizzly Adams", pos: "PF", score: 16, def: 20, pass: 13, reb: 16, salary: "$13,900" },
+                    { name: "Kodiak Vance", pos: "C", score: 17, def: 20, pass: 12, reb: 18, salary: "$14,800" }
+                ]
+            },
+            "Shadownight": {
+                conf: "Great 8 Conference", record: "10-1", pd: "+25",
+                roster: [
+                    { name: "Zachary Lynn", pos: "SF", score: 18, def: 18, pass: 15, reb: 10, salary: "$7,407" },
+                    { name: "Tyler Washburn", pos: "C", score: 16, def: 19, pass: 11, reb: 15, salary: "$13,500" },
+                    { name: "Shadow Cross", pos: "PG", score: 17, def: 16, pass: 18, reb: 5, salary: "$12,100" },
+                    { name: "Nox Sterling", pos: "SG", score: 17, def: 17, pass: 15, reb: 6, salary: "$11,900" },
+                    { name: "Eclipse Davis", pos: "PF", score: 15, def: 18, pass: 12, reb: 12, salary: "$12,000" }
+                ]
+            },
+            "LynxCats": {
+                conf: "Great 8 Conference", record: "0-1", pd: "-26",
+                roster: [
+                    { name: "Herbert Keating", pos: "C", score: 15, def: 18, pass: 10, reb: 14, salary: "$11,500" },
+                    { name: "Felix Claw", pos: "PG", score: 16, def: 16, pass: 17, reb: 4, salary: "$11,000" },
+                    { name: "Puma Vance", pos: "SG", score: 15, def: 15, pass: 14, reb: 5, salary: "$10,200" },
+                    { name: "Tiger Henderson", pos: "SF", score: 14, def: 17, pass: 13, reb: 8, salary: "$10,500" },
+                    { name: "Panther Ross", pos: "PF", score: 14, def: 16, pass: 11, reb: 11, salary: "$10,800" }
+                ]
+            },
+            "John 3:16": {
+                conf: "Great 8 Conference", record: "0-1", pd: "-87",
+                roster: [
+                    { name: "Basar Dilsoy", pos: "SG", score: 20, def: 17, pass: 19, reb: 7, salary: "$15,500" },
+                    { name: "Félix Belo", pos: "SF", score: 19, def: 18, pass: 17, reb: 10, salary: "$14,800" },
+                    { name: "Mogens Hingebjerg", pos: "C", score: 16, def: 19, pass: 12, reb: 15, salary: "$13,900" },
+                    { name: "Sandy Schofield", pos: "PF", score: 15, def: 18, pass: 13, reb: 13, salary: "$12,400" },
+                    { name: "Gideon Cross", pos: "PG", score: 16, def: 16, pass: 18, reb: 5, salary: "$12,100" }
+                ]
+            },
+            "Classics": {
+                conf: "Great 8 Conference", record: "0-1", pd: "-138",
+                roster: [
+                    { name: "Andrew Chen", pos: "SG", score: 20, def: 16, pass: 17, reb: 6, salary: "$16,200" },
+                    { name: "Des Watt", pos: "SF", score: 20, def: 17, pass: 16, reb: 9, salary: "$15,800" },
+                    { name: "Wilbur Heaton", pos: "C", score: 15, def: 18, pass: 11, reb: 14, salary: "$10,644" },
+                    { name: "Bach Miller", pos: "PG", score: 16, def: 16, pass: 18, reb: 5, salary: "$12,000" },
+                    { name: "Mozart Ross", pos: "PF", score: 14, def: 17, pass: 12, reb: 11, salary: "$11,200" }
+                ]
+            },
+            "Las Vegas Silver Stars": {
+                conf: "Great 8 Conference", record: "0-1", pd: "-50",
+                roster: [
+                    { name: "Vegas Vance", pos: "PG", score: 16, def: 17, pass: 18, reb: 5, salary: "$12,500" },
+                    { name: "Neon Henderson", pos: "SG", score: 16, def: 16, pass: 15, reb: 6, salary: "$11,800" },
+                    { name: "Chip Davis", pos: "SF", score: 15, def: 17, pass: 14, reb: 8, salary: "$11,200" },
+                    { name: "Jackpot Ross", pos: "PF", score: 14, def: 18, pass: 12, reb: 11, salary: "$11,400" },
+                    { name: "Ace Miller", pos: "C", score: 14, def: 19, pass: 11, reb: 13, salary: "$12,000" }
+                ]
+            }
+        };
+
+        const recentScores = [
+            "Shadownight 80 - 78 LynxCats (Final)",
+            "Orlando Aphilliates 138 - 44 Motorama Radicais (Final)",
+            "Philadelphia Pirates 50 - 0 Profs (Final)",
+            "Bammablue 110 - 97 Classics (TV) (Final)",
+            "John 3:16 146 - 154 Clarksville Ursine (Final)",
+            "78ers 56 - 96 birneys weekenders (Final)",
+            "Las Vegas Silver Stars 0 - 50 The Rhinos (Final)",
+            "NSB 90 - 160 Midwest Thunderstorm (Final)"
+        ];
+
+        const statLeaders = {
+            ppg: [
+                { name: "Andrew Chen", team: "Classics", val: "36.0 PPG" },
+                { name: "Mikey Choate", team: "Midwest Thunderstorm", val: "34.0 PPG" },
+                { name: "Basar Dilsoy", team: "John 3:16", val: "34.0 PPG" },
+                { name: "Hannes Univer", team: "Clarksville Ursine", val: "34.0 PPG" },
+                { name: "Félix Belo", team: "John 3:16", val: "32.0 PPG" }
+            ],
+            rpg: [
+                { name: "Aadu Lilloveer", team: "Orlando Aphilliates", val: "23.0 RPG" },
+                { name: "Franklin Peck", team: "78ers", val: "18.0 RPG" },
+                { name: "Stergios Toskas", team: "Clarksville Ursine", val: "16.0 RPG" },
+                { name: "Tony Mahaut", team: "birneys weekenders", val: "16.0 RPG" },
+                { name: "Tyler Washburn", team: "Shadownight", val: "15.0 RPG" }
+            ],
+            apg: [
+                { name: "Stergios Toskas", team: "Clarksville Ursine", val: "13.0 APG" },
+                { name: "Waqas Muhammed", team: "Orlando Aphilliates", val: "12.0 APG" },
+                { name: "Basar Dilsoy", team: "John 3:16", val: "11.0 APG" },
+                { name: "Syun Gupta", team: "Orlando Aphilliates", val: "11.0 APG" },
+                { name: "Stu Schaeffer", team: "Midwest Thunderstorm", val: "10.0 APG" }
             ]
         };
 
-        function switchTab(evt, tabName) {
-            let panels = document.getElementsByClassName("tab-panel");
-            for (let p of panels) { p.classList.remove("active"); }
-            let buttons = document.getElementsByClassName("nav-button");
-            for (let b of buttons) { b.classList.remove("active"); }
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        function updateBlueprints() {
-            gameData.offensiveBlueprint = document.getElementById("blueprint-offense").value;
-            gameData.defensiveBlueprint = document.getElementById("blueprint-defense").value;
-            document.getElementById("active-blueprint-display").innerText = `Offense: ${gameData.offensiveBlueprint} | Defense: ${gameData.defensiveBlueprint}`;
-        }
-
-        function restoreStats() {
-            document.querySelectorAll('.s-v').forEach(el => {
-                el.innerText = el.getAttribute('data-orig');
+        function switchTab(evt, tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/20');
+                b.classList.add('text-slate-400');
             });
-            alert("Player stats restored to maximum template baseline!");
+            document.getElementById(tabId).classList.remove('hidden');
+            evt.currentTarget.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/20');
+            evt.currentTarget.classList.remove('text-slate-400');
         }
 
-        function decaySkills() {
-            document.querySelectorAll('.s-v').forEach(el => {
-                let current = parseInt(el.innerText);
-                if(current > 3) el.innerText = current - 2;
-            });
-            alert("Simulated seasonal/aging skill decay applied.");
-        }
-
-        function runGlobalMatchSim() {
-            let log = document.getElementById("m-log");
-            log.innerHTML = "[Tipoff] Match underway between Boston Titans and rival squad...<br>";
-            let possessions = ["Titans drive hard, scoring an easy layup!", "Opponent sinks a deep 3-pointer.", "Turnover forced by intense full-court press!", "Foul called, successful free-throw bonus conversion."];
-            for(let i=1; i<=5; i++) {
-                setTimeout(() => {
-                    log.innerHTML += `Possession ${i*20}: ${possessions[Math.floor(Math.random()*possessions.length)]}<br>`;
-                    log.scrollTop = log.scrollHeight;
-                }, i * 400);
-            }
-        }
-
-        function simSundayCupMatch() {
-            let alertBox = document.getElementById("cup-alert");
-            alertBox.style.display = "block";
-            setTimeout(() => { alertBox.style.display = "none"; }, 4000);
-        }
-
-        function pullYouthProspect() {
-            if(gameData.funds < 80000) {
-                alert("Insufficient club funds!");
-                return;
-            }
-            gameData.funds -= 80000;
-            document.getElementById("header-funds").innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
-            let names = ["Jalen Smith", "Treyvion Miller", "Darius Cole", "Kobe Henderson"];
-            let chosen = names[Math.floor(Math.random()*names.length)];
-            document.getElementById("youth-terminal").innerText = `[Success] Drafted youth prospect ${chosen} into Academy pipeline! -$80,000 processed.`;
-        }
-
-        function initMarket() {
-            let tbody = document.getElementById("transfer-market-body");
-            tbody.innerHTML = "";
-            gameData.marketPlayers.forEach((p, index) => {
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${p.name}</td>
-                    <td>${p.pos}</td>
-                    <td>${p.ovr} / 20</td>
-                    <td>$${p.price.toLocaleString()}</td>
-                    <td><input type="number" id="bid-input-${index}" placeholder="Enter bid..." style="width:130px;"></td>
-                    <td><button class="btn btn-success" onclick="placeBid(${index})">Place Bid</button></td>
+        function initApp() {
+            // Populate Team Cards Grid
+            let grid = document.getElementById('team-cards-grid');
+            grid.innerHTML = "";
+            for(let [teamName, data] of Object.entries(divisionTeams)) {
+                let card = document.createElement('div');
+                card.className = "glass p-5 rounded-2xl flex flex-col justify-between space-y-4 hover:border-blue-500/50 transition cursor-pointer group";
+                card.onclick = () => openTeamRoster(teamName);
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-blue-400 mono">${data.conf}</span>
+                            <span class="text-xs font-bold text-emerald-400 mono">${data.record}</span>
+                        </div>
+                        <h4 class="font-bold text-base text-white group-hover:text-blue-400 transition">${teamName}</h4>
+                        <p class="text-xs text-slate-400 mt-1">PD: <span class="mono text-slate-200">${data.pd}</span> • Roster: 5 Active</p>
+                    </div>
+                    <div class="pt-3 border-t border-cardBorder flex justify-between items-center text-xs text-blue-400 font-semibold">
+                        <span>Inspect Roster</span>
+                        <svg class="w-4 h-4 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                grid.appendChild(card);
+            }
+
+            // Populate Recent Scores
+            let scoresList = document.getElementById('recent-scores-list');
+            scoresList.innerHTML = recentScores.map(s => `<div class="p-3 rounded-xl bg-slate-900/60 border border-cardBorder text-slate-300 flex items-center justify-between"><span>${s}</span><span class="text-blue-400 font-bold">USA IV.6</span></div>`).join('');
+
+            // Populate Stat Leaders
+            document.getElementById('ppg-leaders').innerHTML = statLeaders.ppg.map(l => `<div class="flex justify-between items-center p-2 rounded bg-slate-900/40"><span class="font-bold text-white">${l.name} <span class="text-[10px] text-slate-400 font-normal">(${l.team})</span></span><span class="mono text-blue-400">${l.val}</span></div>`).join('');
+            document.getElementById('rpg-leaders').innerHTML = statLeaders.rpg.map(l => `<div class="flex justify-between items-center p-2 rounded bg-slate-900/40"><span class="font-bold text-white">${l.name} <span class="text-[10px] text-slate-400 font-normal">(${l.team})</span></span><span class="mono text-emerald-400">${l.val}</span></div>`).join('');
+            document.getElementById('apg-leaders').innerHTML = statLeaders.apg.map(l => `<div class="flex justify-between items-center p-2 rounded bg-slate-900/40"><span class="font-bold text-white">${l.name} <span class="text-[10px] text-slate-400 font-normal">(${l.team})</span></span><span class="mono text-indigo-400">${l.val}</span></div>`).join('');
+        }
+
+        function openTeamRoster(teamName) {
+            let team = divisionTeams[teamName];
+            document.getElementById('modal-team-name').innerText = teamName;
+            document.getElementById('modal-team-conf').innerText = `${team.conf} • Record: ${team.record} (PD ${team.pd})`;
+            
+            let rosterList = document.getElementById('modal-roster-list');
+            rosterList.innerHTML = "";
+            team.roster.forEach(player => {
+                let div = document.createElement('div');
+                div.className = "p-3.5 rounded-xl bg-slate-900/80 border border-cardBorder flex items-center justify-between hover:border-emerald-500/40 transition cursor-pointer";
+                div.onclick = (e) => { e.stopPropagation(); openPlayerProfile(player, teamName); };
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs mono border border-blue-500/30">${player.pos}</div>
+                        <div>
+                            <h5 class="font-bold text-sm text-white">${player.name}</h5>
+                            <p class="text-[11px] text-slate-400 mono">Salary: ${player.salary} / wk</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs mono text-emerald-400 font-bold">
+                        Scoring: ${player.score}/20
+                    </div>
+                `;
+                rosterList.appendChild(div);
             });
+            document.getElementById('team-modal').classList.remove('hidden');
         }
 
-        function placeBid(index) {
-            let inputVal = parseInt(document.getElementById(`bid-input-${index}`).value);
-            let p = gameData.marketPlayers[index];
-            if(isNaN(inputVal) || inputVal < p.price + 500) {
-                alert("Bid must exceed current asking price by at least $500!");
-                return;
-            }
-            if(gameData.funds < inputVal) {
-                alert("You do not have enough funds for this bid!");
-                return;
-            }
-            gameData.funds -= inputVal;
-            document.getElementById("header-funds").innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
-            alert(`Successful manual bid placed for ${p.name}! Funds updated.`);
+        function openPlayerProfile(player, teamName) {
+            document.getElementById('modal-player-name').innerText = player.name;
+            document.getElementById('modal-player-pos').innerText = `${player.pos} • ${teamName}`;
+            document.getElementById('p-stat-score').innerText = `${player.score} / 20`;
+            document.getElementById('p-stat-def').innerText = `${player.def} / 20`;
+            document.getElementById('p-stat-pass').innerText = `${player.pass} / 20`;
+            document.getElementById('p-stat-reb').innerText = `${player.reb} / 20`;
+            document.getElementById('p-stat-salary').innerText = `${player.salary} / wk`;
+            document.getElementById('player-modal').classList.remove('hidden');
         }
 
-        function triggerCoachUltimatum() {
-            document.getElementById("desk-terminal").innerText = "[Ultimatum] Board of Directors demands a 5-match win streak or risk staff termination.";
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
         }
 
-        function simulateInjuryCheck() {
-            document.getElementById("med-terminal").innerText = "[Medical Bay] Rehab cycle processed. All muscle fatigue indicators cleared.";
-        }
-
-        function generateDraftClass() {
-            let container = document.getElementById("draft-container");
-            container.innerHTML = `<div class="terminal-box">[Draft Class Generated] 30 top collegiate prospects loaded for Round 1 & Round 2 selection pool.</div>`;
-        }
-
-        function accessAgency(tier) {
-            let term = document.getElementById("agency-terminal");
-            if(tier === 'tier1') {
-                term.innerText = "[Warning] Sachkz Elite Firm accessed. High-roller representation options unlocked.";
-            } else {
-                term.innerText = "[Danger] Slimeball Desk engaged. Shady back-alley transfer options are active with heightened litigation risk.";
-            }
-        }
-
-        window.onload = function() {
-            initMarket();
-        };
+        window.onload = initApp;
     </script>
 </body>
 </html>
