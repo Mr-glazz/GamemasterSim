@@ -1,31 +1,39 @@
-```html
 <!-- ============================================================
-     MOTOR CITY HUSTLE — INTERACTIVE HUB ADD-ON
-     RULE #1: PRESERVE EXISTING LOOK + EXISTING CODE.
-     THIS MODULE ONLY ADDS FUNCTIONALITY.
+     MOTOR CITY HUSTLE — MASTER CONTROL HUB
+     FIXED / SELF-CONTAINED VERSION
+
+     IMPORTANT:
+     - Does NOT replace existing UI
+     - Does NOT change existing UI colors
+     - Does NOT modify existing .player-card styling
+     - Does NOT modify existing .nav-btn styling
+     - Adds functionality only
      ============================================================ -->
 
 <style>
+
 /* ============================================================
-   ADD-ON ONLY — DOES NOT REPLACE ORIGINAL THEME
+   ALL ADD-ON CSS IS PREFIXED WITH mc-
+   This prevents interference with the existing theme.
    ============================================================ */
 
-.hub-overlay {
+.mc-overlay {
     position: fixed;
     inset: 0;
     background: rgba(15,23,42,.72);
-    z-index: 9999;
+    z-index: 99999;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
-.hub-overlay.open {
+.mc-overlay.mc-open {
     display: flex;
 }
 
-.hub-window {
+.mc-window {
     width: min(900px, 96vw);
     max-height: 90vh;
     overflow-y: auto;
@@ -33,9 +41,10 @@
     border: 2px solid #2c3e50;
     border-radius: 6px;
     box-shadow: 0 10px 40px rgba(0,0,0,.4);
+    color: #1f2937;
 }
 
-.hub-window-header {
+.mc-header {
     background: #2c3e50;
     color: white;
     padding: 10px 14px;
@@ -46,7 +55,7 @@
     font-weight: bold;
 }
 
-.hub-close {
+.mc-close {
     background: #c0392b;
     color: white;
     border: 1px solid #922b21;
@@ -56,38 +65,40 @@
     font-weight: bold;
 }
 
-.hub-body {
+.mc-body {
     padding: 15px;
 }
 
-.hub-grid {
+.mc-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
     gap: 10px;
 }
 
-.hub-box {
+.mc-box {
     background: #fffaf0;
     border: 1px solid #dfd5c3;
     border-radius: 4px;
     padding: 10px;
+    box-sizing: border-box;
 }
 
-.hub-box h4 {
+.mc-box h4 {
     margin: 0 0 7px;
     color: #2c3e50;
     border-bottom: 1px solid #e67e22;
     padding-bottom: 4px;
 }
 
-.hub-stat {
+.mc-stat {
     display: flex;
     justify-content: space-between;
     padding: 3px 0;
     font-size: 11px;
+    gap: 10px;
 }
 
-.hub-action {
+.mc-action {
     background: #ecf0f1;
     border: 1px solid #bdc3c7;
     padding: 5px 9px;
@@ -98,40 +109,30 @@
     margin: 3px;
 }
 
-.hub-action:hover {
+.mc-action:hover {
     background: #eaf2f8;
     border-color: #3498db;
 }
 
-.hub-action.primary {
+.mc-action-primary {
     background: #e67e22;
     border-color: #d35400;
     color: white;
 }
 
-.hub-action.danger {
+.mc-action-danger {
     background: #c0392b;
     border-color: #922b21;
     color: white;
 }
 
-.hub-action.success {
+.mc-action-success {
     background: #27ae60;
     border-color: #1e8449;
     color: white;
 }
 
-.masterball-clickable {
-    cursor: pointer;
-    transition: transform .12s ease, box-shadow .12s ease;
-}
-
-.masterball-clickable:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0,0,0,.12);
-}
-
-.player-mini-card {
+.mc-player-card {
     background: #fffaf0;
     border: 1px solid #dfd5c3;
     border-radius: 4px;
@@ -140,16 +141,16 @@
     cursor: pointer;
 }
 
-.player-mini-card:hover {
+.mc-player-card:hover {
     border-color: #e67e22;
     background: #fff8ed;
 }
 
-.player-mini-card strong {
+.mc-player-card strong {
     color: #2c3e50;
 }
 
-.market-badge {
+.mc-badge {
     display: inline-block;
     padding: 3px 6px;
     border-radius: 3px;
@@ -158,75 +159,27 @@
     margin: 2px;
 }
 
-.market-live {
+.mc-live {
     background: #c0392b;
     color: white;
 }
 
-.market-free {
+.mc-free {
     background: #2980b9;
     color: white;
 }
 
-.market-youth {
+.mc-youth {
     background: #27ae60;
     color: white;
 }
 
-.market-university {
+.mc-university {
     background: #8e44ad;
     color: white;
 }
 
-.scout-lock {
-    color: #c0392b;
-    font-weight: bold;
-}
-
-.scout-open {
-    color: #27ae60;
-    font-weight: bold;
-}
-
-.auction-clock {
-    font-size: 25px;
-    color: #c0392b;
-    font-weight: bold;
-    text-align: center;
-    padding: 8px;
-}
-
-.bid-display {
-    font-size: 18px;
-    color: #2c3e50;
-    font-weight: bold;
-    text-align: center;
-    margin: 5px;
-}
-
-.skill-row {
-    display: grid;
-    grid-template-columns: 120px 1fr 40px;
-    gap: 6px;
-    align-items: center;
-    margin: 5px 0;
-    font-size: 11px;
-}
-
-.skill-track {
-    height: 8px;
-    background: #eaeded;
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.skill-fill {
-    height: 100%;
-    background: #2980b9;
-}
-
-.detail-tier {
+.mc-detail-tier {
     display: inline-block;
     padding: 4px 8px;
     border-radius: 4px;
@@ -235,25 +188,29 @@
     font-size: 11px;
 }
 
-.hub-table {
-    width: 100%;
-    border-collapse: collapse;
+.mc-skill-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 40px;
+    gap: 6px;
+    align-items: center;
+    margin: 5px 0;
     font-size: 11px;
 }
 
-.hub-table th {
-    background: #2c3e50;
-    color: white;
-    padding: 7px;
-    text-align: left;
+.mc-skill-track {
+    height: 8px;
+    background: #eaeded;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-.hub-table td {
-    padding: 7px;
-    border-bottom: 1px solid #ddd;
+.mc-skill-fill {
+    height: 100%;
+    background: #2980b9;
 }
 
-.interest-team {
+.mc-interest-team {
     display: inline-block;
     background: #34495e;
     color: white;
@@ -263,27 +220,53 @@
     font-size: 10px;
 }
 
-.hub-log {
-    background: #020617;
-    color: #34d399;
+.mc-auction-clock {
+    font-size: 25px;
+    color: #c0392b;
+    font-weight: bold;
+    text-align: center;
     padding: 8px;
-    height: 100px;
-    overflow-y: auto;
-    font-family: monospace;
-    font-size: 10px;
-    border-radius: 3px;
-    margin-top: 8px;
+}
+
+.mc-bid-display {
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: bold;
+    text-align: center;
+    margin: 5px;
+}
+
+.mc-message {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-bottom: 10px;
+}
+
+.mc-success-text {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.mc-warning-text {
+    color: #c0392b;
+    font-weight: bold;
 }
 
 @media(max-width:650px) {
-    .hub-window {
+
+    .mc-window {
         width: 98vw;
     }
 
-    .skill-row {
+    .mc-skill-row {
         grid-template-columns: 90px 1fr 35px;
     }
+
 }
+
 </style>
 
 
@@ -291,50 +274,89 @@
      PLAYER DETAIL WINDOW
      ============================================================ -->
 
-<div id="player-detail-overlay" class="hub-overlay">
-    <div class="hub-window">
+<div id="mc-player-overlay" class="mc-overlay">
 
-        <div class="hub-window-header">
-            <span id="detail-title">Masterball Card — Player Detail</span>
-            <button class="hub-close" onclick="MC.closeWindow('player-detail-overlay')">X</button>
+    <div class="mc-window">
+
+        <div class="mc-header">
+
+            <span id="mc-detail-title">
+                Masterball Card — Player Detail
+            </span>
+
+            <button
+                type="button"
+                class="mc-close"
+                onclick="MC.closeWindow('mc-player-overlay')">
+                X
+            </button>
+
         </div>
 
-        <div class="hub-body" id="player-detail-body"></div>
+        <div
+            class="mc-body"
+            id="mc-player-body">
+        </div>
 
     </div>
+
 </div>
 
 
 <!-- ============================================================
-     MARKET / SCOUTING WINDOW
+     MAIN HUB WINDOW
      ============================================================ -->
 
-<div id="hub-window-overlay" class="hub-overlay">
-    <div class="hub-window">
+<div id="mc-hub-overlay" class="mc-overlay">
 
-        <div class="hub-window-header">
-            <span id="hub-window-title">Hub</span>
-            <button class="hub-close" onclick="MC.closeWindow('hub-window-overlay')">X</button>
+    <div class="mc-window">
+
+        <div class="mc-header">
+
+            <span id="mc-hub-title">
+                Motor City Hustle Hub
+            </span>
+
+            <button
+                type="button"
+                class="mc-close"
+                onclick="MC.closeWindow('mc-hub-overlay')">
+                X
+            </button>
+
         </div>
 
-        <div class="hub-body" id="hub-window-body"></div>
+        <div
+            class="mc-body"
+            id="mc-hub-body">
+        </div>
 
     </div>
+
 </div>
 
 
 <script>
+
+(function () {
+
+"use strict";
+
+
 /* ============================================================
    MASTER CONTROL ENGINE
    ============================================================ */
 
 var MC = (function () {
 
-    /* ----------------------------------------------------------
-       CENTRAL WORLD STATE
-       ---------------------------------------------------------- */
+
+    /* ========================================================
+       WORLD STATE
+       ======================================================== */
 
     var state = {
+
+        initialized: false,
 
         funds: 145200,
 
@@ -344,42 +366,49 @@ var MC = (function () {
         },
 
         teams: [
+
             {
                 id: 948204,
                 name: "Motor City Hustle",
                 city: "Motor City",
                 roster: []
             },
+
             {
                 id: 110284,
                 name: "Lakeview Forge",
                 city: "Lakeview",
                 roster: []
             },
+
             {
                 id: 220391,
                 name: "Capital Comets",
                 city: "Capital",
                 roster: []
             },
+
             {
                 id: 330492,
                 name: "Rivergate Royals",
                 city: "Rivergate",
                 roster: []
             },
+
             {
                 id: 440583,
                 name: "Prairie Storm",
                 city: "Prairie",
                 roster: []
             },
+
             {
                 id: 550674,
                 name: "Atlantic Foundry",
                 city: "Atlantic",
                 roster: []
             }
+
         ],
 
         universityPlayers: [],
@@ -390,35 +419,73 @@ var MC = (function () {
 
         liveAuctions: [],
 
-        scoutingLocks: {},
-
         trainingLog: [],
 
         nextPlayerId: 70000000,
 
         nextAuctionId: 1
+
     };
 
 
-    /* ----------------------------------------------------------
-       FICTIONAL NAME / SCHOOL DATA
-       ---------------------------------------------------------- */
+    /* ========================================================
+       DATA
+       ======================================================== */
 
     var firstNames = [
-        "Marcus","Darius","Jalen","Terrence","Malik",
-        "Devin","Andre","Caleb","Isaiah","Jordan",
-        "Cameron","Travis","Kendrick","Mason","Tyrese",
-        "Evan","Dante","Jaylen","Micah","Noah"
+
+        "Marcus",
+        "Darius",
+        "Jalen",
+        "Terrence",
+        "Malik",
+        "Devin",
+        "Andre",
+        "Caleb",
+        "Isaiah",
+        "Jordan",
+        "Cameron",
+        "Travis",
+        "Kendrick",
+        "Mason",
+        "Tyrese",
+        "Evan",
+        "Dante",
+        "Jaylen",
+        "Micah",
+        "Noah"
+
     ];
+
 
     var lastNames = [
-        "Rivers","Hayes","Stallings","Carter","Monroe",
-        "Bennett","Griffin","Lawson","Maddox","Reed",
-        "Whitaker","Banks","Holloway","Parker","Dawson",
-        "Ellis","Warren","McCall","Foster","Bradley"
+
+        "Rivers",
+        "Hayes",
+        "Stallings",
+        "Carter",
+        "Monroe",
+        "Bennett",
+        "Griffin",
+        "Lawson",
+        "Maddox",
+        "Reed",
+        "Whitaker",
+        "Banks",
+        "Holloway",
+        "Parker",
+        "Dawson",
+        "Ellis",
+        "Warren",
+        "McCall",
+        "Foster",
+        "Bradley"
+
     ];
 
+
     var fictionalUniversities = [
+
         "North Valley Institute",
         "Great Lakes Technical",
         "Western Prairie University",
@@ -431,9 +498,12 @@ var MC = (function () {
         "Heartland College",
         "Northern Frontier Institute",
         "Pioneer Valley University"
+
     ];
 
+
     var states = [
+
         "Michigan",
         "Virginia",
         "Ohio",
@@ -448,106 +518,195 @@ var MC = (function () {
         "Pennsylvania",
         "Tennessee",
         "North Carolina"
+
     ];
 
+
     var positions = [
+
         "PG",
         "SG",
         "SF",
         "PF",
         "C"
+
     ];
 
-
-    /* ----------------------------------------------------------
-       TIER RULES
-       
-       IMPORTANT:
-       UNIVERSITY BALL NEVER GETS DIAMOND.
-       
-       YOUTH DIAMOND/GEM EVENTS ARE EXTREMELY RARE.
-       ---------------------------------------------------------- */
 
     var tiers = [
-        {name:"SNUCK", cap:20, color:"#4b5563"},
-        {name:"TIN", cap:35, color:"#64748b"},
-        {name:"COPPER", cap:45, color:"#b45309"},
-        {name:"SILVER", cap:50, color:"#94a3b8"},
-        {name:"OPAL", cap:55, color:"#06b6d4"},
-        {name:"EMERALD", cap:60, color:"#10b981"},
-        {name:"GOLD", cap:65, color:"#d97706"},
-        {name:"PLATINUM", cap:70, color:"#3b82f6"},
-        {name:"WHITE DIAMOND", cap:74, color:"#94a3b8"},
-        {name:"BLACK DIAMOND", cap:75, color:"#111827"},
-        {name:"RED DIAMOND", cap:80, color:"#dc2626"}
+
+        {
+            name: "SNUCK",
+            cap: 20,
+            color: "#4b5563"
+        },
+
+        {
+            name: "TIN",
+            cap: 35,
+            color: "#64748b"
+        },
+
+        {
+            name: "COPPER",
+            cap: 45,
+            color: "#b45309"
+        },
+
+        {
+            name: "SILVER",
+            cap: 50,
+            color: "#94a3b8"
+        },
+
+        {
+            name: "OPAL",
+            cap: 55,
+            color: "#06b6d4"
+        },
+
+        {
+            name: "EMERALD",
+            cap: 60,
+            color: "#10b981"
+        },
+
+        {
+            name: "GOLD",
+            cap: 65,
+            color: "#d97706"
+        },
+
+        {
+            name: "PLATINUM",
+            cap: 70,
+            color: "#3b82f6"
+        },
+
+        {
+            name: "WHITE DIAMOND",
+            cap: 74,
+            color: "#94a3b8"
+        },
+
+        {
+            name: "BLACK DIAMOND",
+            cap: 75,
+            color: "#111827"
+        },
+
+        {
+            name: "RED DIAMOND",
+            cap: 80,
+            color: "#dc2626"
+        }
+
     ];
 
 
+    /* ========================================================
+       RANDOM HELPERS
+       ======================================================== */
+
     function randomItem(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
+
+        return arr[
+            Math.floor(Math.random() * arr.length)
+        ];
+
     }
 
 
     function randomInt(min,max) {
-        return Math.floor(Math.random() * (max-min+1))+min;
+
+        return Math.floor(
+            Math.random() * (max - min + 1)
+        ) + min;
+
     }
 
 
     function makeName() {
-        return randomItem(firstNames) + " " + randomItem(lastNames);
+
+        return (
+            randomItem(firstNames) +
+            " " +
+            randomItem(lastNames)
+        );
+
     }
 
 
     function makeId() {
+
         state.nextPlayerId++;
+
         return state.nextPlayerId;
+
     }
 
 
-    /* ----------------------------------------------------------
-       TIER ASSIGNMENT
-       ---------------------------------------------------------- */
+    /* ========================================================
+       TIER GENERATORS
+       ======================================================== */
 
     function universityTier() {
 
-        /*
-         * University Ball:
-         * NEVER Diamond.
-         */
-
         var roll = Math.random();
 
-        if (roll < .04) return "PLATINUM";
-        if (roll < .15) return "GOLD";
-        if (roll < .34) return "EMERALD";
-        if (roll < .57) return "OPAL";
-        if (roll < .76) return "SILVER";
-        if (roll < .90) return "COPPER";
+        if (roll < .04)
+            return "PLATINUM";
+
+        if (roll < .15)
+            return "GOLD";
+
+        if (roll < .34)
+            return "EMERALD";
+
+        if (roll < .57)
+            return "OPAL";
+
+        if (roll < .76)
+            return "SILVER";
+
+        if (roll < .90)
+            return "COPPER";
 
         return "TIN";
+
     }
 
 
     function youthTier() {
 
-        /*
-         * Youth:
-         * Diamond-class potential is possible,
-         * but exceptionally rare.
-         */
-
         var roll = Math.random();
 
-        if (roll < .0005) return "RED DIAMOND";
-        if (roll < .0020) return "BLACK DIAMOND";
-        if (roll < .0060) return "WHITE DIAMOND";
-        if (roll < .03) return "PLATINUM";
-        if (roll < .12) return "GOLD";
-        if (roll < .30) return "EMERALD";
-        if (roll < .55) return "OPAL";
-        if (roll < .75) return "SILVER";
+        if (roll < .0005)
+            return "RED DIAMOND";
+
+        if (roll < .0020)
+            return "BLACK DIAMOND";
+
+        if (roll < .0060)
+            return "WHITE DIAMOND";
+
+        if (roll < .03)
+            return "PLATINUM";
+
+        if (roll < .12)
+            return "GOLD";
+
+        if (roll < .30)
+            return "EMERALD";
+
+        if (roll < .55)
+            return "OPAL";
+
+        if (roll < .75)
+            return "SILVER";
 
         return "COPPER";
+
     }
 
 
@@ -555,44 +714,77 @@ var MC = (function () {
 
         var roll = Math.random();
 
-        if (roll < .0002) return "RED DIAMOND";
-        if (roll < .001) return "BLACK DIAMOND";
-        if (roll < .005) return "WHITE DIAMOND";
-        if (roll < .025) return "PLATINUM";
-        if (roll < .12) return "GOLD";
-        if (roll < .35) return "EMERALD";
-        if (roll < .58) return "OPAL";
-        if (roll < .75) return "SILVER";
+        if (roll < .0002)
+            return "RED DIAMOND";
+
+        if (roll < .001)
+            return "BLACK DIAMOND";
+
+        if (roll < .005)
+            return "WHITE DIAMOND";
+
+        if (roll < .025)
+            return "PLATINUM";
+
+        if (roll < .12)
+            return "GOLD";
+
+        if (roll < .35)
+            return "EMERALD";
+
+        if (roll < .58)
+            return "OPAL";
+
+        if (roll < .75)
+            return "SILVER";
 
         return "COPPER";
+
     }
 
 
-    /* ----------------------------------------------------------
+    /* ========================================================
        PLAYER GENERATOR
-       ---------------------------------------------------------- */
+       ======================================================== */
 
     function createPlayer(origin) {
 
         var tier;
 
         if (origin === "university") {
+
             tier = universityTier();
+
         }
         else if (origin === "youth") {
+
             tier = youthTier();
+
         }
         else {
+
             tier = professionalTier();
+
         }
 
-        var tierData = tiers.find(function(t){
+
+        var tierData = tiers.find(function(t) {
+
             return t.name === tier;
+
         });
 
-        var cap = tierData ? tierData.cap : 50;
 
-        var base = Math.max(18, cap-randomInt(5,22));
+        var cap = tierData
+            ? tierData.cap
+            : 50;
+
+
+        var base = Math.max(
+            18,
+            cap - randomInt(5,22)
+        );
+
 
         var player = {
 
@@ -606,37 +798,93 @@ var MC = (function () {
 
             age:
                 origin === "youth"
-                ? randomInt(13,18)
-                : origin === "university"
-                ? randomInt(18,23)
-                : randomInt(19,34),
+                    ? randomInt(13,18)
+                    : origin === "university"
+                        ? randomInt(18,23)
+                        : randomInt(19,34),
 
             state: randomItem(states),
 
             university:
                 origin === "university"
-                ? randomItem(fictionalUniversities)
-                : null,
+                    ? randomItem(fictionalUniversities)
+                    : null,
 
             tier: tier,
 
             potentialCap: cap,
 
-            shooting: Math.min(cap, base+randomInt(-4,8)),
+            shooting:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-4,8)
+                    )
+                ),
 
-            dribbling: Math.min(cap, base+randomInt(-6,7)),
+            dribbling:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-6,7)
+                    )
+                ),
 
-            passing: Math.min(cap, base+randomInt(-5,8)),
+            passing:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-5,8)
+                    )
+                ),
 
-            defense: Math.min(cap, base+randomInt(-7,7)),
+            defense:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-7,7)
+                    )
+                ),
 
-            athleticism: Math.min(cap, base+randomInt(-5,8)),
+            athleticism:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-5,8)
+                    )
+                ),
 
-            finishing: Math.min(cap, base+randomInt(-5,8)),
+            finishing:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-5,8)
+                    )
+                ),
 
-            iq: Math.min(cap, base+randomInt(-5,7)),
+            iq:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-5,7)
+                    )
+                ),
 
-            strength: Math.min(cap, base+randomInt(-5,7)),
+            strength:
+                Math.min(
+                    cap,
+                    Math.max(
+                        1,
+                        base + randomInt(-5,7)
+                    )
+                ),
 
             salary: randomInt(4500,18000),
 
@@ -650,124 +898,153 @@ var MC = (function () {
 
             scoutingLevel: "Initial",
 
-            academyEligible: origin === "youth",
+            academyEligible:
+                origin === "youth",
 
             contractStatus:
                 origin === "university"
-                ? "University Ball"
-                : origin === "youth"
-                ? "Youth Prospect"
-                : "Free Agent"
+                    ? "University Ball"
+                    : origin === "youth"
+                        ? "Youth Prospect"
+                        : "Free Agent",
+
+            abilities: []
+
         };
 
-        /*
-         * Youth rare abilities are different from pro abilities.
-         */
 
-        player.abilities = [];
+        /* Youth abilities */
 
         if (origin === "youth") {
 
             if (Math.random() < .12)
-                player.abilities.push("Rapid Learner");
+                player.abilities.push(
+                    "Rapid Learner"
+                );
 
             if (Math.random() < .08)
-                player.abilities.push("Raw Creator");
+                player.abilities.push(
+                    "Raw Creator"
+                );
 
             if (Math.random() < .05)
-                player.abilities.push("Competitive Motor");
+                player.abilities.push(
+                    "Competitive Motor"
+                );
 
             if (Math.random() < .015)
-                player.abilities.push("Gem Development Pattern");
+                player.abilities.push(
+                    "Gem Development Pattern"
+                );
 
             if (tier.indexOf("DIAMOND") !== -1)
-                player.abilities.push("Generational Youth Projection");
+                player.abilities.push(
+                    "Generational Youth Projection"
+                );
+
         }
+
+
+        /* University abilities */
 
         if (origin === "university") {
 
             if (Math.random() < .12)
-                player.abilities.push("College Floor General");
+                player.abilities.push(
+                    "College Floor General"
+                );
 
             if (Math.random() < .08)
-                player.abilities.push("Transition Specialist");
+                player.abilities.push(
+                    "Transition Specialist"
+                );
 
             if (Math.random() < .05)
-                player.abilities.push("Defensive Instinct");
+                player.abilities.push(
+                    "Defensive Instinct"
+                );
 
         }
 
+
         return player;
+
     }
 
 
-    /* ----------------------------------------------------------
-       WORLD INITIALIZATION
-       ---------------------------------------------------------- */
+    /* ========================================================
+       INITIALIZE WORLD
+       ======================================================== */
 
     function initializeWorld() {
 
-        /*
-         * Give EVERY franchise players.
-         */
+        if (state.initialized)
+            return;
 
-        state.teams.forEach(function(team){
 
-            if (team.roster.length > 0) return;
+        /* Existing teams */
 
-            for (var i=0;i<8;i++) {
+        state.teams.forEach(function(team) {
 
-                var p = createPlayer("professional");
+            for (var i = 0; i < 8; i++) {
 
-                team.roster.push(p);
+                team.roster.push(
+                    createPlayer("professional")
+                );
 
             }
 
         });
 
 
-        /*
-         * University Ball scouting pipeline.
-         */
+        /* University Ball */
 
-        for (var u=0;u<18;u++) {
+        for (var u = 0; u < 18; u++) {
 
-            var universityPlayer = createPlayer("university");
+            var universityPlayer =
+                createPlayer("university");
 
-            universityPlayer.scoutingTeams = randomScoutingTeams();
+            universityPlayer.scoutingTeams =
+                randomScoutingTeams();
 
-            state.universityPlayers.push(universityPlayer);
-
-        }
-
-
-        /*
-         * Youth Academy pipeline.
-         */
-
-        for (var y=0;y<14;y++) {
-
-            state.youthPlayers.push(createPlayer("youth"));
+            state.universityPlayers.push(
+                universityPlayer
+            );
 
         }
 
 
-        /*
-         * Free agents.
-         */
+        /* Youth */
 
-        for (var f=0;f<8;f++) {
+        for (var y = 0; y < 14; y++) {
 
-            state.freeAgents.push(createPlayer("professional"));
+            state.youthPlayers.push(
+                createPlayer("youth")
+            );
 
         }
 
 
-        /*
-         * One rotating live auction.
-         */
+        /* Free agents */
+
+        for (var f = 0; f < 8; f++) {
+
+            state.freeAgents.push(
+                createPlayer("professional")
+            );
+
+        }
+
+
+        /* Auction */
 
         createLiveAuction();
+
+
+        state.initialized = true;
+
+
+        updateFunds();
 
     }
 
@@ -776,7 +1053,7 @@ var MC = (function () {
 
         var output = [];
 
-        state.teams.forEach(function(team){
+        state.teams.forEach(function(team) {
 
             if (Math.random() < .30)
                 output.push(team.name);
@@ -788,448 +1065,665 @@ var MC = (function () {
     }
 
 
-    /* ----------------------------------------------------------
-       CLICK EXISTING PLAYER CARDS
-       ---------------------------------------------------------- */
+    /* ========================================================
+       PLAYER SEARCH
+       ======================================================== */
 
-    function bindExistingPlayerCards() {
+    function findPlayer(id) {
 
-        /*
-         * IMPORTANT:
-         * We don't replace the user's cards.
-         * We simply make them clickable.
-         */
+        id = Number(id);
 
-        var cards = document.querySelectorAll(".player-card");
+        var found = null;
 
-        cards.forEach(function(card,index){
 
-            if (card.dataset.mcBound === "1") return;
+        state.teams.forEach(function(team) {
 
-            card.dataset.mcBound = "1";
-            card.classList.add("masterball-clickable");
+            team.roster.forEach(function(player) {
 
-            card.addEventListener("click",function(){
-
-                /*
-                 * If the existing card has an ID, try to locate it.
-                 * Otherwise show the corresponding roster player.
-                 */
-
-                var player = state.teams[0].roster[index];
-
-                if (player)
-                    openPlayer(player);
+                if (Number(player.id) === id)
+                    found = player;
 
             });
 
         });
 
+
+        state.universityPlayers.forEach(function(player) {
+
+            if (Number(player.id) === id)
+                found = player;
+
+        });
+
+
+        state.youthPlayers.forEach(function(player) {
+
+            if (Number(player.id) === id)
+                found = player;
+
+        });
+
+
+        state.freeAgents.forEach(function(player) {
+
+            if (Number(player.id) === id)
+                found = player;
+
+        });
+
+
+        state.liveAuctions.forEach(function(auction) {
+
+            if (
+                auction.player &&
+                Number(auction.player.id) === id
+            ) {
+                found = auction.player;
+            }
+
+        });
+
+
+        return found;
+
     }
 
 
-    /* ----------------------------------------------------------
+    /* ========================================================
        PLAYER DETAIL
-       ---------------------------------------------------------- */
+       ======================================================== */
 
     function openPlayer(player) {
 
-        var body = document.getElementById("player-detail-body");
+        if (!player)
+            return;
 
-        if (!body) return;
 
-        var tier = tiers.find(function(t){
+        var body =
+            document.getElementById(
+                "mc-player-body"
+            );
+
+
+        if (!body)
+            return;
+
+
+        var tier = tiers.find(function(t) {
+
             return t.name === player.tier;
+
         });
 
-        var color = tier ? tier.color : "#2c3e50";
+
+        var color =
+            tier
+                ? tier.color
+                : "#2c3e50";
+
 
         body.innerHTML =
 
-            '<div class="hub-grid">' +
+            '<div class="mc-grid">' +
 
-            '<div class="hub-box">' +
+                '<div class="mc-box">' +
 
-            '<h4>Masterball Card</h4>' +
+                    '<h4>Masterball Card</h4>' +
 
-            '<div style="font-size:20px;font-weight:bold;color:#2c3e50;">' +
-            player.name +
-            '</div>' +
+                    '<div style="font-size:20px;font-weight:bold;">' +
+                        escapeHtml(player.name) +
+                    '</div>' +
 
-            '<div style="margin:5px 0;">' +
+                    '<div style="margin:5px 0;">' +
 
-            '<span class="detail-tier" style="background:' +
-            color +
-            ';">' +
-            player.tier +
-            '</span>' +
+                        '<span class="mc-detail-tier" style="background:' +
+                            color +
+                        ';">' +
 
-            '</div>' +
+                            escapeHtml(player.tier) +
 
-            '<div class="hub-stat"><span>ID</span><strong>' +
-            player.id +
-            '</strong></div>' +
+                        '</span>' +
 
-            '<div class="hub-stat"><span>Position</span><strong>' +
-            player.position +
-            '</strong></div>' +
+                    '</div>' +
 
-            '<div class="hub-stat"><span>Age</span><strong>' +
-            player.age +
-            '</strong></div>' +
+                    stat("ID",player.id) +
+                    stat("Position",player.position) +
+                    stat("Age",player.age) +
+                    stat("Origin",player.origin) +
+                    stat("State",player.state) +
 
-            '<div class="hub-stat"><span>Origin</span><strong>' +
-            player.origin +
-            '</strong></div>' +
+                    (
+                        player.university
+                            ? stat(
+                                "University Ball",
+                                player.university
+                              )
+                            : ""
+                    ) +
 
-            '<div class="hub-stat"><span>State</span><strong>' +
-            player.state +
-            '</strong></div>' +
+                '</div>' +
 
-            (player.university ?
-            '<div class="hub-stat"><span>University Ball</span><strong>' +
-            player.university +
-            '</strong></div>'
-            : '') +
 
-            '</div>' +
+                '<div class="mc-box">' +
 
-            '<div class="hub-box">' +
+                    '<h4>Player Economics</h4>' +
 
-            '<h4>Player Economics</h4>' +
+                    stat(
+                        "Weekly Salary",
+                        "$" +
+                        Number(
+                            player.salary
+                        ).toLocaleString()
+                    ) +
 
-            '<div class="hub-stat"><span>Weekly Salary</span><strong>$' +
-            player.salary.toLocaleString() +
-            '</strong></div>' +
+                    stat(
+                        "Market Value",
+                        "$" +
+                        Number(
+                            player.marketValue
+                        ).toLocaleString()
+                    ) +
 
-            '<div class="hub-stat"><span>Market Value</span><strong>$' +
-            player.marketValue.toLocaleString() +
-            '</strong></div>' +
+                    stat(
+                        "Potential Cap",
+                        player.potentialCap
+                    ) +
 
-            '<div class="hub-stat"><span>Potential Cap</span><strong>' +
-            player.potentialCap +
-            '</strong></div>' +
+                    stat(
+                        "Contract",
+                        player.contractStatus
+                    ) +
 
-            '<div class="hub-stat"><span>Contract</span><strong>' +
-            player.contractStatus +
-            '</strong></div>' +
-
-            '</div>' +
-
-            '</div>' +
-
-            '<div class="hub-box" style="margin-top:10px;">' +
-
-            '<h4>Skill Profile</h4>' +
-
-            skill("Shooting",player.shooting) +
-            skill("Dribbling",player.dribbling) +
-            skill("Passing",player.passing) +
-            skill("Defense",player.defense) +
-            skill("Athleticism",player.athleticism) +
-            skill("Finishing",player.finishing) +
-            skill("Basketball IQ",player.iq) +
-            skill("Strength",player.strength) +
+                '</div>' +
 
             '</div>' +
 
-            '<div class="hub-grid" style="margin-top:10px;">' +
 
-            '<div class="hub-box">' +
+            '<div class="mc-box" style="margin-top:10px;">' +
 
-            '<h4>Abilities</h4>' +
+                '<h4>Skill Profile</h4>' +
 
-            (
-                player.abilities.length
-                ?
-                player.abilities.map(function(a){
-                    return '<span class="market-badge market-youth">'+a+'</span>';
-                }).join("")
-                :
-                '<span style="font-size:11px;color:#777;">No special ability discovered.</span>'
-            ) +
+                skill(
+                    "Shooting",
+                    player.shooting
+                ) +
+
+                skill(
+                    "Dribbling",
+                    player.dribbling
+                ) +
+
+                skill(
+                    "Passing",
+                    player.passing
+                ) +
+
+                skill(
+                    "Defense",
+                    player.defense
+                ) +
+
+                skill(
+                    "Athleticism",
+                    player.athleticism
+                ) +
+
+                skill(
+                    "Finishing",
+                    player.finishing
+                ) +
+
+                skill(
+                    "Basketball IQ",
+                    player.iq
+                ) +
+
+                skill(
+                    "Strength",
+                    player.strength
+                ) +
 
             '</div>' +
 
-            '<div class="hub-box">' +
 
-            '<h4>Scouting Interest</h4>' +
+            '<div class="mc-grid" style="margin-top:10px;">' +
 
-            (
-                player.scoutingTeams.length
-                ?
-                player.scoutingTeams.map(function(t){
-                    return '<span class="interest-team">'+t+'</span>';
-                }).join("")
-                :
-                '<span style="font-size:11px;">No competing team currently recorded.</span>'
-            ) +
+                '<div class="mc-box">' +
+
+                    '<h4>Abilities</h4>' +
+
+                    (
+                        player.abilities.length
+
+                            ? player.abilities.map(function(a) {
+
+                                return (
+                                    '<span class="mc-badge mc-youth">' +
+                                        escapeHtml(a) +
+                                    '</span>'
+                                );
+
+                              }).join("")
+
+                            : '<span style="font-size:11px;color:#777;">' +
+                                'No special ability discovered.' +
+                              '</span>'
+                    ) +
+
+                '</div>' +
+
+
+                '<div class="mc-box">' +
+
+                    '<h4>Scouting Interest</h4>' +
+
+                    (
+                        player.scoutingTeams.length
+
+                            ? player.scoutingTeams.map(function(t) {
+
+                                return (
+                                    '<span class="mc-interest-team">' +
+                                        escapeHtml(t) +
+                                    '</span>'
+                                );
+
+                              }).join("")
+
+                            : '<span style="font-size:11px;">' +
+                                'No competing team currently recorded.' +
+                              '</span>'
+                    ) +
+
+                '</div>' +
 
             '</div>' +
 
-            '</div>' +
 
             '<div style="margin-top:10px;text-align:right;">' +
 
-            '<button class="hub-action primary" onclick="MC.lockScouting(' +
-            player.id +
-            ')">' +
+                '<button type="button" ' +
+                    'class="mc-action mc-action-primary" ' +
+                    'onclick="MC.lockScouting(' +
+                    Number(player.id) +
+                    ')">' +
 
-            (player.locked ? "🔒 Scouting Locked" : "🔎 Lock This Scouting File") +
+                    (
+                        player.locked
+                            ? "🔒 Scouting Locked"
+                            : "🔎 Lock This Scouting File"
+                    ) +
 
-            '</button>' +
+                '</button>' +
 
             '</div>';
 
-        document.getElementById("detail-title").innerText =
-            "Masterball Card — " + player.name;
 
-        openWindow("player-detail-overlay");
+        document.getElementById(
+            "mc-detail-title"
+        ).innerText =
+            "Masterball Card — " +
+            player.name;
+
+
+        openWindow("mc-player-overlay");
+
+    }
+
+
+    function stat(label,value) {
+
+        return (
+
+            '<div class="mc-stat">' +
+
+                '<span>' +
+                    escapeHtml(String(label)) +
+                '</span>' +
+
+                '<strong>' +
+                    escapeHtml(String(value)) +
+                '</strong>' +
+
+            '</div>'
+
+        );
 
     }
 
 
     function skill(name,value) {
 
-        var pct = Math.min(100,(value/80)*100);
+        var pct =
+            Math.min(
+                100,
+                Math.max(
+                    0,
+                    (Number(value) / 80) * 100
+                )
+            );
+
 
         return (
 
-            '<div class="skill-row">' +
+            '<div class="mc-skill-row">' +
 
-            '<span>' + name + '</span>' +
+                '<span>' +
+                    escapeHtml(name) +
+                '</span>' +
 
-            '<div class="skill-track">' +
-            '<div class="skill-fill" style="width:' +
-            pct +
-            '%"></div>' +
-            '</div>' +
+                '<div class="mc-skill-track">' +
 
-            '<strong>' +
-            value +
-            '</strong>' +
+                    '<div ' +
+                        'class="mc-skill-fill" ' +
+                        'style="width:' +
+                        pct +
+                        '%">' +
+                    '</div>' +
+
+                '</div>' +
+
+                '<strong>' +
+                    Number(value).toFixed(1) +
+                '</strong>' +
 
             '</div>'
+
         );
 
     }
 
 
-    /* ----------------------------------------------------------
-       LOCK SCOUTING
-       ---------------------------------------------------------- */
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;")
+            .replace(/'/g,"&#039;");
+
+    }
+
+
+    /* ========================================================
+       SCOUTING LOCK
+       ======================================================== */
 
     function lockScouting(id) {
 
-        var p = findPlayer(id);
+        var player = findPlayer(id);
 
-        if (!p) return;
+        if (!player)
+            return;
 
-        p.locked = !p.locked;
 
-        openPlayer(p);
+        player.locked =
+            !player.locked;
+
+
+        openPlayer(player);
 
     }
 
 
-    /* ----------------------------------------------------------
-       UNIVERSITY BALL HUB
-       ---------------------------------------------------------- */
+    /* ========================================================
+       UNIVERSITY BALL
+       ======================================================== */
 
     function universityHub() {
 
-        var body = document.getElementById("hub-window-body");
+        initializeWorld();
 
-        document.getElementById("hub-window-title").innerText =
+
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "University Ball Scouting Pipeline";
+
 
         var html =
 
-            '<div class="hub-box">' +
+            '<div class="mc-box">' +
 
-            '<h4>Fictional University Ball Pipeline</h4>' +
+                '<h4>Fictional University Ball Pipeline</h4>' +
 
-            '<p style="font-size:11px;">' +
+                '<p style="font-size:11px;">' +
 
-            'Every review is a separate fictional prospect unless the scouting file is locked. ' +
-            'University Ball players cannot generate Diamond-tier players.' +
+                    'University Ball prospects are generated from the fictional college pipeline. ' +
+                    'University players cannot generate Diamond-tier classifications.' +
 
-            '</p>' +
+                '</p>' +
 
-            '<span class="market-badge market-university">FICTIONAL SCHOOLS ONLY</span>' +
+                '<span class="mc-badge mc-university">' +
+                    'FICTIONAL SCHOOLS ONLY' +
+                '</span>' +
 
-            '<span class="market-badge market-university">NO DIAMOND CLASS</span>' +
+                '<span class="mc-badge mc-university">' +
+                    'NO DIAMOND CLASS' +
+                '</span>' +
 
             '</div>';
 
-        state.universityPlayers.forEach(function(p){
+
+        state.universityPlayers.forEach(function(player) {
 
             html +=
 
-                '<div class="player-mini-card" onclick="MC.openById(' +
-                p.id +
-                ')">' +
+                '<div class="mc-player-card" ' +
+                    'onclick="MC.openById(' +
+                    player.id +
+                    ')">' +
 
-                '<strong>' + p.name + '</strong>' +
+                    '<strong>' +
+                        escapeHtml(player.name) +
+                    '</strong>' +
 
-                ' — ' + p.position +
+                    ' — ' +
+                    escapeHtml(player.position) +
 
-                '<br>' +
+                    '<br>' +
 
-                '<span style="font-size:10px;">' +
+                    '<span style="font-size:10px;">' +
 
-                p.university +
-                ' • ' +
-                p.state +
-                ' • Age ' +
-                p.age +
+                        escapeHtml(player.university) +
+                        ' • ' +
+                        escapeHtml(player.state) +
+                        ' • Age ' +
+                        player.age +
 
-                '</span>' +
+                    '</span>' +
 
-                '<br>' +
+                    '<br>' +
 
-                '<span class="market-badge market-university">' +
-                p.tier +
-                '</span>' +
+                    '<span class="mc-badge mc-university">' +
+                        escapeHtml(player.tier) +
+                    '</span>' +
 
-                '<span class="market-badge">' +
-                p.scoutingTeams.length +
-                ' competing teams</span>' +
+                    '<span class="mc-badge">' +
+                        player.scoutingTeams.length +
+                        ' competing teams' +
+                    '</span>' +
 
                 '</div>';
 
         });
 
+
         body.innerHTML = html;
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
 
     }
 
 
-    /* ----------------------------------------------------------
+    /* ========================================================
        YOUTH ACADEMY
-       ---------------------------------------------------------- */
+       ======================================================== */
 
     function youthAcademyHub() {
 
-        var body = document.getElementById("hub-window-body");
+        initializeWorld();
 
-        document.getElementById("hub-window-title").innerText =
+
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "Youth Academy";
+
 
         var html =
 
-            '<div class="hub-box">' +
+            '<div class="mc-box">' +
 
-            '<h4>Youth Development Pipeline</h4>' +
+                '<h4>Youth Development Pipeline</h4>' +
 
-            '<p style="font-size:11px;">' +
+                '<p style="font-size:11px;">' +
 
-            'Youth prospects can develop abilities that are different from professional players. ' +
-            'Diamond-class potential is extremely rare and is never treated like a normal tier.' +
+                    'Youth prospects can develop special abilities and extremely rare Diamond-class potential.' +
 
-            '</p>' +
+                '</p>' +
 
             '</div>';
 
-        state.youthPlayers.forEach(function(p){
+
+        state.youthPlayers.forEach(function(player) {
 
             html +=
 
-                '<div class="player-mini-card">' +
+                '<div class="mc-player-card">' +
 
-                '<strong>' + p.name + '</strong>' +
+                    '<strong>' +
+                        escapeHtml(player.name) +
+                    '</strong>' +
 
-                ' — ' + p.position +
+                    ' — ' +
+                    escapeHtml(player.position) +
 
-                '<br>' +
+                    '<br>' +
 
-                '<span style="font-size:10px;">' +
+                    '<span style="font-size:10px;">' +
 
-                p.state +
-                ' • Age ' +
-                p.age +
+                        escapeHtml(player.state) +
+                        ' • Age ' +
+                        player.age +
 
-                '</span>' +
+                    '</span>' +
 
-                '<br>' +
+                    '<br>' +
 
-                '<span class="market-badge market-youth">' +
-                p.tier +
-                '</span>' +
+                    '<span class="mc-badge mc-youth">' +
+                        escapeHtml(player.tier) +
+                    '</span>' +
 
-                '<button class="hub-action success" onclick="MC.selectYouth(' +
-                p.id +
-                ')">' +
+                    '<button type="button" ' +
+                        'class="mc-action mc-action-success" ' +
+                        'onclick="MC.selectYouth(' +
+                        player.id +
+                        ')">' +
 
-                'Select for Academy' +
+                        (
+                            player.selected
+                                ? "Already Selected"
+                                : "Select for Academy"
+                        ) +
 
-                '</button>' +
+                    '</button>' +
 
                 '</div>';
 
         });
 
+
         body.innerHTML = html;
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
 
     }
 
 
     function selectYouth(id) {
 
-        var p = findPlayer(id);
+        var player = findPlayer(id);
 
-        if (!p || p.origin !== "youth") return;
 
-        if (p.selected) {
+        if (
+            !player ||
+            player.origin !== "youth"
+        )
+            return;
 
-            alert("This prospect is already assigned to your Youth Academy.");
+
+        if (player.selected) {
+
+            alert(
+                "This prospect is already assigned to your Youth Academy."
+            );
 
             return;
 
         }
 
-        p.selected = true;
 
-        p.contractStatus = "Youth Academy";
+        player.selected = true;
 
-        /*
-         * The player remains in the world.
-         * We don't destroy the scouting record.
-         */
+        player.contractStatus =
+            "Youth Academy";
+
 
         alert(
-            p.name +
+            player.name +
             " has been accepted into the Motor City Youth Academy."
         );
+
 
         youthAcademyHub();
 
     }
 
 
-    /* ----------------------------------------------------------
-       LIVE AUCTION
-       ---------------------------------------------------------- */
+    /* ========================================================
+       AUCTION
+       ======================================================== */
 
     function createLiveAuction() {
 
-        var player = createPlayer("professional");
+        var player =
+            createPlayer("professional");
+
 
         state.liveAuctions.push({
 
-            id: state.nextAuctionId++,
+            id:
+                state.nextAuctionId++,
 
             player: player,
 
-            currentBid: Math.max(5000,player.marketValue),
+            currentBid:
+                Math.max(
+                    5000,
+                    player.marketValue
+                ),
 
-            highBidder: "Opening Market",
+            highBidder:
+                "Opening Market",
 
-            seconds: randomInt(45,90),
+            seconds:
+                randomInt(45,90),
 
             active: true
 
@@ -1240,81 +1734,141 @@ var MC = (function () {
 
     function liveAuctionHub() {
 
-        var body = document.getElementById("hub-window-body");
+        initializeWorld();
 
-        document.getElementById("hub-window-title").innerText =
+
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "Live Auction — Timed Bidding";
 
-        if (!state.liveAuctions.length)
-            createLiveAuction();
 
         var html =
 
-            '<div class="hub-box">' +
+            '<div class="mc-box">' +
 
-            '<h4>LIVE AUCTION</h4>' +
+                '<h4>LIVE AUCTION</h4>' +
 
-            '<p style="font-size:11px;">' +
+                '<p style="font-size:11px;">' +
 
-            'This is a competitive timed auction. Clubs bid against one another until the timer expires.' +
+                    'Competitive timed bidding. The highest bidder when the clock expires wins.' +
 
-            '</p>' +
+                '</p>' +
 
             '</div>';
 
-        state.liveAuctions.forEach(function(a){
 
-            if (!a.active) return;
+        var activeCount = 0;
+
+
+        state.liveAuctions.forEach(function(auction) {
+
+            if (!auction.active)
+                return;
+
+
+            activeCount++;
+
 
             html +=
 
-                '<div class="hub-box" style="margin-top:8px;">' +
+                '<div class="mc-box" style="margin-top:8px;">' +
 
-                '<h4>' +
-                a.player.name +
-                '</h4>' +
+                    '<h4>' +
+                        escapeHtml(auction.player.name) +
+                    '</h4>' +
 
-                '<span class="market-badge market-live">LIVE AUCTION</span>' +
+                    '<span class="mc-badge mc-live">' +
+                        'LIVE AUCTION' +
+                    '</span>' +
 
-                '<div class="auction-clock" id="auction-clock-' +
-                a.id +
-                '">' +
-                formatTime(a.seconds) +
-                '</div>' +
+                    '<div class="mc-auction-clock" ' +
+                        'id="mc-auction-clock-' +
+                        auction.id +
+                    '">' +
 
-                '<div class="bid-display">' +
+                        formatTime(
+                            auction.seconds
+                        ) +
 
-                'Current Bid: $' +
-                a.currentBid.toLocaleString() +
+                    '</div>' +
 
-                '</div>' +
+                    '<div class="mc-bid-display">' +
 
-                '<div style="text-align:center;">' +
+                        'Current Bid: $' +
+                        Number(
+                            auction.currentBid
+                        ).toLocaleString() +
 
-                '<button class="hub-action primary" onclick="MC.bid(' +
-                a.id +
-                ',5000)">Bid +$5K</button>' +
+                    '</div>' +
 
-                '<button class="hub-action primary" onclick="MC.bid(' +
-                a.id +
-                ',10000)">Bid +$10K</button>' +
+                    '<div style="text-align:center;">' +
 
-                '</div>' +
+                        '<button type="button" ' +
+                            'class="mc-action mc-action-primary" ' +
+                            'onclick="MC.bid(' +
+                            auction.id +
+                            ',5000)">' +
 
-                '<div style="font-size:10px;text-align:center;">' +
+                            'Bid +$5K' +
 
-                'High Bidder: ' +
-                a.highBidder +
+                        '</button>' +
 
-                '</div>' +
+                        '<button type="button" ' +
+                            'class="mc-action mc-action-primary" ' +
+                            'onclick="MC.bid(' +
+                            auction.id +
+                            ',10000)">' +
+
+                            'Bid +$10K' +
+
+                        '</button>' +
+
+                    '</div>' +
+
+                    '<div style="font-size:10px;text-align:center;">' +
+
+                        'High Bidder: ' +
+                        escapeHtml(
+                            auction.highBidder
+                        ) +
+
+                    '</div>' +
 
                 '</div>';
 
         });
 
+
+        if (!activeCount) {
+
+            html +=
+
+                '<div class="mc-message">' +
+
+                    'No active auction is running right now. ' +
+                    'A new auction will be created.' +
+
+                '</div>';
+
+            createLiveAuction();
+
+            return liveAuctionHub();
+
+        }
+
+
         body.innerHTML = html;
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
+
 
         startAuctionTimer();
 
@@ -1323,25 +1877,44 @@ var MC = (function () {
 
     function bid(id,amount) {
 
-        var auction = state.liveAuctions.find(function(a){
-            return a.id === id;
-        });
+        var auction =
+            state.liveAuctions.find(
+                function(a) {
+                    return a.id === Number(id);
+                }
+            );
 
-        if (!auction || !auction.active) return;
 
-        var nextBid = auction.currentBid + amount;
+        if (
+            !auction ||
+            !auction.active
+        )
+            return;
+
+
+        var nextBid =
+            auction.currentBid +
+            Number(amount);
+
 
         if (nextBid > state.funds) {
 
-            alert("Insufficient club funds.");
+            alert(
+                "Insufficient club funds."
+            );
 
             return;
 
         }
 
-        auction.currentBid = nextBid;
 
-        auction.highBidder = state.userTeam.name;
+        auction.currentBid =
+            nextBid;
+
+
+        auction.highBidder =
+            state.userTeam.name;
+
 
         liveAuctionHub();
 
@@ -1350,32 +1923,56 @@ var MC = (function () {
 
     var auctionTimerStarted = false;
 
+
     function startAuctionTimer() {
 
-        if (auctionTimerStarted) return;
+        if (auctionTimerStarted)
+            return;
+
 
         auctionTimerStarted = true;
 
-        setInterval(function(){
 
-            state.liveAuctions.forEach(function(a){
+        setInterval(function() {
 
-                if (!a.active) return;
+            state.liveAuctions.forEach(function(auction) {
 
-                a.seconds--;
+                if (!auction.active)
+                    return;
 
-                if (a.seconds <= 0) {
 
-                    a.seconds = 0;
-                    a.active = false;
+                auction.seconds--;
 
-                    if (a.highBidder === state.userTeam.name) {
 
-                        if (state.funds >= a.currentBid) {
+                if (auction.seconds <= 0) {
 
-                            state.funds -= a.currentBid;
+                    auction.seconds = 0;
 
-                            state.teams[0].roster.push(a.player);
+                    auction.active = false;
+
+
+                    if (
+                        auction.highBidder ===
+                        state.userTeam.name
+                    ) {
+
+                        if (
+                            state.funds >=
+                            auction.currentBid
+                        ) {
+
+                            state.funds -=
+                                auction.currentBid;
+
+
+                            auction.player.contractStatus =
+                                "Motor City Hustle Contract";
+
+
+                            state.teams[0].roster.push(
+                                auction.player
+                            );
+
 
                             updateFunds();
 
@@ -1387,23 +1984,40 @@ var MC = (function () {
 
             });
 
-            var clocks =
-                document.querySelectorAll("[id^='auction-clock-']");
 
-            clocks.forEach(function(el){
+            document
+                .querySelectorAll(
+                    "[id^='mc-auction-clock-']"
+                )
+                .forEach(function(el) {
 
-                var id = parseInt(
-                    el.id.replace("auction-clock-","")
-                );
+                    var id =
+                        Number(
+                            el.id.replace(
+                                "mc-auction-clock-",
+                                ""
+                            )
+                        );
 
-                var a = state.liveAuctions.find(function(x){
-                    return x.id === id;
+
+                    var auction =
+                        state.liveAuctions.find(
+                            function(a) {
+                                return a.id === id;
+                            }
+                        );
+
+
+                    if (auction) {
+
+                        el.innerText =
+                            formatTime(
+                                auction.seconds
+                            );
+
+                    }
+
                 });
-
-                if (a)
-                    el.innerText = formatTime(a.seconds);
-
-            });
 
         },1000);
 
@@ -1412,8 +2026,15 @@ var MC = (function () {
 
     function formatTime(seconds) {
 
-        var m = Math.floor(seconds/60);
-        var s = seconds%60;
+        var m =
+            Math.floor(
+                seconds / 60
+            );
+
+
+        var s =
+            seconds % 60;
+
 
         return (
             String(m).padStart(2,"0") +
@@ -1424,664 +2045,937 @@ var MC = (function () {
     }
 
 
-    /* ----------------------------------------------------------
+    /* ========================================================
        FREE AGENT MARKET
-       ---------------------------------------------------------- */
+       ======================================================== */
 
     function freeAgentHub() {
 
-        var body = document.getElementById("hub-window-body");
+        initializeWorld();
 
-        document.getElementById("hub-window-title").innerText =
+
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "Free-Agent Market";
+
 
         var html =
 
-            '<div class="hub-box">' +
+            '<div class="mc-box">' +
 
-            '<h4>FREE-AGENT CONTRACT MARKET</h4>' +
+                '<h4>FREE-AGENT CONTRACT MARKET</h4>' +
 
-            '<p style="font-size:11px;">' +
+                '<p style="font-size:11px;">' +
 
-            'This market is completely separate from Live Auction. ' +
-            'There is no countdown and no bidding. You acquire the available contract at its listed price.' +
+                    'Fixed-price contracts. No auction timer and no bidding.' +
 
-            '</p>' +
+                '</p>' +
 
-            '<span class="market-badge market-free">FIXED MARKET</span>' +
+                '<span class="mc-badge mc-free">' +
+                    'FIXED MARKET' +
+                '</span>' +
 
             '</div>';
 
-        state.freeAgents.forEach(function(p){
+
+        state.freeAgents.forEach(function(player) {
 
             html +=
 
-                '<div class="player-mini-card">' +
+                '<div class="mc-player-card">' +
 
-                '<strong>' +
-                p.name +
-                '</strong>' +
+                    '<strong>' +
+                        escapeHtml(player.name) +
+                    '</strong>' +
 
-                ' — ' +
-                p.position +
+                    ' — ' +
+                    escapeHtml(player.position) +
 
-                '<br>' +
+                    '<br>' +
 
-                '<span style="font-size:10px;">' +
+                    '<span style="font-size:10px;">' +
 
-                p.tier +
-                ' • Age ' +
-                p.age +
+                        escapeHtml(player.tier) +
+                        ' • Age ' +
+                        player.age +
 
-                '</span>' +
+                    '</span>' +
 
-                '<br>' +
+                    '<br>' +
 
-                '<span class="market-badge market-free">' +
+                    '<span class="mc-badge mc-free">' +
 
-                '$' +
-                p.marketValue.toLocaleString() +
+                        '$' +
+                        Number(
+                            player.marketValue
+                        ).toLocaleString() +
 
-                '</span>' +
+                    '</span>' +
 
-                '<button class="hub-action primary" onclick="MC.buyFreeAgent(' +
-                p.id +
-                ')">' +
+                    '<button type="button" ' +
+                        'class="mc-action mc-action-primary" ' +
+                        'onclick="MC.buyFreeAgent(' +
+                        player.id +
+                        ')">' +
 
-                'Buy Contract' +
+                        'Buy Contract' +
 
-                '</button>' +
+                    '</button>' +
 
                 '</div>';
 
         });
 
+
         body.innerHTML = html;
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
 
     }
 
 
     function buyFreeAgent(id) {
 
-        var index = state.freeAgents.findIndex(function(p){
-            return p.id === id;
-        });
+        var index =
+            state.freeAgents.findIndex(
+                function(player) {
+                    return player.id === Number(id);
+                }
+            );
 
-        if (index === -1) return;
 
-        var p = state.freeAgents[index];
+        if (index === -1)
+            return;
 
-        if (state.funds < p.marketValue) {
 
-            alert("Club funds are insufficient.");
+        var player =
+            state.freeAgents[index];
+
+
+        if (
+            state.funds <
+            player.marketValue
+        ) {
+
+            alert(
+                "Club funds are insufficient."
+            );
 
             return;
 
         }
 
-        state.funds -= p.marketValue;
 
-        p.contractStatus = "Motor City Hustle Contract";
+        state.funds -=
+            player.marketValue;
 
-        state.teams[0].roster.push(p);
 
-        state.freeAgents.splice(index,1);
+        player.contractStatus =
+            "Motor City Hustle Contract";
+
+
+        state.teams[0].roster.push(
+            player
+        );
+
+
+        state.freeAgents.splice(
+            index,
+            1
+        );
+
 
         updateFunds();
+
 
         freeAgentHub();
 
     }
 
 
-    /* ----------------------------------------------------------
-       MARKET MACRO ENGINE
-       ---------------------------------------------------------- */
+    /* ========================================================
+       MARKET CONDITIONS
+       ======================================================== */
 
     function marketHub() {
 
+        initializeWorld();
+
+
         var shooters = 0;
+
         var bigs = 0;
+
         var total = 0;
 
-        state.teams.forEach(function(team){
 
-            team.roster.forEach(function(p){
+        state.teams.forEach(function(team) {
+
+            team.roster.forEach(function(player) {
 
                 total++;
 
+
                 if (
-                    p.position === "PG" ||
-                    p.position === "SG"
-                )
+                    player.position === "PG" ||
+                    player.position === "SG"
+                ) {
+
                     shooters++;
-                else
+
+                }
+                else {
+
                     bigs++;
+
+                }
 
             });
 
         });
 
-        var shooterPct = total ?
-            Math.round((shooters/total)*100)
-            : 50;
 
-        var bigPct = 100-shooterPct;
+        var shooterPct =
+            total
+                ? Math.round(
+                    (shooters / total) * 100
+                  )
+                : 50;
+
+
+        var bigPct =
+            100 - shooterPct;
+
 
         var climate =
             shooterPct > 70
-            ? "SHOOTER OVERSUPPLY / PAINT DROUGHT"
-            : bigPct > 70
-            ? "BIG-MAN OVERSUPPLY / WING DROUGHT"
-            : "STABLE EQUILIBRIUM";
+                ? "SHOOTER OVERSUPPLY / PAINT DROUGHT"
+                : bigPct > 70
+                    ? "BIG-MAN OVERSUPPLY / WING DROUGHT"
+                    : "STABLE EQUILIBRIUM";
 
-        var body = document.getElementById("hub-window-body");
 
-        document.getElementById("hub-window-title").innerText =
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "Macro Market Conditions";
+
 
         body.innerHTML =
 
-            '<div class="hub-grid">' +
+            '<div class="mc-grid">' +
 
-            '<div class="hub-box">' +
+                '<div class="mc-box">' +
 
-            '<h4>Roster Census</h4>' +
+                    '<h4>Roster Census</h4>' +
 
-            '<div class="hub-stat">' +
-            '<span>Shooting Positions</span>' +
-            '<strong>' + shooterPct + '%</strong>' +
+                    stat(
+                        "Shooting Positions",
+                        shooterPct + "%"
+                    ) +
+
+                    stat(
+                        "Paint Positions",
+                        bigPct + "%"
+                    ) +
+
+                '</div>' +
+
+                '<div class="mc-box">' +
+
+                    '<h4>Market Climate</h4>' +
+
+                    '<strong>' +
+                        climate +
+                    '</strong>' +
+
+                    '<p style="font-size:10px;">' +
+
+                        'Supply and demand influence player valuation across the world market.' +
+
+                    '</p>' +
+
+                '</div>' +
+
             '</div>' +
 
-            '<div class="hub-stat">' +
-            '<span>Paint Positions</span>' +
-            '<strong>' + bigPct + '%</strong>' +
-            '</div>' +
 
-            '</div>' +
+            '<div class="mc-box" style="margin-top:10px;">' +
 
-            '<div class="hub-box">' +
+                '<h4>Market Rule</h4>' +
 
-            '<h4>Market Climate</h4>' +
+                '<p style="font-size:11px;">' +
 
-            '<strong>' +
-            climate +
-            '</strong>' +
+                    'If too many clubs develop the same archetype, that archetype becomes less scarce. ' +
+                    'Scarce profiles gain market leverage.' +
 
-            '<p style="font-size:10px;">' +
-
-            'Supply and demand influence player valuation across the world market.' +
-
-            '</p>' +
-
-            '</div>' +
-
-            '</div>' +
-
-            '<div class="hub-box" style="margin-top:10px;">' +
-
-            '<h4>Market Rule</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'If too many clubs develop the same archetype, that archetype becomes less scarce. ' +
-            'Scarce player profiles gain market leverage.' +
-
-            '</p>' +
+                '</p>' +
 
             '</div>';
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
 
     }
 
 
-    /* ----------------------------------------------------------
-       TRAINING CONNECTION
-       ---------------------------------------------------------- */
+    /* ========================================================
+       TRAINING — FIXED
+       ======================================================== */
 
     function trainingHub() {
 
-        var body = document.getElementById("hub-window-body");
+        initializeWorld();
 
-        document.getElementById("hub-window-title").innerText =
+
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "Weekly Training";
+
 
         var html =
 
-            '<div class="hub-box">' +
+            '<div class="mc-box">' +
 
-            '<h4>Roster Training Controller</h4>' +
+                '<h4>Roster Training Controller</h4>' +
 
-            '<p style="font-size:11px;">' +
+                '<p style="font-size:11px;">' +
 
-            'Training operates against the same player objects used by the roster, scouting, market and match systems.' +
+                    'Training modifies the same player objects used by scouting, roster and market systems.' +
 
-            '</p>' +
+                '</p>' +
+
+                '<p style="font-size:11px;">' +
+
+                    '<strong>Each training action:</strong> +0.2 skill points, up to the player potential cap.' +
+
+                '</p>' +
 
             '</div>';
 
-        state.teams[0].roster.forEach(function(p){
+
+        state.teams[0].roster.forEach(function(player) {
 
             html +=
 
-                '<div class="player-mini-card">' +
+                '<div class="mc-player-card">' +
 
-                '<strong>' +
-                p.name +
-                '</strong>' +
+                    '<strong>' +
+                        escapeHtml(player.name) +
+                    '</strong>' +
 
-                ' — ' +
-                p.position +
+                    ' — ' +
+                    escapeHtml(player.position) +
 
-                '<br>' +
+                    '<br>' +
 
-                '<button class="hub-action" onclick="MC.trainPlayer(' +
-                p.id +
-                ',\'shooting\')">' +
+                    '<span style="font-size:10px;">' +
 
-                'Shooting +'
+                        escapeHtml(player.tier) +
+                        ' • Potential Cap ' +
+                        player.potentialCap +
 
-                + '</button>' +
+                    '</span>' +
 
-                '<button class="hub-action" onclick="MC.trainPlayer(' +
-                p.id +
-                ',\'defense\')">' +
+                    '<br>' +
 
-                'Defense +'
+                    '<button type="button" ' +
+                        'class="mc-action" ' +
+                        'onclick="MC.trainPlayer(' +
+                        player.id +
+                        ',\'shooting\')">' +
 
-                + '</button>' +
+                        'Shooting +' +
 
-                '<button class="hub-action" onclick="MC.trainPlayer(' +
-                p.id +
-                ',\'athleticism\')">' +
+                    '</button>' +
 
-                'Athleticism +'
+                    '<button type="button" ' +
+                        'class="mc-action" ' +
+                        'onclick="MC.trainPlayer(' +
+                        player.id +
+                        ',\'defense\')">' +
 
-                + '</button>' +
+                        'Defense +' +
+
+                    '</button>' +
+
+                    '<button type="button" ' +
+                        'class="mc-action" ' +
+                        'onclick="MC.trainPlayer(' +
+                        player.id +
+                        ',\'athleticism\')">' +
+
+                        'Athleticism +' +
+
+                    '</button>' +
+
+                    '<button type="button" ' +
+                        'class="mc-action" ' +
+                        'onclick="MC.trainPlayer(' +
+                        player.id +
+                        ',\'dribbling\')">' +
+
+                        'Dribbling +' +
+
+                    '</button>' +
+
+                    '<button type="button" ' +
+                        'class="mc-action" ' +
+                        'onclick="MC.trainPlayer(' +
+                        player.id +
+                        ',\'passing\')">' +
+
+                        'Passing +' +
+
+                    '</button>' +
 
                 '</div>';
 
         });
 
+
         body.innerHTML = html;
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
 
     }
 
 
     function trainPlayer(id,skillName) {
 
-        var p = findPlayer(id);
+        var player =
+            findPlayer(id);
 
-        if (!p) return;
 
-        if (p[skillName] >= p.potentialCap) {
+        if (!player)
+            return;
+
+
+        var allowedSkills = [
+
+            "shooting",
+            "defense",
+            "athleticism",
+            "dribbling",
+            "passing",
+            "finishing",
+            "iq",
+            "strength"
+
+        ];
+
+
+        if (
+            allowedSkills.indexOf(
+                skillName
+            ) === -1
+        )
+            return;
+
+
+        if (
+            Number(
+                player[skillName]
+            ) >=
+            Number(
+                player.potentialCap
+            )
+        ) {
 
             alert(
-                p.name +
+
+                player.name +
                 " has reached the current potential limit in " +
                 skillName +
                 "."
+
             );
 
             return;
 
         }
 
-        p[skillName] =
+
+        player[skillName] =
+
             Math.min(
-                p.potentialCap,
-                parseFloat((p[skillName]+.2).toFixed(1))
+
+                player.potentialCap,
+
+                Number(
+                    (
+                        Number(
+                            player[skillName]
+                        ) +
+                        .2
+                    ).toFixed(1)
+                )
+
             );
 
+
         state.trainingLog.push({
-            player:id,
-            skill:skillName,
-            date:new Date().toISOString()
+
+            player:
+                player.id,
+
+            skill:
+                skillName,
+
+            date:
+                new Date().toISOString()
+
         });
+
 
         trainingHub();
 
     }
 
 
-    /* ----------------------------------------------------------
+    /* ========================================================
        DRAFT BOARD
-       ---------------------------------------------------------- */
+       ======================================================== */
 
     function draftHub() {
 
-        var body = document.getElementById("hub-window-body");
+        initializeWorld();
 
-        document.getElementById("hub-window-title").innerText =
+
+        var body =
+            document.getElementById(
+                "mc-hub-body"
+            );
+
+
+        document.getElementById(
+            "mc-hub-title"
+        ).innerText =
             "Live Draft Board";
+
 
         body.innerHTML =
 
-            '<div class="hub-box">' +
+            '<div class="mc-box">' +
 
-            '<h4>Draft Board</h4>' +
+                '<h4>Draft Board</h4>' +
 
-            '<p style="font-size:11px;">' +
+                '<p style="font-size:11px;">' +
 
-            'Draft prospects are pulled from the fictional University Ball pipeline. ' +
-            'University Ball prospects cannot roll Diamond-tier classifications.' +
+                    'Draft prospects are pulled from the fictional University Ball pipeline.' +
 
-            '</p>' +
+                '</p>' +
 
-            '<button class="hub-action primary" onclick="MC.universityHub()">' +
+                '<button type="button" ' +
+                    'class="mc-action mc-action-primary" ' +
+                    'onclick="MC.universityHub()">' +
 
-            'Open University Scouting'
+                    'Open University Scouting' +
 
-            + '</button>' +
+                '</button>' +
 
             '</div>';
 
-        openWindow("hub-window-overlay");
+
+        openWindow("mc-hub-overlay");
 
     }
 
 
-    /* ----------------------------------------------------------
-       PLAYER SEARCH
-       ---------------------------------------------------------- */
-
-    function findPlayer(id) {
-
-        var found = null;
-
-        state.teams.forEach(function(team){
-
-            team.roster.forEach(function(p){
-
-                if (p.id === id)
-                    found = p;
-
-            });
-
-        });
-
-        state.universityPlayers.forEach(function(p){
-
-            if (p.id === id)
-                found = p;
-
-        });
-
-        state.youthPlayers.forEach(function(p){
-
-            if (p.id === id)
-                found = p;
-
-        });
-
-        state.freeAgents.forEach(function(p){
-
-            if (p.id === id)
-                found = p;
-
-        });
-
-        state.liveAuctions.forEach(function(a){
-
-            if (a.player.id === id)
-                found = a.player;
-
-        });
-
-        return found;
-
-    }
-
+    /* ========================================================
+       OPEN PLAYER BY ID
+       ======================================================== */
 
     function openById(id) {
 
-        var p = findPlayer(id);
+        var player =
+            findPlayer(id);
 
-        if (p)
-            openPlayer(p);
+
+        if (player)
+            openPlayer(player);
 
     }
 
 
-    /* ----------------------------------------------------------
-       WINDOW HELPERS
-       ---------------------------------------------------------- */
+    /* ========================================================
+       EXISTING PLAYER CARD CONNECTION
+       ======================================================== */
+
+    function bindExistingPlayerCards() {
+
+        var cards =
+            document.querySelectorAll(
+                ".player-card"
+            );
+
+
+        cards.forEach(function(card,index) {
+
+            if (
+                card.dataset.mcBound === "1"
+            )
+                return;
+
+
+            card.dataset.mcBound = "1";
+
+
+            card.addEventListener(
+                "click",
+                function(event) {
+
+                    /*
+                     * Do not change the card's appearance.
+                     * We only attach functionality.
+                     */
+
+                    var player = null;
+
+
+                    /*
+                     * First try common data attributes.
+                     */
+
+                    var possibleId =
+                        card.getAttribute(
+                            "data-player-id"
+                        );
+
+
+                    if (!possibleId) {
+
+                        possibleId =
+                            card.getAttribute(
+                                "data-id"
+                            );
+
+                    }
+
+
+                    if (possibleId)
+                        player =
+                            findPlayer(
+                                possibleId
+                            );
+
+
+                    /*
+                     * If no ID exists, use roster position.
+                     */
+
+                    if (!player) {
+
+                        player =
+                            state.teams[0]
+                                .roster[index];
+
+                    }
+
+
+                    if (player)
+                        openPlayer(player);
+
+                }
+            );
+
+        });
+
+    }
+
+
+    /* ========================================================
+       WATCH FOR DYNAMIC PLAYER CARDS
+       ======================================================== */
+
+    function watchForPlayerCards() {
+
+        bindExistingPlayerCards();
+
+
+        if (
+            typeof MutationObserver ===
+            "undefined"
+        )
+            return;
+
+
+        var observer =
+            new MutationObserver(
+                function() {
+
+                    bindExistingPlayerCards();
+
+                }
+            );
+
+
+        if (document.body) {
+
+            observer.observe(
+                document.body,
+                {
+                    childList: true,
+                    subtree: true
+                }
+            );
+
+        }
+
+    }
+
+
+    /* ========================================================
+       WINDOWS
+       ======================================================== */
 
     function openWindow(id) {
 
-        var el = document.getElementById(id);
+        var element =
+            document.getElementById(id);
 
-        if (el)
-            el.classList.add("open");
+
+        if (element)
+            element.classList.add(
+                "mc-open"
+            );
 
     }
 
 
     function closeWindow(id) {
 
-        var el = document.getElementById(id);
+        var element =
+            document.getElementById(id);
 
-        if (el)
-            el.classList.remove("open");
+
+        if (element)
+            element.classList.remove(
+                "mc-open"
+            );
 
     }
 
 
-    /* ----------------------------------------------------------
-       FINANCES
-       ---------------------------------------------------------- */
+    /* ========================================================
+       FUNDS
+       ======================================================== */
 
     function updateFunds() {
 
-        var el = document.getElementById("funds-txt");
+        var element =
+            document.getElementById(
+                "funds-txt"
+            );
 
-        if (el)
-            el.innerText = state.funds.toLocaleString();
+
+        if (element) {
+
+            element.innerText =
+                Number(
+                    state.funds
+                ).toLocaleString();
+
+        }
 
     }
 
 
-    /* ----------------------------------------------------------
+    /* ========================================================
+       BOOT
+       ======================================================== */
+
+    function boot() {
+
+        initializeWorld();
+
+        updateFunds();
+
+        watchForPlayerCards();
+
+    }
+
+
+    /* ========================================================
        PUBLIC API
-       ---------------------------------------------------------- */
+       ======================================================== */
 
     return {
 
-        openPlayer:openPlayer,
+        boot: boot,
 
-        openById:openById,
+        openPlayer: openPlayer,
 
-        lockScouting:lockScouting,
+        openById: openById,
 
-        universityHub:universityHub,
+        lockScouting: lockScouting,
 
-        youthAcademyHub:youthAcademyHub,
+        universityHub: universityHub,
 
-        liveAuctionHub:liveAuctionHub,
+        youthAcademyHub: youthAcademyHub,
 
-        freeAgentHub:freeAgentHub,
+        liveAuctionHub: liveAuctionHub,
 
-        marketHub:marketHub,
+        freeAgentHub: freeAgentHub,
 
-        trainingHub:trainingHub,
+        marketHub: marketHub,
 
-        draftHub:draftHub,
+        trainingHub: trainingHub,
 
-        buyFreeAgent:buyFreeAgent,
+        draftHub: draftHub,
 
-        bid:bid,
+        buyFreeAgent: buyFreeAgent,
 
-        selectYouth:selectYouth,
+        bid: bid,
 
-        trainPlayer:trainPlayer,
+        selectYouth: selectYouth,
 
-        closeWindow:closeWindow
+        trainPlayer: trainPlayer,
+
+        closeWindow: closeWindow
 
     };
 
+
 })();
 
 
 /* ============================================================
-   BOOT
+   MAKE MC AVAILABLE GLOBALLY
    ============================================================ */
 
-(function(){
+window.MC = MC;
 
-    MC.__booted = true;
 
-    /*
-     * Build the world once.
-     */
+/* ============================================================
+   SAFE GLOBAL BUTTON FUNCTIONS
+   Your existing navigation can call these.
+   ============================================================ */
 
-    if (
-        typeof window.MC_WORLD_INITIALIZED === "undefined"
-    ) {
+window.openUniversityBall = function() {
 
-        window.MC_WORLD_INITIALIZED = true;
+    MC.universityHub();
 
-        /*
-         * Initialize internal world through private boot
-         * compatibility call.
-         */
+};
 
-        var event = new CustomEvent(
-            "mc-world-ready"
-        );
 
-        document.dispatchEvent(event);
+window.openYouthAcademy = function() {
+
+    MC.youthAcademyHub();
+
+};
+
+
+window.openLiveAuction = function() {
+
+    MC.liveAuctionHub();
+
+};
+
+
+window.openFreeAgentMarket = function() {
+
+    MC.freeAgentHub();
+
+};
+
+
+window.openMacroMarket = function() {
+
+    MC.marketHub();
+
+};
+
+
+window.openTrainingHub = function() {
+
+    MC.trainingHub();
+
+};
+
+
+window.openDraftBoard = function() {
+
+    MC.draftHub();
+
+};
+
+
+/* ============================================================
+   START ENGINE
+   ============================================================ */
+
+function startMC() {
+
+    MC.boot();
+
+}
+
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        startMC
+    );
+
+}
+else {
+
+    startMC();
+
+}
+
+
+/* ============================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE THE WINDOW
+   ============================================================ */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target.classList &&
+            event.target.classList.contains(
+                "mc-overlay"
+            )
+        ) {
+
+            event.target.classList.remove(
+                "mc-open"
+            );
+
+        }
 
     }
+);
 
-    /*
-     * Make existing cards clickable.
-     */
-
-    setTimeout(function(){
-
-        /*
-         * The internal engine initializes independently,
-         * then attaches to whatever roster cards already exist.
-         */
-
-        if (typeof bindExistingPlayerCards === "function")
-            bindExistingPlayerCards();
-
-    },300);
 
 })();
-
-
-/* ============================================================
-   SAFE EXTERNAL HUB BUTTONS
-   ============================================================ */
-
-/*
-   These functions are intentionally global so the existing
-   navigation/buttons can call them without changing the
-   original navigation architecture.
- */
-
-function openUniversityBall() {
-    MC.universityHub();
-}
-
-function openYouthAcademy() {
-    MC.youthAcademyHub();
-}
-
-function openLiveAuction() {
-    MC.liveAuctionHub();
-}
-
-function openFreeAgentMarket() {
-    MC.freeAgentHub();
-}
-
-function openMacroMarket() {
-    MC.marketHub();
-}
-
-function openTrainingHub() {
-    MC.trainingHub();
-}
-
-function openDraftBoard() {
-    MC.draftHub();
-}
-
-
-/* ============================================================
-   OPTIONAL NAV BUTTON ADDITIONS
-   These can be inserted into your EXISTING sidebar.
-   They do NOT replace your current buttons.
-   ============================================================ */
-
-/*
-
-<button class="nav-btn"
-        onclick="openUniversityBall()">
-    University Ball Scouting
-</button>
-
-<button class="nav-btn"
-        onclick="openYouthAcademy()">
-    Youth Academy
-</button>
-
-<button class="nav-btn"
-        onclick="openLiveAuction()">
-    🔴 Live Auction
-</button>
-
-<button class="nav-btn"
-        onclick="openFreeAgentMarket()">
-    Free-Agent Market
-</button>
-
-<button class="nav-btn"
-        onclick="openMacroMarket()">
-    Market Conditions
-</button>
-
-*/
-
-
-/* ============================================================
-   IMPORTANT COMPATIBILITY NOTE
-   ============================================================
-
-   Your existing player-card HTML remains untouched.
-
-   Your existing:
-       .player-card
-       .player-details
-       .player-photo-area
-       .nav-btn
-       .main-content
-       .sidebar
-       .page-header
-       .draft-table
-       etc.
-
-   remain the visual authority.
-
-   This module only adds:
-       - player interaction
-       - scouting
-       - academy
-       - auctions
-       - free agency
-       - market logic
-       - training connection
-       - player detail
-       - fictional University Ball pipeline
-
-   ============================================================ */
 </script>
-```
