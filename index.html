@@ -1,2087 +1,2881 @@
-```html
-<!-- ============================================================
-     MOTOR CITY HUSTLE — INTERACTIVE HUB ADD-ON
-     RULE #1: PRESERVE EXISTING LOOK + EXISTING CODE.
-     THIS MODULE ONLY ADDS FUNCTIONALITY.
-     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motor City Hustle - Franchise Console</title>
 
 <style>
-/* ============================================================
-   ADD-ON ONLY — DOES NOT REPLACE ORIGINAL THEME
-   ============================================================ */
+* { box-sizing: border-box; }
 
-.hub-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15,23,42,.72);
-    z-index: 9999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+body {
+    margin: 0;
+    background: #dfe5e8;
+    color: #2c3e50;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12px;
 }
 
-.hub-overlay.open {
-    display: flex;
+button, select, input {
+    font-family: Verdana, Arial, sans-serif;
 }
 
-.hub-window {
-    width: min(900px, 96vw);
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #fdfefe;
-    border: 2px solid #2c3e50;
-    border-radius: 6px;
-    box-shadow: 0 10px 40px rgba(0,0,0,.4);
-}
+/* =========================
+   ORIGINAL MAIN LAYOUT
+========================= */
 
-.hub-window-header {
+.header {
+    height: 45px;
     background: #2c3e50;
     color: white;
-    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    border-bottom: 3px solid #e67e22;
+    font-size: 12px;
+}
+
+.team-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.finances-box {
+    background: #34495e;
+    padding: 6px 10px;
+    border: 1px solid #22313f;
+    border-radius: 3px;
+}
+
+.container {
+    display: flex;
+    min-height: calc(100vh - 45px);
+}
+
+/* LEFT SIDEBAR */
+
+.sidebar {
+    width: 180px;
+    background-color: #2c3e50;
+    padding: 15px 5px;
+}
+
+.nav-btn {
+    display: block;
+    width: 90%;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: #34495e;
+    border: 1px solid #22313f;
+    color: #ecf0f1;
+    text-align: left;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.nav-btn.active,
+.nav-btn:hover {
+    background-color: #e67e22;
+    color: white;
+    border-color: #d35400;
+}
+
+/* MAIN WORKSPACE */
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fdfefe;
+    overflow-x: hidden;
+}
+
+.page-header {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* =========================
+   TEAM SELECTOR
+========================= */
+
+.team-selector-box {
+    background: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.team-selector-box label {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.team-selector-box select {
+    padding: 5px;
+    min-width: 220px;
+    border: 1px solid #95a5a6;
+    background: white;
+}
+
+/* =========================
+   PLAYER CARD
+========================= */
+
+.player-card {
+    background-color: #fffaf0;
+    border: 1px solid #dfd5c3;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    padding: 12px;
+    display: flex;
+    gap: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.player-card:hover {
+    border-color: #e67e22;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+}
+
+.player-photo-area {
+    text-align: center;
+    width: 85px;
+    flex-shrink: 0;
+}
+
+.jersey-badge {
+    background-color: #c0392b;
+    color: white;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.player-face {
+    width: 70px;
+    height: 70px;
+    background: #e0e0e0;
+    border-radius: 50px;
+    border: 2px solid #bdc3c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.player-details {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.meta-info p,
+.skills-grid p {
+    margin: 3px 0;
+    line-height: 1.4;
+}
+
+.meta-info strong {
+    color: #2c3e50;
+}
+
+.skill-val {
+    font-weight: bold;
+}
+
+.skill-poor {
+    color: #95a5a6;
+}
+
+.skill-avg {
+    color: #d35400;
+}
+
+.skill-good {
+    color: #2980b9;
+}
+
+.skill-elite {
+    color: #27ae60;
+    font-weight: 900;
+}
+
+/* =========================
+   CAP / ZONE
+========================= */
+
+.zone-analysis-box {
+    grid-column: span 2;
+    background-color: #f4ecf7;
+    border: 1px solid #d5b8e0;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13px;
-    font-weight: bold;
 }
 
-.hub-close {
-    background: #c0392b;
-    color: white;
-    border: 1px solid #922b21;
-    padding: 4px 9px;
-    cursor: pointer;
+.zone-bar-container {
+    background: #e8daef;
+    width: 120px;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.zone-bar-fill {
+    background: #8e44ad;
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.cap-wrapper {
+    background: #eaeded;
     border-radius: 3px;
-    font-weight: bold;
+    height: 12px;
+    width: 100%;
+    border: 1px solid #bdc3c7;
+    overflow: hidden;
+    margin-top: 3px;
 }
 
-.hub-body {
-    padding: 15px;
+.cap-fill {
+    background: linear-gradient(to right, #f1c40f, #e67e22);
+    height: 100%;
+    transition: width 0.4s ease;
 }
 
-.hub-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-    gap: 10px;
-}
+/* =========================
+   BUTTONS
+========================= */
 
-.hub-box {
-    background: #fffaf0;
-    border: 1px solid #dfd5c3;
-    border-radius: 4px;
-    padding: 10px;
-}
-
-.hub-box h4 {
-    margin: 0 0 7px;
-    color: #2c3e50;
-    border-bottom: 1px solid #e67e22;
-    padding-bottom: 4px;
-}
-
-.hub-stat {
-    display: flex;
-    justify-content: space-between;
-    padding: 3px 0;
+.action-select {
+    padding: 4px;
     font-size: 11px;
 }
 
-.hub-action {
+.btn-retro {
     background: #ecf0f1;
     border: 1px solid #bdc3c7;
-    padding: 5px 9px;
+    padding: 4px 8px;
     cursor: pointer;
     font-size: 11px;
     font-weight: bold;
     border-radius: 3px;
-    margin: 3px;
 }
 
-.hub-action:hover {
+.btn-retro:hover {
     background: #eaf2f8;
     border-color: #3498db;
 }
 
-.hub-action.primary {
-    background: #e67e22;
-    border-color: #d35400;
-    color: white;
+/* =========================
+   PLAYER DETAIL WINDOW
+========================= */
+
+.detail-window {
+    display: none;
+    background: white;
+    border: 2px solid #2c3e50;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
 }
 
-.hub-action.danger {
-    background: #c0392b;
-    border-color: #922b21;
-    color: white;
+.detail-window.active {
+    display: block;
 }
 
-.hub-action.success {
-    background: #27ae60;
-    border-color: #1e8449;
-    color: white;
-}
-
-.masterball-clickable {
-    cursor: pointer;
-    transition: transform .12s ease, box-shadow .12s ease;
-}
-
-.masterball-clickable:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0,0,0,.12);
-}
-
-.player-mini-card {
-    background: #fffaf0;
-    border: 1px solid #dfd5c3;
-    border-radius: 4px;
-    padding: 9px;
-    margin-bottom: 7px;
-    cursor: pointer;
-}
-
-.player-mini-card:hover {
-    border-color: #e67e22;
-    background: #fff8ed;
-}
-
-.player-mini-card strong {
-    color: #2c3e50;
-}
-
-.market-badge {
-    display: inline-block;
-    padding: 3px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: bold;
-    margin: 2px;
-}
-
-.market-live {
-    background: #c0392b;
-    color: white;
-}
-
-.market-free {
-    background: #2980b9;
-    color: white;
-}
-
-.market-youth {
-    background: #27ae60;
-    color: white;
-}
-
-.market-university {
-    background: #8e44ad;
-    color: white;
-}
-
-.scout-lock {
-    color: #c0392b;
-    font-weight: bold;
-}
-
-.scout-open {
-    color: #27ae60;
-    font-weight: bold;
-}
-
-.auction-clock {
-    font-size: 25px;
-    color: #c0392b;
-    font-weight: bold;
-    text-align: center;
-    padding: 8px;
-}
-
-.bid-display {
-    font-size: 18px;
-    color: #2c3e50;
-    font-weight: bold;
-    text-align: center;
-    margin: 5px;
-}
-
-.skill-row {
-    display: grid;
-    grid-template-columns: 120px 1fr 40px;
-    gap: 6px;
-    align-items: center;
-    margin: 5px 0;
-    font-size: 11px;
-}
-
-.skill-track {
-    height: 8px;
-    background: #eaeded;
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.skill-fill {
-    height: 100%;
-    background: #2980b9;
-}
-
-.detail-tier {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-    font-size: 11px;
-}
-
-.hub-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-}
-
-.hub-table th {
+.detail-header {
     background: #2c3e50;
     color: white;
-    padding: 7px;
-    text-align: left;
+    padding: 8px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
 }
 
-.hub-table td {
-    padding: 7px;
-    border-bottom: 1px solid #ddd;
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding-top: 12px;
 }
 
-.interest-team {
-    display: inline-block;
-    background: #34495e;
-    color: white;
-    padding: 3px 6px;
-    margin: 2px;
+.stat-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stat-table td {
+    padding: 5px;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.stat-table td:first-child {
+    font-weight: bold;
+    width: 55%;
+}
+
+/* =========================
+   SCOUTING
+========================= */
+
+.scout-card {
+    background: #f8f9f9;
+    border: 1px solid #bdc3c7;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.scout-card:hover {
+    border-color: #3498db;
+    background: #f4faff;
+}
+
+.scout-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scout-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.scout-status {
+    font-size: 10px;
+    font-weight: bold;
+    color: #8e44ad;
+}
+
+.scout-details {
+    display: none;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    margin-top: 8px;
+    padding-top: 8px;
+}
+
+.scout-card.open .scout-details {
+    display: block;
+}
+
+.scouting-teams {
+    background: #f4ecf7;
+    border: 1px solid #d5b8e0;
+    padding: 7px;
+    margin-top: 6px;
+}
+
+/* =========================
+   FICTIONAL UNIVERSITY BALL
+========================= */
+
+.university-board {
+    background: #f7f9fa;
+    border: 1px solid #bdc3c7;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.pipeline-warning {
+    background: #fff3cd;
+    border: 1px solid #f1c40f;
+    padding: 8px;
+    margin-bottom: 12px;
     border-radius: 3px;
+}
+
+/* =========================
+   YOUTH ACADEMY
+========================= */
+
+.academy-card {
+    background: #eef7ff;
+    border: 1px solid #a9cce3;
+    padding: 10px;
+    margin-bottom: 9px;
+    border-radius: 4px;
+}
+
+.youth-tier {
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 3px;
+    color: white;
+    font-weight: bold;
     font-size: 10px;
 }
 
-.hub-log {
+.youth-common {
+    background: #7f8c8d;
+}
+
+.youth-gem {
+    background: #2980b9;
+}
+
+.youth-rare {
+    background: #8e44ad;
+}
+
+.youth-mythic {
+    background: #c0392b;
+}
+
+/* IMPORTANT:
+   Diamond labels are deliberately NOT available
+   in University Ball.
+*/
+
+.no-diamond-note {
+    font-size: 10px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* =========================
+   AUCTION
+========================= */
+
+.auction-card {
+    background: #fff;
+    border: 1px solid #bdc3c7;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.auction-live {
+    border-left: 5px solid #e74c3c;
+}
+
+.auction-free {
+    border-left: 5px solid #27ae60;
+}
+
+.auction-timer {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.bid-box {
+    background: #f4f6f7;
+    padding: 7px;
+    margin-top: 7px;
+}
+
+/* =========================
+   DRAFT BOARD
+========================= */
+
+.draft-board-container {
+    background-color: #ffffff;
+    border: 2px solid #2c3e50;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.draft-header-panel {
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 5px solid #ef4444;
+}
+
+.draft-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    margin-top: 10px;
+}
+
+.draft-table th {
+    background-color: #2c3e50;
+    color: #ffffff;
+    padding: 10px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.draft-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 12px;
+}
+
+.draft-table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* =========================
+   POTENTIAL BADGES
+========================= */
+
+.badge-generational-red {
+    background: linear-gradient(135deg,#ef4444,#991b1b);
+    color:white;
+    font-weight:bold;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-generational-black {
+    background: linear-gradient(135deg,#1f2937,#000);
+    color:#f3f4f6;
+    font-weight:bold;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-platinum {
+    background: linear-gradient(135deg,#cbd5e1,#64748b);
+    color:white;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-gold {
+    background: linear-gradient(135deg,#fbbf24,#b45309);
+    color:white;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-emerald {
+    background: linear-gradient(135deg,#34d399,#047857);
+    color:white;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+.badge-scrub {
+    background:#e2e8f0;
+    color:#64748b;
+    padding:4px 8px;
+    border-radius:4px;
+}
+
+/* =========================
+   COACH / MARKET PANELS
+========================= */
+
+.office-panel,
+.market-panel,
+.training-panel,
+.tactics-panel {
+    background: #f8f9f9;
+    border: 1px solid #bdc3c7;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.log-box {
     background: #020617;
     color: #34d399;
-    padding: 8px;
-    height: 100px;
-    overflow-y: auto;
     font-family: monospace;
-    font-size: 10px;
+    padding: 8px;
+    min-height: 90px;
+    max-height: 180px;
+    overflow-y: auto;
     border-radius: 3px;
-    margin-top: 8px;
 }
 
-@media(max-width:650px) {
-    .hub-window {
-        width: 98vw;
+/* =========================
+   MACRO MARKET
+========================= */
+
+.market-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.market-stat {
+    background: #ecf0f1;
+    border: 1px solid #bdc3c7;
+    padding: 8px;
+    text-align: center;
+}
+
+@media(max-width:800px) {
+    .sidebar {
+        width: 145px;
     }
 
-    .skill-row {
-        grid-template-columns: 90px 1fr 35px;
+    .player-details,
+    .detail-grid,
+    .market-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .zone-analysis-box {
+        grid-column: span 1;
     }
 }
 </style>
+</head>
 
+<body>
 
-<!-- ============================================================
-     PLAYER DETAIL WINDOW
-     ============================================================ -->
+<!-- =========================
+     HEADER
+========================= -->
 
-<div id="player-detail-overlay" class="hub-overlay">
-    <div class="hub-window">
+<div class="header">
+    <div class="team-title">
+        🏀 <span id="header-team-name">Motor City Hustle</span>
+        <span style="font-size:10px;">(ID: 948204)</span>
+    </div>
 
-        <div class="hub-window-header">
-            <span id="detail-title">Masterball Card — Player Detail</span>
-            <button class="hub-close" onclick="MC.closeWindow('player-detail-overlay')">X</button>
-        </div>
+    <div>
+        <strong>Season 24 | Week 3</strong>
+    </div>
 
-        <div class="hub-body" id="player-detail-body"></div>
-
+    <div class="finances-box">
+        Club Funds:
+        $<span id="funds-txt">145,200</span>
     </div>
 </div>
 
+<div class="container">
 
-<!-- ============================================================
-     MARKET / SCOUTING WINDOW
-     ============================================================ -->
+<!-- =========================
+     SIDEBAR
+========================= -->
 
-<div id="hub-window-overlay" class="hub-overlay">
-    <div class="hub-window">
+<div class="sidebar">
 
-        <div class="hub-window-header">
-            <span id="hub-window-title">Hub</span>
-            <button class="hub-close" onclick="MC.closeWindow('hub-window-overlay')">X</button>
-        </div>
+    <button class="nav-btn active"
+            onclick="navigate(event,'roster-panel')">
+        Team Roster
+    </button>
 
-        <div class="hub-body" id="hub-window-body"></div>
+    <button class="nav-btn"
+            onclick="navigate(event,'training-panel')">
+        Weekly Training
+    </button>
 
+    <button class="nav-btn"
+            onclick="navigate(event,'tactics-panel')">
+        Tactical Matchup
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'university-panel')">
+        University Ball Scouting
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'academy-panel')">
+        Youth Academy
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'auction-panel')">
+        🔨 Live Auction
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'freeagent-panel')">
+        💼 Free Agent Market
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'draft-panel')">
+        🏆 Live Draft Board
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'coach-panel')">
+        👔 Coach Office
+    </button>
+
+    <button class="nav-btn"
+            onclick="navigate(event,'market-panel')">
+        📊 Macro Market
+    </button>
+
+</div>
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<div class="main-content">
+
+<!-- =========================
+     ROSTER PANEL
+========================= -->
+
+<div id="roster-panel" class="tab-panel active">
+
+<div class="page-header">
+    Franchise Roster Explorer
+</div>
+
+<div class="team-selector-box">
+
+    <label>View Team:</label>
+
+    <select id="team-select"
+            onchange="changeViewedTeam()">
+
+        <option value="motor">Motor City Hustle</option>
+        <option value="lake">Lakefront Falcons</option>
+        <option value="capital">Capital City Comets</option>
+        <option value="desert">Desert Valley Scorch</option>
+        <option value="atlantic">Atlantic Harbor Kings</option>
+        <option value="prairie">Prairie State Outlaws</option>
+
+    </select>
+
+    <span id="team-record"
+          style="font-weight:bold;color:#7f8c8d;">
+        14-8
+    </span>
+
+</div>
+
+<div id="player-detail" class="detail-window"></div>
+
+<div id="roster-list"></div>
+
+</div>
+
+
+<!-- =========================
+     TRAINING
+========================= -->
+
+<div id="training-panel" class="tab-panel">
+
+<div class="page-header">
+    Weekly Training
+</div>
+
+<div class="training-panel">
+
+    <p>
+        <strong>Training Infrastructure:</strong>
+        Recreational Facility
+    </p>
+
+    <p>
+        Distributed Clock Pool:
+        <strong id="training-minutes">
+            100 / 100
+        </strong>
+    </p>
+
+    <label>Marcus Rivers Minutes:</label>
+    <input type="range"
+           id="p1-range"
+           min="0"
+           max="100"
+           value="30"
+           oninput="syncTraining()">
+
+    <span id="p1-txt">30</span>
+
+    <br><br>
+
+    <label>Devin Hayes Minutes:</label>
+    <input type="range"
+           id="p2-range"
+           min="0"
+           max="100"
+           value="20"
+           oninput="syncTraining()">
+
+    <span id="p2-txt">20</span>
+
+    <hr>
+
+    <button class="btn-retro"
+            onclick="runTraining()">
+        Process Weekly Training
+    </button>
+
+    <div id="training-log"
+         class="log-box"
+         style="margin-top:10px;">
+        [Gym Desk Stable] Ready.
     </div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     TACTICS
+========================= -->
+
+<div id="tactics-panel" class="tab-panel">
+
+<div class="page-header">
+    Tactical Matchup
+</div>
+
+<div class="tactics-panel">
+
+    <p>
+        <strong>Opponent:</strong>
+        Lakefront Falcons
+    </p>
+
+    <p>
+        <strong>Matchup Focus:</strong>
+        Perimeter Pressure
+    </p>
+
+    <select id="tactic-select"
+            class="action-select">
+
+        <option>Balanced Attack</option>
+        <option>Protect Paint</option>
+        <option>Perimeter Pressure</option>
+        <option>Fast Break</option>
+        <option>Slow Tempo</option>
+
+    </select>
+
+    <button class="btn-retro"
+            onclick="runTactics()">
+        Apply Match Plan
+    </button>
+
+    <div id="tactic-log"
+         class="log-box"
+         style="margin-top:10px;">
+        [Tactical Desk] Awaiting manager instructions.
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     UNIVERSITY BALL
+========================= -->
+
+<div id="university-panel" class="tab-panel">
+
+<div class="page-header">
+    University Ball Scouting Pipeline
+</div>
+
+<div class="university-board">
+
+<div class="pipeline-warning">
+
+    ⚠️ Fictional University Ball ecosystem.
+    No real colleges or universities are used.
+
+    <br>
+
+    <span class="no-diamond-note">
+        University Ball prospects cannot receive Diamond-tier labels.
+        Their development system is separate from the professional rarity system.
+    </span>
+
+</div>
+
+<div id="university-list"></div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     YOUTH ACADEMY
+========================= -->
+
+<div id="academy-panel" class="tab-panel">
+
+<div class="page-header">
+    Youth Academy Prospect Board
+</div>
+
+<div class="academy-card">
+
+<strong>Academy Rules</strong>
+
+<p>
+Youth players can develop special abilities that do not use the
+professional player tier ladder.
+</p>
+
+<p class="no-diamond-note">
+Diamond-level discoveries are extraordinarily rare in the youth
+environment and are handled as special developmental phenomena rather
+than normal roster tiers.
+</p>
+
+</div>
+
+<div id="academy-list"></div>
+
+</div>
+
+
+<!-- =========================
+     LIVE AUCTION
+========================= -->
+
+<div id="auction-panel" class="tab-panel">
+
+<div class="page-header">
+    🔨 Live Player Auction
+</div>
+
+<div class="market-panel">
+
+<p>
+<strong>LIVE AUCTION:</strong>
+Players are actively bid on. Every listing has a countdown timer.
+</p>
+
+<div id="live-auction-list"></div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     FREE AGENT MARKET
+========================= -->
+
+<div id="freeagent-panel" class="tab-panel">
+
+<div class="page-header">
+    💼 Free Agent Contract Market
+</div>
+
+<div class="market-panel">
+
+<p>
+<strong>FREE AGENT MARKET:</strong>
+This is NOT the live auction.
+There is no bidding timer. The manager purchases the available
+contract at its listed market price.
+</p>
+
+<div id="free-agent-list"></div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     DRAFT
+========================= -->
+
+<div id="draft-panel" class="tab-panel">
+
+<div class="page-header">
+    Live Draft Board
+</div>
+
+<div class="draft-board-container">
+
+<div class="draft-header-panel">
+
+<strong>🏆 FICTIONAL UNIVERSITY BALL DRAFT BOARD</strong>
+
+<br><br>
+
+University prospects only.
+Diamond labels are unavailable in this pool.
+
+</div>
+
+<table class="draft-table">
+
+<thead>
+<tr>
+<th>Pick</th>
+<th>Prospect</th>
+<th>Position</th>
+<th>Projection</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="draft-table-body"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     COACH OFFICE
+========================= -->
+
+<div id="coach-panel" class="tab-panel">
+
+<div class="page-header">
+    Dynamic Coach Office Console
+</div>
+
+<div class="office-panel">
+
+<div style="
+background:#1e3a1e;
+padding:8px;
+border-bottom:2px solid #eab308;
+font-weight:bold;
+color:#eab308;
+">
+👔 Coach Contract Operations
+</div>
+
+<br>
+
+<div>
+<strong>Coach:</strong>
+<span id="coach-name">
+Coach Vincent
+</span>
+</div>
+
+<div>
+<strong>Tier:</strong>
+<span id="coach-tier">
+TIN TIER
+</span>
+</div>
+
+<div>
+<strong>Rating:</strong>
+<span id="coach-rating">
+35
+</span>
+</div>
+
+<div style="margin-top:10px;">
+
+<button class="btn-retro"
+        onclick="levelCoach()">
+Level Coach
+</button>
+
+<button class="btn-retro"
+        onclick="resetCoach()">
+Reset
+</button>
+
+</div>
+
+<div id="coach-log"
+     class="log-box"
+     style="margin-top:10px;">
+[Coach Office] Operations stable.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     MACRO MARKET
+========================= -->
+
+<div id="market-panel" class="tab-panel">
+
+<div class="page-header">
+    Macro-Adaptive Player Market
+</div>
+
+<div class="market-panel">
+
+<div class="market-stats">
+
+<div class="market-stat">
+<strong>Shooters</strong>
+<br>
+<span id="stat-shooters">
+50%
+</span>
+</div>
+
+<div class="market-stat">
+<strong>Big Men</strong>
+<br>
+<span id="stat-bigs">
+50%
+</span>
+</div>
+
+<div class="market-stat">
+<strong>Climate</strong>
+<br>
+<span id="climate-status">
+STABLE EQUILIBRIUM
+</span>
+</div>
+
+</div>
+
+<button class="btn-retro"
+        onclick="triggerMarket('shooters')">
+Simulate Shooter Oversupply
+</button>
+
+<button class="btn-retro"
+        onclick="triggerMarket('bigs')">
+Simulate Big-Man Oversupply
+</button>
+
+<button class="btn-retro"
+        onclick="resetMarket()">
+Reset Market
+</button>
+
+<div id="macro-terminal"
+     class="log-box"
+     style="margin-top:10px;">
+[Ecosystem Stable] Standard market metrics active.
+</div>
+
+</div>
+
+</div>
+
+</div>
 </div>
 
 
 <script>
-/* ============================================================
-   MASTER CONTROL ENGINE
-   ============================================================ */
 
-var MC = (function () {
+/* =========================================================
+   CORE NAVIGATION
+========================================================= */
 
-    /* ----------------------------------------------------------
-       CENTRAL WORLD STATE
-       ---------------------------------------------------------- */
+function navigate(event, panelId) {
 
-    var state = {
+    var panels = document.querySelectorAll('.tab-panel');
+    var buttons = document.querySelectorAll('.nav-btn');
 
-        funds: 145200,
+    panels.forEach(function(panel) {
+        panel.classList.remove('active');
+    });
 
-        userTeam: {
-            id: 948204,
-            name: "Motor City Hustle"
+    buttons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+
+    document.getElementById(panelId).classList.add('active');
+
+    event.currentTarget.classList.add('active');
+}
+
+
+/* =========================================================
+   FICTIONAL TEAM DATABASE
+========================================================= */
+
+var teams = {
+
+motor: {
+    name: "Motor City Hustle",
+    record: "14-8",
+    players: [
+        {
+            id: 49205447,
+            name: "Travis Stallings",
+            number: 11,
+            position: "SG",
+            age: 19,
+            height: "6'4\"",
+            weight: 193,
+            salary: 11312,
+            potential: "Perennial Allstar",
+            face: "👨🏾‍🦱",
+            js: 72,
+            dr: 61,
+            pass: 68,
+            defense: 55,
+            reb: 43,
+            cap: 87,
+            zone: 76
         },
-
-        teams: [
-            {
-                id: 948204,
-                name: "Motor City Hustle",
-                city: "Motor City",
-                roster: []
-            },
-            {
-                id: 110284,
-                name: "Lakeview Forge",
-                city: "Lakeview",
-                roster: []
-            },
-            {
-                id: 220391,
-                name: "Capital Comets",
-                city: "Capital",
-                roster: []
-            },
-            {
-                id: 330492,
-                name: "Rivergate Royals",
-                city: "Rivergate",
-                roster: []
-            },
-            {
-                id: 440583,
-                name: "Prairie Storm",
-                city: "Prairie",
-                roster: []
-            },
-            {
-                id: 550674,
-                name: "Atlantic Foundry",
-                city: "Atlantic",
-                roster: []
-            }
-        ],
-
-        universityPlayers: [],
-
-        youthPlayers: [],
-
-        freeAgents: [],
-
-        liveAuctions: [],
-
-        scoutingLocks: {},
-
-        trainingLog: [],
-
-        nextPlayerId: 70000000,
-
-        nextAuctionId: 1
-    };
-
-
-    /* ----------------------------------------------------------
-       FICTIONAL NAME / SCHOOL DATA
-       ---------------------------------------------------------- */
-
-    var firstNames = [
-        "Marcus","Darius","Jalen","Terrence","Malik",
-        "Devin","Andre","Caleb","Isaiah","Jordan",
-        "Cameron","Travis","Kendrick","Mason","Tyrese",
-        "Evan","Dante","Jaylen","Micah","Noah"
-    ];
-
-    var lastNames = [
-        "Rivers","Hayes","Stallings","Carter","Monroe",
-        "Bennett","Griffin","Lawson","Maddox","Reed",
-        "Whitaker","Banks","Holloway","Parker","Dawson",
-        "Ellis","Warren","McCall","Foster","Bradley"
-    ];
-
-    var fictionalUniversities = [
-        "North Valley Institute",
-        "Great Lakes Technical",
-        "Western Prairie University",
-        "Capital Heights College",
-        "Atlantic Plains University",
-        "Redwood State Institute",
-        "Central Metro University",
-        "Blue Ridge Technical",
-        "River County University",
-        "Heartland College",
-        "Northern Frontier Institute",
-        "Pioneer Valley University"
-    ];
-
-    var states = [
-        "Michigan",
-        "Virginia",
-        "Ohio",
-        "Indiana",
-        "Illinois",
-        "Georgia",
-        "Texas",
-        "Florida",
-        "Arizona",
-        "Colorado",
-        "Oregon",
-        "Pennsylvania",
-        "Tennessee",
-        "North Carolina"
-    ];
-
-    var positions = [
-        "PG",
-        "SG",
-        "SF",
-        "PF",
-        "C"
-    ];
-
-
-    /* ----------------------------------------------------------
-       TIER RULES
-       
-       IMPORTANT:
-       UNIVERSITY BALL NEVER GETS DIAMOND.
-       
-       YOUTH DIAMOND/GEM EVENTS ARE EXTREMELY RARE.
-       ---------------------------------------------------------- */
-
-    var tiers = [
-        {name:"SNUCK", cap:20, color:"#4b5563"},
-        {name:"TIN", cap:35, color:"#64748b"},
-        {name:"COPPER", cap:45, color:"#b45309"},
-        {name:"SILVER", cap:50, color:"#94a3b8"},
-        {name:"OPAL", cap:55, color:"#06b6d4"},
-        {name:"EMERALD", cap:60, color:"#10b981"},
-        {name:"GOLD", cap:65, color:"#d97706"},
-        {name:"PLATINUM", cap:70, color:"#3b82f6"},
-        {name:"WHITE DIAMOND", cap:74, color:"#94a3b8"},
-        {name:"BLACK DIAMOND", cap:75, color:"#111827"},
-        {name:"RED DIAMOND", cap:80, color:"#dc2626"}
-    ];
-
-
-    function randomItem(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-
-    function randomInt(min,max) {
-        return Math.floor(Math.random() * (max-min+1))+min;
-    }
-
-
-    function makeName() {
-        return randomItem(firstNames) + " " + randomItem(lastNames);
-    }
-
-
-    function makeId() {
-        state.nextPlayerId++;
-        return state.nextPlayerId;
-    }
-
-
-    /* ----------------------------------------------------------
-       TIER ASSIGNMENT
-       ---------------------------------------------------------- */
-
-    function universityTier() {
-
-        /*
-         * University Ball:
-         * NEVER Diamond.
-         */
-
-        var roll = Math.random();
-
-        if (roll < .04) return "PLATINUM";
-        if (roll < .15) return "GOLD";
-        if (roll < .34) return "EMERALD";
-        if (roll < .57) return "OPAL";
-        if (roll < .76) return "SILVER";
-        if (roll < .90) return "COPPER";
-
-        return "TIN";
-    }
-
-
-    function youthTier() {
-
-        /*
-         * Youth:
-         * Diamond-class potential is possible,
-         * but exceptionally rare.
-         */
-
-        var roll = Math.random();
-
-        if (roll < .0005) return "RED DIAMOND";
-        if (roll < .0020) return "BLACK DIAMOND";
-        if (roll < .0060) return "WHITE DIAMOND";
-        if (roll < .03) return "PLATINUM";
-        if (roll < .12) return "GOLD";
-        if (roll < .30) return "EMERALD";
-        if (roll < .55) return "OPAL";
-        if (roll < .75) return "SILVER";
-
-        return "COPPER";
-    }
-
-
-    function professionalTier() {
-
-        var roll = Math.random();
-
-        if (roll < .0002) return "RED DIAMOND";
-        if (roll < .001) return "BLACK DIAMOND";
-        if (roll < .005) return "WHITE DIAMOND";
-        if (roll < .025) return "PLATINUM";
-        if (roll < .12) return "GOLD";
-        if (roll < .35) return "EMERALD";
-        if (roll < .58) return "OPAL";
-        if (roll < .75) return "SILVER";
-
-        return "COPPER";
-    }
-
-
-    /* ----------------------------------------------------------
-       PLAYER GENERATOR
-       ---------------------------------------------------------- */
-
-    function createPlayer(origin) {
-
-        var tier;
-
-        if (origin === "university") {
-            tier = universityTier();
+        {
+            id: 49205448,
+            name: "Marcus Rivers",
+            number: 3,
+            position: "PG",
+            age: 21,
+            height: "6'2\"",
+            weight: 195,
+            salary: 18400,
+            potential: "Elite Creator",
+            face: "🧑🏽‍🦱",
+            js: 72,
+            dr: 61,
+            pass: 77,
+            defense: 52,
+            reb: 35,
+            cap: 87,
+            zone: 81
+        },
+        {
+            id: 49205449,
+            name: "Devin Hayes",
+            number: 42,
+            position: "C",
+            age: 23,
+            height: "6'10\"",
+            weight: 250,
+            salary: 9200,
+            potential: "Rotation Anchor",
+            face: "👨🏿",
+            js: 38,
+            dr: 48,
+            pass: 45,
+            defense: 69,
+            reb: 73,
+            cap: 69,
+            zone: 64
         }
-        else if (origin === "youth") {
-            tier = youthTier();
+    ]
+},
+
+lake: {
+    name: "Lakefront Falcons",
+    record: "12-10",
+    players: [
+        {
+            id: 583201,
+            name: "Darius Cole",
+            number: 7,
+            position: "PG",
+            age: 22,
+            height: "6'1\"",
+            weight: 182,
+            salary: 15100,
+            potential: "Starter",
+            face: "👨🏽",
+            js: 69,
+            dr: 74,
+            pass: 71,
+            defense: 61,
+            reb: 29,
+            cap: 78,
+            zone: 73
+        },
+        {
+            id: 583202,
+            name: "Andre Whitlock",
+            number: 24,
+            position: "PF",
+            age: 25,
+            height: "6'8\"",
+            weight: 238,
+            salary: 12700,
+            potential: "Strong Starter",
+            face: "👨🏾",
+            js: 51,
+            dr: 43,
+            pass: 55,
+            defense: 72,
+            reb: 78,
+            cap: 80,
+            zone: 69
         }
-        else {
-            tier = professionalTier();
+    ]
+},
+
+capital: {
+    name: "Capital City Comets",
+    record: "16-6",
+    players: [
+        {
+            id: 611201,
+            name: "Jalen Mercer",
+            number: 1,
+            position: "PG",
+            age: 20,
+            height: "6'3\"",
+            weight: 188,
+            salary: 22100,
+            potential: "Franchise",
+            face: "🧑🏾",
+            js: 81,
+            dr: 78,
+            pass: 83,
+            defense: 64,
+            reb: 31,
+            cap: 91,
+            zone: 88
+        },
+        {
+            id: 611202,
+            name: "Caleb Boone",
+            number: 33,
+            position: "C",
+            age: 27,
+            height: "6'11\"",
+            weight: 267,
+            salary: 17600,
+            potential: "Veteran Anchor",
+            face: "👨🏻",
+            js: 42,
+            dr: 36,
+            pass: 49,
+            defense: 82,
+            reb: 84,
+            cap: 84,
+            zone: 72
         }
+    ]
+},
 
-        var tierData = tiers.find(function(t){
-            return t.name === tier;
-        });
+desert: {
+    name: "Desert Valley Scorch",
+    record: "10-12",
+    players: [
+        {
+            id: 710201,
+            name: "Keenan Price",
+            number: 9,
+            position: "SF",
+            age: 24,
+            height: "6'7\"",
+            weight: 218,
+            salary: 13600,
+            potential: "Starter",
+            face: "👨🏽‍🦱",
+            js: 65,
+            dr: 58,
+            pass: 53,
+            defense: 63,
+            reb: 60,
+            cap: 76,
+            zone: 70
+        }
+    ]
+},
 
-        var cap = tierData ? tierData.cap : 50;
+atlantic: {
+    name: "Atlantic Harbor Kings",
+    record: "9-13",
+    players: [
+        {
+            id: 811101,
+            name: "Terrence Bell",
+            number: 15,
+            position: "SG",
+            age: 20,
+            height: "6'5\"",
+            weight: 201,
+            salary: 10400,
+            potential: "Developing",
+            face: "👨🏾‍🦱",
+            js: 61,
+            dr: 55,
+            pass: 47,
+            defense: 58,
+            reb: 39,
+            cap: 73,
+            zone: 66
+        }
+    ]
+},
 
-        var base = Math.max(18, cap-randomInt(5,22));
+prairie: {
+    name: "Prairie State Outlaws",
+    record: "7-15",
+    players: [
+        {
+            id: 911301,
+            name: "Malik Turner",
+            number: 22,
+            position: "PF",
+            age: 22,
+            height: "6'9\"",
+            weight: 244,
+            salary: 8300,
+            potential: "Rotation",
+            face: "👨🏿‍🦱",
+            js: 45,
+            dr: 40,
+            pass: 52,
+            defense: 67,
+            reb: 71,
+            cap: 74,
+            zone: 61
+        }
+    ]
+}
 
-        var player = {
+};
 
-            id: makeId(),
 
-            name: makeName(),
+/* =========================================================
+   RENDER TEAM ROSTER
+========================================================= */
 
-            origin: origin,
+function changeViewedTeam() {
 
-            position: randomItem(positions),
+    var key = document.getElementById("team-select").value;
 
-            age:
-                origin === "youth"
-                ? randomInt(13,18)
-                : origin === "university"
-                ? randomInt(18,23)
-                : randomInt(19,34),
+    var team = teams[key];
 
-            state: randomItem(states),
+    document.getElementById("header-team-name").innerText =
+        team.name;
 
-            university:
-                origin === "university"
-                ? randomItem(fictionalUniversities)
-                : null,
+    document.getElementById("team-record").innerText =
+        team.record;
 
-            tier: tier,
+    document.getElementById("player-detail").classList.remove("active");
 
-            potentialCap: cap,
+    renderRoster(team);
+}
 
-            shooting: Math.min(cap, base+randomInt(-4,8)),
 
-            dribbling: Math.min(cap, base+randomInt(-6,7)),
+function renderRoster(team) {
 
-            passing: Math.min(cap, base+randomInt(-5,8)),
+    var list = document.getElementById("roster-list");
 
-            defense: Math.min(cap, base+randomInt(-7,7)),
+    list.innerHTML = "";
 
-            athleticism: Math.min(cap, base+randomInt(-5,8)),
+    var header = document.createElement("div");
 
-            finishing: Math.min(cap, base+randomInt(-5,8)),
+    header.className = "page-header";
 
-            iq: Math.min(cap, base+randomInt(-5,7)),
+    header.innerText =
+        team.name + " — Active Player List (" +
+        team.players.length +
+        " Players)";
 
-            strength: Math.min(cap, base+randomInt(-5,7)),
+    list.appendChild(header);
 
-            salary: randomInt(4500,18000),
+    team.players.forEach(function(player) {
 
-            marketValue: randomInt(4500,75000),
+        var card = document.createElement("div");
 
-            locked: false,
+        card.className = "player-card";
 
-            selected: false,
-
-            scoutingTeams: [],
-
-            scoutingLevel: "Initial",
-
-            academyEligible: origin === "youth",
-
-            contractStatus:
-                origin === "university"
-                ? "University Ball"
-                : origin === "youth"
-                ? "Youth Prospect"
-                : "Free Agent"
+        card.onclick = function() {
+            showPlayerDetail(player, team);
         };
 
-        /*
-         * Youth rare abilities are different from pro abilities.
-         */
+        var capPercent =
+            Math.min(100, Math.round(
+                (player.js / player.cap) * 100
+            ));
 
-        player.abilities = [];
+        card.innerHTML = `
 
-        if (origin === "youth") {
+        <div class="player-photo-area">
 
-            if (Math.random() < .12)
-                player.abilities.push("Rapid Learner");
+            <span class="jersey-badge">
+                #${player.number}
+            </span>
 
-            if (Math.random() < .08)
-                player.abilities.push("Raw Creator");
+            <div class="player-face">
+                ${player.face}
+            </div>
 
-            if (Math.random() < .05)
-                player.abilities.push("Competitive Motor");
+        </div>
 
-            if (Math.random() < .015)
-                player.abilities.push("Gem Development Pattern");
+        <div class="player-details">
 
-            if (tier.indexOf("DIAMOND") !== -1)
-                player.abilities.push("Generational Youth Projection");
-        }
+            <div class="meta-info">
 
-        if (origin === "university") {
+                <p>
+                    <strong>${player.name}</strong>
+                    (ID: ${player.id})
+                </p>
 
-            if (Math.random() < .12)
-                player.abilities.push("College Floor General");
+                <p>
+                    ${player.position}
+                    | Age: ${player.age}
+                    | Height: ${player.height}
+                </p>
 
-            if (Math.random() < .08)
-                player.abilities.push("Transition Specialist");
+                <p>
+                    Weight: ${player.weight} lbs
+                </p>
 
-            if (Math.random() < .05)
-                player.abilities.push("Defensive Instinct");
+                <p>
+                    Weekly Salary:
+                    $${player.salary.toLocaleString()}
+                </p>
 
-        }
+                <p>
+                    Potential Limit:
+                    <span class="skill-avg">
+                        ${player.potential}
+                    </span>
+                </p>
 
-        return player;
-    }
+                <div>
+                    <span style="font-size:10px;color:#555;">
+                        Skill Development Headroom:
+                    </span>
+
+                    <div class="cap-wrapper">
+                        <div class="cap-fill"
+                             style="width:${capPercent}%;">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="skills-grid">
+
+                <p>
+                    Shooting:
+                    <span class="skill-val skill-good">
+                        ${player.js}
+                    </span>
+                </p>
+
+                <p>
+                    Dribbling:
+                    <span class="skill-val skill-good">
+                        ${player.dr}
+                    </span>
+                </p>
+
+                <p>
+                    Passing:
+                    <span class="skill-val skill-good">
+                        ${player.pass}
+                    </span>
+                </p>
+
+                <p>
+                    Defense:
+                    <span class="skill-val skill-good">
+                        ${player.defense}
+                    </span>
+                </p>
+
+                <p>
+                    Rebounding:
+                    <span class="skill-val skill-good">
+                        ${player.reb}
+                    </span>
+                </p>
+
+            </div>
+
+            <div class="zone-analysis-box">
+
+                <strong>
+                    🔥 Hot Zone Execution
+                </strong>
+
+                <span>
+                    ${player.zone}%
+
+                    <span class="zone-bar-container">
+                        <span class="zone-bar-fill"
+                              style="width:${player.zone}%;">
+                        </span>
+                    </span>
+                </span>
+
+            </div>
+
+        </div>
+        `;
+
+        list.appendChild(card);
+    });
+}
 
 
-    /* ----------------------------------------------------------
-       WORLD INITIALIZATION
-       ---------------------------------------------------------- */
+/* =========================================================
+   CLICK PLAYER → FULL DETAIL
+========================================================= */
 
-    function initializeWorld() {
+function showPlayerDetail(player, team) {
 
-        /*
-         * Give EVERY franchise players.
-         */
+    var detail =
+        document.getElementById("player-detail");
 
-        state.teams.forEach(function(team){
+    detail.classList.add("active");
 
-            if (team.roster.length > 0) return;
+    detail.innerHTML = `
 
-            for (var i=0;i<8;i++) {
+        <div class="detail-header">
 
-                var p = createPlayer("professional");
+            <span>
+                ${player.name}
+                — Full Player File
+            </span>
 
-                team.roster.push(p);
+            <button class="btn-retro"
+                    onclick="closePlayerDetail(event)">
+                Close
+            </button>
 
+        </div>
+
+        <div class="detail-grid">
+
+            <div>
+
+                <h4>Player Information</h4>
+
+                <table class="stat-table">
+
+                    <tr>
+                        <td>Team</td>
+                        <td>${team.name}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Player ID</td>
+                        <td>${player.id}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Position</td>
+                        <td>${player.position}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Age</td>
+                        <td>${player.age}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Height</td>
+                        <td>${player.height}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Weight</td>
+                        <td>${player.weight} lbs</td>
+                    </tr>
+
+                    <tr>
+                        <td>Weekly Salary</td>
+                        <td>
+                            $${player.salary.toLocaleString()}
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            <div>
+
+                <h4>Skill Matrix</h4>
+
+                <table class="stat-table">
+
+                    <tr>
+                        <td>Shooting</td>
+                        <td>${player.js}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Dribbling</td>
+                        <td>${player.dr}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Passing</td>
+                        <td>${player.pass}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Defense</td>
+                        <td>${player.defense}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Rebounding</td>
+                        <td>${player.reb}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Potential Ceiling</td>
+                        <td>${player.cap}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Hot Zone</td>
+                        <td>${player.zone}%</td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div style="
+            background:#f4ecf7;
+            border:1px solid #d5b8e0;
+            padding:8px;
+            margin-top:10px;
+        ">
+
+            <strong>Player Intelligence:</strong>
+
+            Clickable player files are now tied to the selected
+            franchise. Change the team above to inspect another
+            franchise's roster without leaving the roster system.
+
+        </div>
+    `;
+}
+
+
+function closePlayerDetail(event) {
+
+    event.stopPropagation();
+
+    document
+        .getElementById("player-detail")
+        .classList.remove("active");
+}
+
+
+/* =========================================================
+   UNIVERSITY BALL SCOUTING DATABASE
+========================================================= */
+
+var universityProspects = [
+
+{
+    id: "UB-24017",
+    name: "Kendrick Vale",
+    school: "Northbridge Institute",
+    state: "Michigan",
+    position: "SG",
+    age: 18,
+    shooting: 76,
+    defense: 61,
+    potential: "Gold Projection",
+    locked: false,
+    scouts: [
+        "Motor City Hustle",
+        "Capital City Comets"
+    ]
+},
+
+{
+    id: "UB-24022",
+    name: "Jamal Cross",
+    school: "Western Prairie College",
+    state: "Kansas",
+    position: "PF",
+    age: 19,
+    shooting: 52,
+    defense: 73,
+    potential: "Emerald Projection",
+    locked: false,
+    scouts: [
+        "Lakefront Falcons",
+        "Prairie State Outlaws"
+    ]
+},
+
+{
+    id: "UB-24031",
+    name: "Andre Bellamy",
+    school: "Pine Ridge University",
+    state: "Georgia",
+    position: "PG",
+    age: 18,
+    shooting: 81,
+    defense: 55,
+    potential: "Platinum Projection",
+    locked: false,
+    scouts: [
+        "Atlantic Harbor Kings",
+        "Desert Valley Scorch",
+        "Motor City Hustle"
+    ]
+},
+
+{
+    id: "UB-24044",
+    name: "Calvin Rhodes",
+    school: "Red Valley Institute",
+    state: "Texas",
+    position: "C",
+    age: 19,
+    shooting: 41,
+    defense: 78,
+    potential: "Gold Projection",
+    locked: false,
+    scouts: [
+        "Capital City Comets"
+    ]
+}
+
+];
+
+
+function renderUniversity() {
+
+    var box =
+        document.getElementById("university-list");
+
+    box.innerHTML = "";
+
+    universityProspects.forEach(function(p, index) {
+
+        var card =
+            document.createElement("div");
+
+        card.className = "scout-card";
+
+        card.onclick = function() {
+
+            card.classList.toggle("open");
+
+            /* 
+               Each unlocked review can change slightly.
+               Locked prospects remain stable.
+            */
+
+            if (!p.locked) {
+
+                if (Math.random() > 0.5) {
+
+                    p.shooting =
+                        Math.max(
+                            35,
+                            Math.min(
+                                90,
+                                p.shooting +
+                                (Math.random() > .5 ? 1 : -1)
+                            )
+                        );
+                }
             }
 
-        });
+            renderUniversity();
 
+        };
 
-        /*
-         * University Ball scouting pipeline.
-         */
+        card.innerHTML = `
 
-        for (var u=0;u<18;u++) {
+            <div class="scout-top">
 
-            var universityPlayer = createPlayer("university");
+                <div>
 
-            universityPlayer.scoutingTeams = randomScoutingTeams();
+                    <div class="scout-name">
+                        ${p.name}
+                    </div>
 
-            state.universityPlayers.push(universityPlayer);
+                    <div>
+                        ${p.school}
+                        |
+                        ${p.state}
+                        |
+                        ${p.position}
+                    </div>
 
-        }
+                </div>
 
+                <div class="scout-status">
 
-        /*
-         * Youth Academy pipeline.
-         */
+                    ${p.locked
+                        ? "🔒 LOCKED REPORT"
+                        : "🔎 LIVE SCOUT"}
 
-        for (var y=0;y<14;y++) {
+                </div>
 
-            state.youthPlayers.push(createPlayer("youth"));
+            </div>
 
-        }
+            <div class="scout-details">
 
+                <p>
+                    Age:
+                    <strong>${p.age}</strong>
+                </p>
 
-        /*
-         * Free agents.
-         */
+                <p>
+                    Shooting:
+                    <strong>${p.shooting}</strong>
+                </p>
 
-        for (var f=0;f<8;f++) {
+                <p>
+                    Defense:
+                    <strong>${p.defense}</strong>
+                </p>
 
-            state.freeAgents.push(createPlayer("professional"));
+                <p>
+                    Projection:
+                    <strong>${p.potential}</strong>
+                </p>
 
-        }
+                <div class="scouting-teams">
 
+                    <strong>
+                        Other Teams Scouting:
+                    </strong>
 
-        /*
-         * One rotating live auction.
-         */
+                    <br>
 
-        createLiveAuction();
+                    ${p.scouts.join(" • ")}
 
-    }
+                </div>
 
+                <br>
 
-    function randomScoutingTeams() {
+                <button
+                    class="btn-retro"
+                    onclick="lockUniversityPlayer(event,${index})">
 
-        var output = [];
+                    ${p.locked
+                        ? "Unlock Report"
+                        : "🔒 Lock Player Report"}
 
-        state.teams.forEach(function(team){
+                </button>
 
-            if (Math.random() < .30)
-                output.push(team.name);
+                <button
+                    class="btn-retro"
+                    onclick="addToDraftWatch(event,${index})">
 
-        });
+                    Add To Draft Watch
 
-        return output;
+                </button>
 
-    }
+            </div>
+        `;
 
+        box.appendChild(card);
 
-    /* ----------------------------------------------------------
-       CLICK EXISTING PLAYER CARDS
-       ---------------------------------------------------------- */
+    });
 
-    function bindExistingPlayerCards() {
+}
 
-        /*
-         * IMPORTANT:
-         * We don't replace the user's cards.
-         * We simply make them clickable.
-         */
 
-        var cards = document.querySelectorAll(".player-card");
+function lockUniversityPlayer(event,index) {
 
-        cards.forEach(function(card,index){
+    event.stopPropagation();
 
-            if (card.dataset.mcBound === "1") return;
+    universityProspects[index].locked =
+        !universityProspects[index].locked;
 
-            card.dataset.mcBound = "1";
-            card.classList.add("masterball-clickable");
+    renderUniversity();
+}
 
-            card.addEventListener("click",function(){
 
-                /*
-                 * If the existing card has an ID, try to locate it.
-                 * Otherwise show the corresponding roster player.
-                 */
+/* =========================================================
+   DRAFT WATCH
+========================================================= */
 
-                var player = state.teams[0].roster[index];
+var draftWatch = [];
 
-                if (player)
-                    openPlayer(player);
 
-            });
+function addToDraftWatch(event,index) {
 
-        });
+    event.stopPropagation();
 
-    }
+    var p =
+        universityProspects[index];
 
+    if (!draftWatch.includes(p.id)) {
 
-    /* ----------------------------------------------------------
-       PLAYER DETAIL
-       ---------------------------------------------------------- */
-
-    function openPlayer(player) {
-
-        var body = document.getElementById("player-detail-body");
-
-        if (!body) return;
-
-        var tier = tiers.find(function(t){
-            return t.name === player.tier;
-        });
-
-        var color = tier ? tier.color : "#2c3e50";
-
-        body.innerHTML =
-
-            '<div class="hub-grid">' +
-
-            '<div class="hub-box">' +
-
-            '<h4>Masterball Card</h4>' +
-
-            '<div style="font-size:20px;font-weight:bold;color:#2c3e50;">' +
-            player.name +
-            '</div>' +
-
-            '<div style="margin:5px 0;">' +
-
-            '<span class="detail-tier" style="background:' +
-            color +
-            ';">' +
-            player.tier +
-            '</span>' +
-
-            '</div>' +
-
-            '<div class="hub-stat"><span>ID</span><strong>' +
-            player.id +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>Position</span><strong>' +
-            player.position +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>Age</span><strong>' +
-            player.age +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>Origin</span><strong>' +
-            player.origin +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>State</span><strong>' +
-            player.state +
-            '</strong></div>' +
-
-            (player.university ?
-            '<div class="hub-stat"><span>University Ball</span><strong>' +
-            player.university +
-            '</strong></div>'
-            : '') +
-
-            '</div>' +
-
-            '<div class="hub-box">' +
-
-            '<h4>Player Economics</h4>' +
-
-            '<div class="hub-stat"><span>Weekly Salary</span><strong>$' +
-            player.salary.toLocaleString() +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>Market Value</span><strong>$' +
-            player.marketValue.toLocaleString() +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>Potential Cap</span><strong>' +
-            player.potentialCap +
-            '</strong></div>' +
-
-            '<div class="hub-stat"><span>Contract</span><strong>' +
-            player.contractStatus +
-            '</strong></div>' +
-
-            '</div>' +
-
-            '</div>' +
-
-            '<div class="hub-box" style="margin-top:10px;">' +
-
-            '<h4>Skill Profile</h4>' +
-
-            skill("Shooting",player.shooting) +
-            skill("Dribbling",player.dribbling) +
-            skill("Passing",player.passing) +
-            skill("Defense",player.defense) +
-            skill("Athleticism",player.athleticism) +
-            skill("Finishing",player.finishing) +
-            skill("Basketball IQ",player.iq) +
-            skill("Strength",player.strength) +
-
-            '</div>' +
-
-            '<div class="hub-grid" style="margin-top:10px;">' +
-
-            '<div class="hub-box">' +
-
-            '<h4>Abilities</h4>' +
-
-            (
-                player.abilities.length
-                ?
-                player.abilities.map(function(a){
-                    return '<span class="market-badge market-youth">'+a+'</span>';
-                }).join("")
-                :
-                '<span style="font-size:11px;color:#777;">No special ability discovered.</span>'
-            ) +
-
-            '</div>' +
-
-            '<div class="hub-box">' +
-
-            '<h4>Scouting Interest</h4>' +
-
-            (
-                player.scoutingTeams.length
-                ?
-                player.scoutingTeams.map(function(t){
-                    return '<span class="interest-team">'+t+'</span>';
-                }).join("")
-                :
-                '<span style="font-size:11px;">No competing team currently recorded.</span>'
-            ) +
-
-            '</div>' +
-
-            '</div>' +
-
-            '<div style="margin-top:10px;text-align:right;">' +
-
-            '<button class="hub-action primary" onclick="MC.lockScouting(' +
-            player.id +
-            ')">' +
-
-            (player.locked ? "🔒 Scouting Locked" : "🔎 Lock This Scouting File") +
-
-            '</button>' +
-
-            '</div>';
-
-        document.getElementById("detail-title").innerText =
-            "Masterball Card — " + player.name;
-
-        openWindow("player-detail-overlay");
-
-    }
-
-
-    function skill(name,value) {
-
-        var pct = Math.min(100,(value/80)*100);
-
-        return (
-
-            '<div class="skill-row">' +
-
-            '<span>' + name + '</span>' +
-
-            '<div class="skill-track">' +
-            '<div class="skill-fill" style="width:' +
-            pct +
-            '%"></div>' +
-            '</div>' +
-
-            '<strong>' +
-            value +
-            '</strong>' +
-
-            '</div>'
-        );
-
-    }
-
-
-    /* ----------------------------------------------------------
-       LOCK SCOUTING
-       ---------------------------------------------------------- */
-
-    function lockScouting(id) {
-
-        var p = findPlayer(id);
-
-        if (!p) return;
-
-        p.locked = !p.locked;
-
-        openPlayer(p);
-
-    }
-
-
-    /* ----------------------------------------------------------
-       UNIVERSITY BALL HUB
-       ---------------------------------------------------------- */
-
-    function universityHub() {
-
-        var body = document.getElementById("hub-window-body");
-
-        document.getElementById("hub-window-title").innerText =
-            "University Ball Scouting Pipeline";
-
-        var html =
-
-            '<div class="hub-box">' +
-
-            '<h4>Fictional University Ball Pipeline</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'Every review is a separate fictional prospect unless the scouting file is locked. ' +
-            'University Ball players cannot generate Diamond-tier players.' +
-
-            '</p>' +
-
-            '<span class="market-badge market-university">FICTIONAL SCHOOLS ONLY</span>' +
-
-            '<span class="market-badge market-university">NO DIAMOND CLASS</span>' +
-
-            '</div>';
-
-        state.universityPlayers.forEach(function(p){
-
-            html +=
-
-                '<div class="player-mini-card" onclick="MC.openById(' +
-                p.id +
-                ')">' +
-
-                '<strong>' + p.name + '</strong>' +
-
-                ' — ' + p.position +
-
-                '<br>' +
-
-                '<span style="font-size:10px;">' +
-
-                p.university +
-                ' • ' +
-                p.state +
-                ' • Age ' +
-                p.age +
-
-                '</span>' +
-
-                '<br>' +
-
-                '<span class="market-badge market-university">' +
-                p.tier +
-                '</span>' +
-
-                '<span class="market-badge">' +
-                p.scoutingTeams.length +
-                ' competing teams</span>' +
-
-                '</div>';
-
-        });
-
-        body.innerHTML = html;
-
-        openWindow("hub-window-overlay");
-
-    }
-
-
-    /* ----------------------------------------------------------
-       YOUTH ACADEMY
-       ---------------------------------------------------------- */
-
-    function youthAcademyHub() {
-
-        var body = document.getElementById("hub-window-body");
-
-        document.getElementById("hub-window-title").innerText =
-            "Youth Academy";
-
-        var html =
-
-            '<div class="hub-box">' +
-
-            '<h4>Youth Development Pipeline</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'Youth prospects can develop abilities that are different from professional players. ' +
-            'Diamond-class potential is extremely rare and is never treated like a normal tier.' +
-
-            '</p>' +
-
-            '</div>';
-
-        state.youthPlayers.forEach(function(p){
-
-            html +=
-
-                '<div class="player-mini-card">' +
-
-                '<strong>' + p.name + '</strong>' +
-
-                ' — ' + p.position +
-
-                '<br>' +
-
-                '<span style="font-size:10px;">' +
-
-                p.state +
-                ' • Age ' +
-                p.age +
-
-                '</span>' +
-
-                '<br>' +
-
-                '<span class="market-badge market-youth">' +
-                p.tier +
-                '</span>' +
-
-                '<button class="hub-action success" onclick="MC.selectYouth(' +
-                p.id +
-                ')">' +
-
-                'Select for Academy' +
-
-                '</button>' +
-
-                '</div>';
-
-        });
-
-        body.innerHTML = html;
-
-        openWindow("hub-window-overlay");
-
-    }
-
-
-    function selectYouth(id) {
-
-        var p = findPlayer(id);
-
-        if (!p || p.origin !== "youth") return;
-
-        if (p.selected) {
-
-            alert("This prospect is already assigned to your Youth Academy.");
-
-            return;
-
-        }
-
-        p.selected = true;
-
-        p.contractStatus = "Youth Academy";
-
-        /*
-         * The player remains in the world.
-         * We don't destroy the scouting record.
-         */
+        draftWatch.push(p.id);
 
         alert(
             p.name +
-            " has been accepted into the Motor City Youth Academy."
+            " added to your University Ball draft watch."
         );
-
-        youthAcademyHub();
-
     }
 
+    renderDraftBoard();
+}
 
-    /* ----------------------------------------------------------
-       LIVE AUCTION
-       ---------------------------------------------------------- */
 
-    function createLiveAuction() {
+function renderDraftBoard() {
 
-        var player = createPlayer("professional");
+    var body =
+        document.getElementById("draft-table-body");
 
-        state.liveAuctions.push({
+    body.innerHTML = "";
 
-            id: state.nextAuctionId++,
+    universityProspects.forEach(function(p,index) {
 
-            player: player,
+        var row =
+            document.createElement("tr");
 
-            currentBid: Math.max(5000,player.marketValue),
+        row.innerHTML = `
 
-            highBidder: "Opening Market",
+            <td>
+                ${index + 1}
+            </td>
 
-            seconds: randomInt(45,90),
+            <td>
+                <strong>${p.name}</strong>
+                <br>
+                <small>
+                    ${p.school}, ${p.state}
+                </small>
+            </td>
 
-            active: true
+            <td>
+                ${p.position}
+            </td>
 
-        });
+            <td>
+                ${p.potential}
+            </td>
 
+            <td>
+
+                <button
+                    class="btn-retro"
+                    onclick="draftWatchAdd(${index})">
+
+                    Watch
+
+                </button>
+
+            </td>
+        `;
+
+        body.appendChild(row);
+
+    });
+
+}
+
+
+function draftWatchAdd(index) {
+
+    var p =
+        universityProspects[index];
+
+    if (!draftWatch.includes(p.id)) {
+
+        draftWatch.push(p.id);
+
+        alert(
+            p.name +
+            " added to draft watch."
+        );
     }
 
-
-    function liveAuctionHub() {
-
-        var body = document.getElementById("hub-window-body");
-
-        document.getElementById("hub-window-title").innerText =
-            "Live Auction — Timed Bidding";
-
-        if (!state.liveAuctions.length)
-            createLiveAuction();
-
-        var html =
-
-            '<div class="hub-box">' +
-
-            '<h4>LIVE AUCTION</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'This is a competitive timed auction. Clubs bid against one another until the timer expires.' +
-
-            '</p>' +
-
-            '</div>';
-
-        state.liveAuctions.forEach(function(a){
-
-            if (!a.active) return;
-
-            html +=
-
-                '<div class="hub-box" style="margin-top:8px;">' +
-
-                '<h4>' +
-                a.player.name +
-                '</h4>' +
-
-                '<span class="market-badge market-live">LIVE AUCTION</span>' +
-
-                '<div class="auction-clock" id="auction-clock-' +
-                a.id +
-                '">' +
-                formatTime(a.seconds) +
-                '</div>' +
-
-                '<div class="bid-display">' +
-
-                'Current Bid: $' +
-                a.currentBid.toLocaleString() +
-
-                '</div>' +
-
-                '<div style="text-align:center;">' +
-
-                '<button class="hub-action primary" onclick="MC.bid(' +
-                a.id +
-                ',5000)">Bid +$5K</button>' +
-
-                '<button class="hub-action primary" onclick="MC.bid(' +
-                a.id +
-                ',10000)">Bid +$10K</button>' +
-
-                '</div>' +
-
-                '<div style="font-size:10px;text-align:center;">' +
-
-                'High Bidder: ' +
-                a.highBidder +
-
-                '</div>' +
-
-                '</div>';
-
-        });
-
-        body.innerHTML = html;
-
-        openWindow("hub-window-overlay");
-
-        startAuctionTimer();
-
-    }
+}
 
 
-    function bid(id,amount) {
+/* =========================================================
+   YOUTH ACADEMY
+========================================================= */
 
-        var auction = state.liveAuctions.find(function(a){
-            return a.id === id;
-        });
+var youthProspects = [
 
-        if (!auction || !auction.active) return;
+{
+    name: "Tariq Mason",
+    age: 15,
+    state: "Ohio",
+    position: "PG",
+    level: "GEM",
+    ability: "Quick Release",
+    development: "High",
+    rarity: "Rare"
+},
 
-        var nextBid = auction.currentBid + amount;
+{
+    name: "Eli Booker",
+    age: 14,
+    state: "Virginia",
+    position: "SF",
+    level: "EMERALD",
+    ability: "Defensive Instinct",
+    development: "Very High",
+    rarity: "Very Rare"
+},
 
-        if (nextBid > state.funds) {
+{
+    name: "Dante Webb",
+    age: 16,
+    state: "Indiana",
+    position: "C",
+    level: "DIAMOND EVENT",
+    ability: "Unusual Paint Anchor",
+    development: "Extreme",
+    rarity: "Extremely Rare"
+},
 
-            alert("Insufficient club funds.");
+{
+    name: "Marcus Glenn",
+    age: 15,
+    state: "Missouri",
+    position: "SG",
+    level: "GOLD",
+    ability: "Deep Range",
+    development: "High",
+    rarity: "Rare"
+}
 
-            return;
+];
+
+
+function renderAcademy() {
+
+    var box =
+        document.getElementById("academy-list");
+
+    box.innerHTML = "";
+
+    youthProspects.forEach(function(p,index) {
+
+        var cls = "youth-common";
+
+        if (p.level === "GEM")
+            cls = "youth-gem";
+
+        if (p.level === "EMERALD")
+            cls = "youth-rare";
+
+        if (p.level === "DIAMOND EVENT")
+            cls = "youth-mythic";
+
+        var card =
+            document.createElement("div");
+
+        card.className =
+            "academy-card";
+
+        card.innerHTML = `
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+            ">
+
+                <strong>
+                    ${p.name}
+                </strong>
+
+                <span class="youth-tier ${cls}">
+                    ${p.level}
+                </span>
+
+            </div>
+
+            <p>
+                Age: ${p.age}
+                |
+                Position: ${p.position}
+                |
+                State: ${p.state}
+            </p>
+
+            <p>
+                Special Ability:
+                <strong>${p.ability}</strong>
+            </p>
+
+            <p>
+                Development:
+                <strong>${p.development}</strong>
+            </p>
+
+            <p>
+                Discovery Rarity:
+                <strong>${p.rarity}</strong>
+            </p>
+
+            <button
+                class="btn-retro"
+                onclick="selectYouth(${index})">
+
+                Select For Academy
+
+            </button>
+        `;
+
+        box.appendChild(card);
+
+    });
+
+}
+
+
+function selectYouth(index) {
+
+    var p =
+        youthProspects[index];
+
+    document.getElementById("training-log").innerHTML =
+
+        "🌱 <b>[YOUTH ACADEMY]:</b> " +
+        p.name +
+        " selected for academy placement. " +
+        "Development rules will now determine progression.";
+
+    alert(
+        p.name +
+        " selected for your Youth Academy."
+    );
+
+}
+
+
+/* =========================================================
+   LIVE AUCTION
+========================================================= */
+
+var liveAuctions = [
+
+{
+    name: "Kobe Lang",
+    position: "SG",
+    age: 22,
+    bid: 18000,
+    time: 92,
+    timer: null
+},
+
+{
+    name: "Rashad Coleman",
+    position: "PF",
+    age: 24,
+    bid: 23500,
+    time: 145,
+    timer: null
+},
+
+{
+    name: "Isaiah Boone",
+    position: "PG",
+    age: 20,
+    bid: 31000,
+    time: 67,
+    timer: null
+}
+
+];
+
+
+function renderLiveAuctions() {
+
+    var box =
+        document.getElementById("live-auction-list");
+
+    box.innerHTML = "";
+
+    liveAuctions.forEach(function(a,index) {
+
+        var card =
+            document.createElement("div");
+
+        card.className =
+            "auction-card auction-live";
+
+        card.innerHTML = `
+
+            <strong>
+                ${a.name}
+            </strong>
+
+            <br>
+
+            ${a.position}
+            |
+            Age ${a.age}
+
+            <div style="margin-top:6px;">
+
+                Current Bid:
+                <strong>
+                    $${a.bid.toLocaleString()}
+                </strong>
+
+            </div>
+
+            <div class="auction-timer"
+                 id="auction-time-${index}">
+
+                ${formatTime(a.time)}
+
+            </div>
+
+            <div class="bid-box">
+
+                <button
+                    class="btn-retro"
+                    onclick="placeBid(${index})">
+
+                    Bid +$1,000
+
+                </button>
+
+            </div>
+        `;
+
+        box.appendChild(card);
+
+    });
+
+}
+
+
+function formatTime(seconds) {
+
+    var min =
+        Math.floor(seconds / 60);
+
+    var sec =
+        seconds % 60;
+
+    return (
+        String(min).padStart(2,"0") +
+        ":" +
+        String(sec).padStart(2,"0")
+    );
+}
+
+
+function placeBid(index) {
+
+    liveAuctions[index].bid += 1000;
+
+    renderLiveAuctions();
+}
+
+
+setInterval(function() {
+
+    liveAuctions.forEach(function(a,index) {
+
+        if (a.time > 0)
+            a.time--;
+
+        if (a.time === 0) {
+
+            a.time = 0;
 
         }
 
-        auction.currentBid = nextBid;
+    });
 
-        auction.highBidder = state.userTeam.name;
+    renderLiveAuctions();
 
-        liveAuctionHub();
-
-    }
+},1000);
 
 
-    var auctionTimerStarted = false;
+/* =========================================================
+   FREE AGENT MARKET
+========================================================= */
 
-    function startAuctionTimer() {
+var freeAgents = [
 
-        if (auctionTimerStarted) return;
+{
+    name: "Jordan Pierce",
+    position: "SG",
+    age: 25,
+    price: 19500
+},
 
-        auctionTimerStarted = true;
+{
+    name: "Derrick Sloan",
+    position: "PF",
+    age: 27,
+    price: 16750
+},
 
-        setInterval(function(){
+{
+    name: "Malcolm Avery",
+    position: "PG",
+    age: 23,
+    price: 22100
+}
 
-            state.liveAuctions.forEach(function(a){
-
-                if (!a.active) return;
-
-                a.seconds--;
-
-                if (a.seconds <= 0) {
-
-                    a.seconds = 0;
-                    a.active = false;
-
-                    if (a.highBidder === state.userTeam.name) {
-
-                        if (state.funds >= a.currentBid) {
-
-                            state.funds -= a.currentBid;
-
-                            state.teams[0].roster.push(a.player);
-
-                            updateFunds();
-
-                        }
-
-                    }
-
-                }
-
-            });
-
-            var clocks =
-                document.querySelectorAll("[id^='auction-clock-']");
-
-            clocks.forEach(function(el){
-
-                var id = parseInt(
-                    el.id.replace("auction-clock-","")
-                );
-
-                var a = state.liveAuctions.find(function(x){
-                    return x.id === id;
-                });
-
-                if (a)
-                    el.innerText = formatTime(a.seconds);
-
-            });
-
-        },1000);
-
-    }
+];
 
 
-    function formatTime(seconds) {
+function renderFreeAgents() {
 
-        var m = Math.floor(seconds/60);
-        var s = seconds%60;
+    var box =
+        document.getElementById("free-agent-list");
 
-        return (
-            String(m).padStart(2,"0") +
-            ":" +
-            String(s).padStart(2,"0")
+    box.innerHTML = "";
+
+    freeAgents.forEach(function(p,index) {
+
+        var card =
+            document.createElement("div");
+
+        card.className =
+            "auction-card auction-free";
+
+        card.innerHTML = `
+
+            <strong>
+                ${p.name}
+            </strong>
+
+            <br>
+
+            ${p.position}
+            |
+            Age ${p.age}
+
+            <p>
+                Contract Purchase:
+                <strong>
+                    $${p.price.toLocaleString()}
+                </strong>
+            </p>
+
+            <button
+                class="btn-retro"
+                onclick="buyFreeAgent(${index})">
+
+                Buy Contract
+
+            </button>
+
+        `;
+
+        box.appendChild(card);
+
+    });
+
+}
+
+
+function buyFreeAgent(index) {
+
+    var p =
+        freeAgents[index];
+
+    var funds =
+        145200;
+
+    if (funds < p.price) {
+
+        alert(
+            "Insufficient club funds."
         );
 
+        return;
     }
 
+    freeAgents.splice(index,1);
 
-    /* ----------------------------------------------------------
-       FREE AGENT MARKET
-       ---------------------------------------------------------- */
+    renderFreeAgents();
 
-    function freeAgentHub() {
+    document.getElementById("funds-txt").innerText =
+        (funds - p.price).toLocaleString();
 
-        var body = document.getElementById("hub-window-body");
+}
 
-        document.getElementById("hub-window-title").innerText =
-            "Free-Agent Market";
 
-        var html =
+/* =========================================================
+   TRAINING ENGINE
+========================================================= */
 
-            '<div class="hub-box">' +
+function syncTraining() {
 
-            '<h4>FREE-AGENT CONTRACT MARKET</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'This market is completely separate from Live Auction. ' +
-            'There is no countdown and no bidding. You acquire the available contract at its listed price.' +
-
-            '</p>' +
-
-            '<span class="market-badge market-free">FIXED MARKET</span>' +
-
-            '</div>';
-
-        state.freeAgents.forEach(function(p){
-
-            html +=
-
-                '<div class="player-mini-card">' +
-
-                '<strong>' +
-                p.name +
-                '</strong>' +
-
-                ' — ' +
-                p.position +
-
-                '<br>' +
-
-                '<span style="font-size:10px;">' +
-
-                p.tier +
-                ' • Age ' +
-                p.age +
-
-                '</span>' +
-
-                '<br>' +
-
-                '<span class="market-badge market-free">' +
-
-                '$' +
-                p.marketValue.toLocaleString() +
-
-                '</span>' +
-
-                '<button class="hub-action primary" onclick="MC.buyFreeAgent(' +
-                p.id +
-                ')">' +
-
-                'Buy Contract' +
-
-                '</button>' +
-
-                '</div>';
-
-        });
-
-        body.innerHTML = html;
-
-        openWindow("hub-window-overlay");
-
-    }
-
-
-    function buyFreeAgent(id) {
-
-        var index = state.freeAgents.findIndex(function(p){
-            return p.id === id;
-        });
-
-        if (index === -1) return;
-
-        var p = state.freeAgents[index];
-
-        if (state.funds < p.marketValue) {
-
-            alert("Club funds are insufficient.");
-
-            return;
-
-        }
-
-        state.funds -= p.marketValue;
-
-        p.contractStatus = "Motor City Hustle Contract";
-
-        state.teams[0].roster.push(p);
-
-        state.freeAgents.splice(index,1);
-
-        updateFunds();
-
-        freeAgentHub();
-
-    }
-
-
-    /* ----------------------------------------------------------
-       MARKET MACRO ENGINE
-       ---------------------------------------------------------- */
-
-    function marketHub() {
-
-        var shooters = 0;
-        var bigs = 0;
-        var total = 0;
-
-        state.teams.forEach(function(team){
-
-            team.roster.forEach(function(p){
-
-                total++;
-
-                if (
-                    p.position === "PG" ||
-                    p.position === "SG"
-                )
-                    shooters++;
-                else
-                    bigs++;
-
-            });
-
-        });
-
-        var shooterPct = total ?
-            Math.round((shooters/total)*100)
-            : 50;
-
-        var bigPct = 100-shooterPct;
-
-        var climate =
-            shooterPct > 70
-            ? "SHOOTER OVERSUPPLY / PAINT DROUGHT"
-            : bigPct > 70
-            ? "BIG-MAN OVERSUPPLY / WING DROUGHT"
-            : "STABLE EQUILIBRIUM";
-
-        var body = document.getElementById("hub-window-body");
-
-        document.getElementById("hub-window-title").innerText =
-            "Macro Market Conditions";
-
-        body.innerHTML =
-
-            '<div class="hub-grid">' +
-
-            '<div class="hub-box">' +
-
-            '<h4>Roster Census</h4>' +
-
-            '<div class="hub-stat">' +
-            '<span>Shooting Positions</span>' +
-            '<strong>' + shooterPct + '%</strong>' +
-            '</div>' +
-
-            '<div class="hub-stat">' +
-            '<span>Paint Positions</span>' +
-            '<strong>' + bigPct + '%</strong>' +
-            '</div>' +
-
-            '</div>' +
-
-            '<div class="hub-box">' +
-
-            '<h4>Market Climate</h4>' +
-
-            '<strong>' +
-            climate +
-            '</strong>' +
-
-            '<p style="font-size:10px;">' +
-
-            'Supply and demand influence player valuation across the world market.' +
-
-            '</p>' +
-
-            '</div>' +
-
-            '</div>' +
-
-            '<div class="hub-box" style="margin-top:10px;">' +
-
-            '<h4>Market Rule</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'If too many clubs develop the same archetype, that archetype becomes less scarce. ' +
-            'Scarce player profiles gain market leverage.' +
-
-            '</p>' +
-
-            '</div>';
-
-        openWindow("hub-window-overlay");
-
-    }
-
-
-    /* ----------------------------------------------------------
-       TRAINING CONNECTION
-       ---------------------------------------------------------- */
-
-    function trainingHub() {
-
-        var body = document.getElementById("hub-window-body");
-
-        document.getElementById("hub-window-title").innerText =
-            "Weekly Training";
-
-        var html =
-
-            '<div class="hub-box">' +
-
-            '<h4>Roster Training Controller</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'Training operates against the same player objects used by the roster, scouting, market and match systems.' +
-
-            '</p>' +
-
-            '</div>';
-
-        state.teams[0].roster.forEach(function(p){
-
-            html +=
-
-                '<div class="player-mini-card">' +
-
-                '<strong>' +
-                p.name +
-                '</strong>' +
-
-                ' — ' +
-                p.position +
-
-                '<br>' +
-
-                '<button class="hub-action" onclick="MC.trainPlayer(' +
-                p.id +
-                ',\'shooting\')">' +
-
-                'Shooting +'
-
-                + '</button>' +
-
-                '<button class="hub-action" onclick="MC.trainPlayer(' +
-                p.id +
-                ',\'defense\')">' +
-
-                'Defense +'
-
-                + '</button>' +
-
-                '<button class="hub-action" onclick="MC.trainPlayer(' +
-                p.id +
-                ',\'athleticism\')">' +
-
-                'Athleticism +'
-
-                + '</button>' +
-
-                '</div>';
-
-        });
-
-        body.innerHTML = html;
-
-        openWindow("hub-window-overlay");
-
-    }
-
-
-    function trainPlayer(id,skillName) {
-
-        var p = findPlayer(id);
-
-        if (!p) return;
-
-        if (p[skillName] >= p.potentialCap) {
-
-            alert(
-                p.name +
-                " has reached the current potential limit in " +
-                skillName +
-                "."
-            );
-
-            return;
-
-        }
-
-        p[skillName] =
-            Math.min(
-                p.potentialCap,
-                parseFloat((p[skillName]+.2).toFixed(1))
-            );
-
-        state.trainingLog.push({
-            player:id,
-            skill:skillName,
-            date:new Date().toISOString()
-        });
-
-        trainingHub();
-
-    }
-
-
-    /* ----------------------------------------------------------
-       DRAFT BOARD
-       ---------------------------------------------------------- */
-
-    function draftHub() {
-
-        var body = document.getElementById("hub-window-body");
-
-        document.getElementById("hub-window-title").innerText =
-            "Live Draft Board";
-
-        body.innerHTML =
-
-            '<div class="hub-box">' +
-
-            '<h4>Draft Board</h4>' +
-
-            '<p style="font-size:11px;">' +
-
-            'Draft prospects are pulled from the fictional University Ball pipeline. ' +
-            'University Ball prospects cannot roll Diamond-tier classifications.' +
-
-            '</p>' +
-
-            '<button class="hub-action primary" onclick="MC.universityHub()">' +
-
-            'Open University Scouting'
-
-            + '</button>' +
-
-            '</div>';
-
-        openWindow("hub-window-overlay");
-
-    }
-
-
-    /* ----------------------------------------------------------
-       PLAYER SEARCH
-       ---------------------------------------------------------- */
-
-    function findPlayer(id) {
-
-        var found = null;
-
-        state.teams.forEach(function(team){
-
-            team.roster.forEach(function(p){
-
-                if (p.id === id)
-                    found = p;
-
-            });
-
-        });
-
-        state.universityPlayers.forEach(function(p){
-
-            if (p.id === id)
-                found = p;
-
-        });
-
-        state.youthPlayers.forEach(function(p){
-
-            if (p.id === id)
-                found = p;
-
-        });
-
-        state.freeAgents.forEach(function(p){
-
-            if (p.id === id)
-                found = p;
-
-        });
-
-        state.liveAuctions.forEach(function(a){
-
-            if (a.player.id === id)
-                found = a.player;
-
-        });
-
-        return found;
-
-    }
-
-
-    function openById(id) {
-
-        var p = findPlayer(id);
-
-        if (p)
-            openPlayer(p);
-
-    }
-
-
-    /* ----------------------------------------------------------
-       WINDOW HELPERS
-       ---------------------------------------------------------- */
-
-    function openWindow(id) {
-
-        var el = document.getElementById(id);
-
-        if (el)
-            el.classList.add("open");
-
-    }
-
-
-    function closeWindow(id) {
-
-        var el = document.getElementById(id);
-
-        if (el)
-            el.classList.remove("open");
-
-    }
-
-
-    /* ----------------------------------------------------------
-       FINANCES
-       ---------------------------------------------------------- */
-
-    function updateFunds() {
-
-        var el = document.getElementById("funds-txt");
-
-        if (el)
-            el.innerText = state.funds.toLocaleString();
-
-    }
-
-
-    /* ----------------------------------------------------------
-       PUBLIC API
-       ---------------------------------------------------------- */
-
-    return {
-
-        openPlayer:openPlayer,
-
-        openById:openById,
-
-        lockScouting:lockScouting,
-
-        universityHub:universityHub,
-
-        youthAcademyHub:youthAcademyHub,
-
-        liveAuctionHub:liveAuctionHub,
-
-        freeAgentHub:freeAgentHub,
-
-        marketHub:marketHub,
-
-        trainingHub:trainingHub,
-
-        draftHub:draftHub,
-
-        buyFreeAgent:buyFreeAgent,
-
-        bid:bid,
-
-        selectYouth:selectYouth,
-
-        trainPlayer:trainPlayer,
-
-        closeWindow:closeWindow
-
-    };
-
-})();
-
-
-/* ============================================================
-   BOOT
-   ============================================================ */
-
-(function(){
-
-    MC.__booted = true;
-
-    /*
-     * Build the world once.
-     */
-
-    if (
-        typeof window.MC_WORLD_INITIALIZED === "undefined"
-    ) {
-
-        window.MC_WORLD_INITIALIZED = true;
-
-        /*
-         * Initialize internal world through private boot
-         * compatibility call.
-         */
-
-        var event = new CustomEvent(
-            "mc-world-ready"
+    var p1 =
+        parseInt(
+            document.getElementById("p1-range").value
         );
 
-        document.dispatchEvent(event);
+    var p2 =
+        parseInt(
+            document.getElementById("p2-range").value
+        );
+
+    var total =
+        p1 + p2;
+
+    document.getElementById("p1-txt").innerText =
+        p1;
+
+    document.getElementById("p2-txt").innerText =
+        p2;
+
+    document.getElementById("training-minutes").innerText =
+        total + " / 100";
+
+    if (total > 100) {
+
+        document.getElementById(
+            "training-minutes"
+        ).style.color = "#e74c3c";
+
+    } else {
+
+        document.getElementById(
+            "training-minutes"
+        ).style.color = "#2980b9";
 
     }
 
-    /*
-     * Make existing cards clickable.
-     */
-
-    setTimeout(function(){
-
-        /*
-         * The internal engine initializes independently,
-         * then attaches to whatever roster cards already exist.
-         */
-
-        if (typeof bindExistingPlayerCards === "function")
-            bindExistingPlayerCards();
-
-    },300);
-
-})();
-
-
-/* ============================================================
-   SAFE EXTERNAL HUB BUTTONS
-   ============================================================ */
-
-/*
-   These functions are intentionally global so the existing
-   navigation/buttons can call them without changing the
-   original navigation architecture.
- */
-
-function openUniversityBall() {
-    MC.universityHub();
-}
-
-function openYouthAcademy() {
-    MC.youthAcademyHub();
-}
-
-function openLiveAuction() {
-    MC.liveAuctionHub();
-}
-
-function openFreeAgentMarket() {
-    MC.freeAgentHub();
-}
-
-function openMacroMarket() {
-    MC.marketHub();
-}
-
-function openTrainingHub() {
-    MC.trainingHub();
-}
-
-function openDraftBoard() {
-    MC.draftHub();
 }
 
 
-/* ============================================================
-   OPTIONAL NAV BUTTON ADDITIONS
-   These can be inserted into your EXISTING sidebar.
-   They do NOT replace your current buttons.
-   ============================================================ */
+function runTraining() {
 
-/*
+    var p1 =
+        parseInt(
+            document.getElementById("p1-range").value
+        );
 
-<button class="nav-btn"
-        onclick="openUniversityBall()">
-    University Ball Scouting
-</button>
+    var p2 =
+        parseInt(
+            document.getElementById("p2-range").value
+        );
 
-<button class="nav-btn"
-        onclick="openYouthAcademy()">
-    Youth Academy
-</button>
+    if (p1 + p2 > 100) {
 
-<button class="nav-btn"
-        onclick="openLiveAuction()">
-    🔴 Live Auction
-</button>
+        document.getElementById("training-log").innerHTML =
+            "❌ [EXECUTION BLOCKED] Practice allocation exceeds facility capacity.";
 
-<button class="nav-btn"
-        onclick="openFreeAgentMarket()">
-    Free-Agent Market
-</button>
+        return;
+    }
 
-<button class="nav-btn"
-        onclick="openMacroMarket()">
-    Market Conditions
-</button>
+    document.getElementById("training-log").innerHTML =
 
-*/
+        "🏀 <b>[WEEKLY TRAINING PROCESSED]</b><br>" +
+        "Marcus Rivers received " + p1 +
+        " minutes.<br>" +
+        "Devin Hayes received " + p2 +
+        " minutes.<br>" +
+        "Development gains have been applied through the existing progression model.";
+
+}
 
 
-/* ============================================================
-   IMPORTANT COMPATIBILITY NOTE
-   ============================================================
+/* =========================================================
+   TACTICS
+========================================================= */
 
-   Your existing player-card HTML remains untouched.
+function runTactics() {
 
-   Your existing:
-       .player-card
-       .player-details
-       .player-photo-area
-       .nav-btn
-       .main-content
-       .sidebar
-       .page-header
-       .draft-table
-       etc.
+    var tactic =
+        document.getElementById("tactic-select").value;
 
-   remain the visual authority.
+    document.getElementById("tactic-log").innerHTML =
 
-   This module only adds:
-       - player interaction
-       - scouting
-       - academy
-       - auctions
-       - free agency
-       - market logic
-       - training connection
-       - player detail
-       - fictional University Ball pipeline
+        "📋 <b>[TACTICAL PLAN UPDATED]</b><br>" +
+        "Current match strategy: <strong>" +
+        tactic +
+        "</strong>.<br>" +
+        "Matchup modifiers are ready for the next simulation.";
 
-   ============================================================ */
+}
+
+
+/* =========================================================
+   COACH SYSTEM
+========================================================= */
+
+var coach = {
+
+    name: "Coach Vincent",
+    tier: "TIN TIER",
+    rating: 35
+
+};
+
+
+var coachTiers = [
+
+    {
+        name:"SNUCK TIER",
+        cap:20
+    },
+
+    {
+        name:"TIN TIER",
+        cap:35
+    },
+
+    {
+        name:"COPPER TIER",
+        cap:45
+    },
+
+    {
+        name:"SILVER TIER",
+        cap:50
+    },
+
+    {
+        name:"OPAL TIER",
+        cap:55
+    },
+
+    {
+        name:"EMERALD TIER",
+        cap:60
+    },
+
+    {
+        name:"GOLD TIER",
+        cap:65
+    },
+
+    {
+        name:"PLATINUM TIER",
+        cap:70
+    },
+
+    {
+        name:"WHITE DIAMOND",
+        cap:74
+    },
+
+    {
+        name:"BLACK DIAMOND",
+        cap:75
+    },
+
+    {
+        name:"RED DIAMOND",
+        cap:80
+    }
+
+];
+
+
+function levelCoach() {
+
+    var current =
+        coachTiers.findIndex(
+            function(t) {
+                return t.name === coach.tier;
+            }
+        );
+
+    if (current >= coachTiers.length - 1) {
+
+        document.getElementById("coach-log").innerHTML =
+            "🛑 Coach has reached the maximum tier.";
+
+        return;
+    }
+
+    current++;
+
+    coach.tier =
+        coachTiers[current].name;
+
+    coach.rating =
+        coachTiers[current].cap;
+
+    syncCoach();
+
+}
+
+
+function resetCoach() {
+
+    coach.name =
+        "Coach Vincent";
+
+    coach.tier =
+        "TIN TIER";
+
+    coach.rating =
+        35;
+
+    syncCoach();
+
+}
+
+
+function syncCoach() {
+
+    document.getElementById("coach-name").innerText =
+        coach.name;
+
+    document.getElementById("coach-tier").innerText =
+        coach.tier;
+
+    document.getElementById("coach-rating").innerText =
+        coach.rating;
+
+    document.getElementById("coach-log").innerHTML =
+
+        "📈 <b>[COACH PROGRESSION]</b><br>" +
+        coach.name +
+        " is now " +
+        coach.tier +
+        " with a rating of " +
+        coach.rating +
+        ".";
+
+}
+
+
+/* =========================================================
+   MACRO MARKET ENGINE
+========================================================= */
+
+var shooterPercentage = 50;
+var bigmanPercentage = 50;
+
+function resetMarket() {
+
+    shooterPercentage = 50;
+    bigmanPercentage = 50;
+
+    document.getElementById("stat-shooters").innerText =
+        "50%";
+
+    document.getElementById("stat-bigs").innerText =
+        "50%";
+
+    document.getElementById("climate-status").innerText =
+        "STABLE EQUILIBRIUM";
+
+    document.getElementById("climate-status").style.color =
+        "#f39c12";
+
+    document.getElementById("macro-terminal").innerHTML =
+        "[Ecosystem Stable] Standard balanced market metrics active.";
+
+}
+
+
+function triggerMarket(type) {
+
+    var terminal =
+        document.getElementById("macro-terminal");
+
+    var climate =
+        document.getElementById("climate-status");
+
+    if (type === "shooters") {
+
+        shooterPercentage = 85;
+        bigmanPercentage = 15;
+
+        document.getElementById("stat-shooters").innerText =
+            "85% OVER-SATURATED";
+
+        document.getElementById("stat-bigs").innerText =
+            "15% CRITICAL DROUGHT";
+
+        climate.innerText =
+            "SELLER'S PAINT MARKET";
+
+        climate.style.color =
+            "#e74c3c";
+
+        terminal.innerHTML =
+
+            "⚠️ <b>[MARKET CENSUS]</b><br>" +
+            "Shooter supply has become heavily saturated.<br>" +
+            "Shooter values decline while scarce paint players gain market leverage.";
+
+    }
+
+    else {
+
+        shooterPercentage = 20;
+        bigmanPercentage = 80;
+
+        document.getElementById("stat-shooters").innerText =
+            "20% GUARD DROUGHT";
+
+        document.getElementById("stat-bigs").innerText =
+            "80% OVER-SATURATED";
+
+        climate.innerText =
+            "SELLER'S WING MARKET";
+
+        climate.style.color =
+            "#3498db";
+
+        terminal.innerHTML =
+
+            "⚠️ <b>[MARKET CENSUS]</b><br>" +
+            "Big-man supply is heavily saturated.<br>" +
+            "Perimeter players now command additional scarcity value.";
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIAL BOOT
+========================================================= */
+
+changeViewedTeam();
+
+renderUniversity();
+
+renderAcademy();
+
+renderDraftBoard();
+
+renderLiveAuctions();
+
+renderFreeAgents();
+
+syncTraining();
+
+syncCoach();
+
+resetMarket();
+
 </script>
-```
+
+</body>
+</html>
