@@ -1,33 +1,1090 @@
-return {
+<!-- ============================================================
+ MOTOR CITY HUSTLE — WORKING INTERACTIVE HUB
+ FIXED BOOT + TRAINING + PLAYER CARDS + MARKETS
+ EXISTING UI COLORS PRESERVED
+ ============================================================ -->
 
-    openPlayer:openPlayer,
+<style>
+/* ============================================================
+   ADD-ON STYLES ONLY
+   ============================================================ */
 
-    openById:openById,
+.hub-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.72);
+    z-index:9999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
 
-    lockScouting:lockScouting,
+.hub-overlay.open{
+    display:flex;
+}
 
-    universityHub:universityHub,
+.hub-window{
+    width:min(900px,96vw);
+    max-height:90vh;
+    overflow-y:auto;
+    background:#fdfefe;
+    border:2px solid #2c3e50;
+    border-radius:6px;
+    box-shadow:0 10px 40px rgba(0,0,0,.4);
+}
 
-    youthAcademyHub:youthAcademyHub,
+.hub-window-header{
+    background:#2c3e50;
+    color:white;
+    padding:10px 14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    font-weight:bold;
+}
 
-    liveAuctionHub:liveAuctionHub,
+.hub-close{
+    background:#c0392b;
+    color:white;
+    border:1px solid #922b21;
+    padding:4px 9px;
+    cursor:pointer;
+    border-radius:3px;
+    font-weight:bold;
+}
 
-    freeAgentHub:freeAgentHub,
+.hub-body{
+    padding:15px;
+}
 
-    marketHub:marketHub,
+.hub-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:10px;
+}
 
-    trainingHub:trainingHub,
+.hub-box{
+    background:#fffaf0;
+    border:1px solid #dfd5c3;
+    border-radius:4px;
+    padding:10px;
+}
 
-    draftHub:draftHub,
+.hub-box h4{
+    margin:0 0 7px;
+    color:#2c3e50;
+    border-bottom:1px solid #e67e22;
+    padding-bottom:4px;
+}
 
-    buyFreeAgent:buyFreeAgent,
+.hub-stat{
+    display:flex;
+    justify-content:space-between;
+    padding:3px 0;
+    font-size:11px;
+}
 
-    bid:bid,
+.hub-action{
+    background:#ecf0f1;
+    border:1px solid #bdc3c7;
+    padding:5px 9px;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:bold;
+    border-radius:3px;
+    margin:3px;
+}
 
-    selectYouth:selectYouth,
+.hub-action:hover{
+    background:#eaf2f8;
+    border-color:#3498db;
+}
 
-    trainPlayer:trainPlayer,
+.hub-action.primary{
+    background:#e67e22;
+    border-color:#d35400;
+    color:white;
+}
 
-    closeWindow:closeWindow
+.hub-action.danger{
+    background:#c0392b;
+    border-color:#922b21;
+    color:white;
+}
 
-};
+.hub-action.success{
+    background:#27ae60;
+    border-color:#1e8449;
+    color:white;
+}
+
+.masterball-clickable{
+    cursor:pointer;
+    transition:transform .12s ease,box-shadow .12s ease;
+}
+
+.masterball-clickable:hover{
+    transform:translateY(-2px);
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+.player-mini-card{
+    background:#fffaf0;
+    border:1px solid #dfd5c3;
+    border-radius:4px;
+    padding:9px;
+    margin-bottom:7px;
+}
+
+.player-mini-card:hover{
+    border-color:#e67e22;
+    background:#fff8ed;
+}
+
+.player-mini-card strong{
+    color:#2c3e50;
+}
+
+.market-badge{
+    display:inline-block;
+    padding:3px 6px;
+    border-radius:3px;
+    font-size:10px;
+    font-weight:bold;
+    margin:2px;
+}
+
+.market-live{
+    background:#c0392b;
+    color:white;
+}
+
+.market-free{
+    background:#2980b9;
+    color:white;
+}
+
+.market-youth{
+    background:#27ae60;
+    color:white;
+}
+
+.market-university{
+    background:#8e44ad;
+    color:white;
+}
+
+.auction-clock{
+    font-size:25px;
+    color:#c0392b;
+    font-weight:bold;
+    text-align:center;
+    padding:8px;
+}
+
+.bid-display{
+    font-size:18px;
+    color:#2c3e50;
+    font-weight:bold;
+    text-align:center;
+    margin:5px;
+}
+
+.skill-row{
+    display:grid;
+    grid-template-columns:120px 1fr 40px;
+    gap:6px;
+    align-items:center;
+    margin:5px 0;
+    font-size:11px;
+}
+
+.skill-track{
+    height:8px;
+    background:#eaeded;
+    border:1px solid #bdc3c7;
+    border-radius:4px;
+    overflow:hidden;
+}
+
+.skill-fill{
+    height:100%;
+    background:#2980b9;
+}
+
+.detail-tier{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:4px;
+    color:white;
+    font-weight:bold;
+    font-size:11px;
+}
+
+.interest-team{
+    display:inline-block;
+    background:#34495e;
+    color:white;
+    padding:3px 6px;
+    margin:2px;
+    border-radius:3px;
+    font-size:10px;
+}
+
+/* ============================================================
+   AUTOMATIC HUB LAUNCHER
+   Uses same existing color family.
+   ============================================================ */
+
+#mc-auto-launcher{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    z-index:9998;
+    background:#2c3e50;
+    border:2px solid #e67e22;
+    border-radius:5px;
+    padding:8px;
+    box-shadow:0 5px 20px rgba(0,0,0,.35);
+}
+
+#mc-auto-launcher button{
+    background:#ecf0f1;
+    color:#2c3e50;
+    border:1px solid #bdc3c7;
+    border-radius:3px;
+    padding:6px 8px;
+    margin:2px;
+    cursor:pointer;
+    font-size:10px;
+    font-weight:bold;
+}
+
+#mc-auto-launcher button:hover{
+    background:#e67e22;
+    color:white;
+}
+
+@media(max-width:650px){
+    .hub-window{
+        width:98vw;
+    }
+
+    .skill-row{
+        grid-template-columns:90px 1fr 35px;
+    }
+
+    #mc-auto-launcher{
+        right:8px;
+        bottom:8px;
+    }
+}
+</style>
+
+
+<!-- ============================================================
+ PLAYER DETAIL WINDOW
+ ============================================================ -->
+
+<div id="player-detail-overlay" class="hub-overlay">
+    <div class="hub-window">
+
+        <div class="hub-window-header">
+            <span id="detail-title">Masterball Card — Player Detail</span>
+
+            <button
+                class="hub-close"
+                onclick="MC.closeWindow('player-detail-overlay')">
+                X
+            </button>
+        </div>
+
+        <div
+            class="hub-body"
+            id="player-detail-body">
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ============================================================
+ MAIN HUB WINDOW
+ ============================================================ -->
+
+<div id="hub-window-overlay" class="hub-overlay">
+
+    <div class="hub-window">
+
+        <div class="hub-window-header">
+
+            <span id="hub-window-title">
+                Motor City Hustle Hub
+            </span>
+
+            <button
+                class="hub-close"
+                onclick="MC.closeWindow('hub-window-overlay')">
+                X
+            </button>
+
+        </div>
+
+        <div
+            class="hub-body"
+            id="hub-window-body">
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+/* ============================================================
+ MOTOR CITY HUSTLE — MASTER CONTROL ENGINE
+ ============================================================ */
+
+window.MC = (function(){
+
+    /* ==========================================================
+       WORLD STATE
+       ========================================================== */
+
+    var state = {
+
+        initialized:false,
+
+        funds:145200,
+
+        userTeam:{
+            id:948204,
+            name:"Motor City Hustle"
+        },
+
+        teams:[
+            {
+                id:948204,
+                name:"Motor City Hustle",
+                city:"Motor City",
+                roster:[]
+            },
+            {
+                id:110284,
+                name:"Lakeview Forge",
+                city:"Lakeview",
+                roster:[]
+            },
+            {
+                id:220391,
+                name:"Capital Comets",
+                city:"Capital",
+                roster:[]
+            },
+            {
+                id:330492,
+                name:"Rivergate Royals",
+                city:"Rivergate",
+                roster:[]
+            },
+            {
+                id:440583,
+                name:"Prairie Storm",
+                city:"Prairie",
+                roster:[]
+            },
+            {
+                id:550674,
+                name:"Atlantic Foundry",
+                city:"Atlantic",
+                roster:[]
+            }
+        ],
+
+        universityPlayers:[],
+        youthPlayers:[],
+        freeAgents:[],
+        liveAuctions:[],
+        trainingLog:[],
+
+        nextPlayerId:70000000,
+        nextAuctionId:1
+    };
+
+
+    /* ==========================================================
+       DATA
+       ========================================================== */
+
+    var firstNames=[
+        "Marcus","Darius","Jalen","Terrence","Malik",
+        "Devin","Andre","Caleb","Isaiah","Jordan",
+        "Cameron","Travis","Kendrick","Mason","Tyrese",
+        "Evan","Dante","Jaylen","Micah","Noah"
+    ];
+
+    var lastNames=[
+        "Rivers","Hayes","Stallings","Carter","Monroe",
+        "Bennett","Griffin","Lawson","Maddox","Reed",
+        "Whitaker","Banks","Holloway","Parker","Dawson",
+        "Ellis","Warren","McCall","Foster","Bradley"
+    ];
+
+    var universities=[
+        "North Valley Institute",
+        "Great Lakes Technical",
+        "Western Prairie University",
+        "Capital Heights College",
+        "Atlantic Plains University",
+        "Redwood State Institute",
+        "Central Metro University",
+        "Blue Ridge Technical",
+        "River County University",
+        "Heartland College",
+        "Northern Frontier Institute",
+        "Pioneer Valley University"
+    ];
+
+    var states=[
+        "Michigan",
+        "Virginia",
+        "Ohio",
+        "Indiana",
+        "Illinois",
+        "Georgia",
+        "Texas",
+        "Florida",
+        "Arizona",
+        "Colorado",
+        "Oregon",
+        "Pennsylvania",
+        "Tennessee",
+        "North Carolina"
+    ];
+
+    var positions=[
+        "PG",
+        "SG",
+        "SF",
+        "PF",
+        "C"
+    ];
+
+    var tiers=[
+        {name:"SNUCK",cap:20,color:"#4b5563"},
+        {name:"TIN",cap:35,color:"#64748b"},
+        {name:"COPPER",cap:45,color:"#b45309"},
+        {name:"SILVER",cap:50,color:"#94a3b8"},
+        {name:"OPAL",cap:55,color:"#06b6d4"},
+        {name:"EMERALD",cap:60,color:"#10b981"},
+        {name:"GOLD",cap:65,color:"#d97706"},
+        {name:"PLATINUM",cap:70,color:"#3b82f6"},
+        {name:"WHITE DIAMOND",cap:74,color:"#94a3b8"},
+        {name:"BLACK DIAMOND",cap:75,color:"#111827"},
+        {name:"RED DIAMOND",cap:80,color:"#dc2626"}
+    ];
+
+
+    /* ==========================================================
+       HELPERS
+       ========================================================== */
+
+    function randomItem(arr){
+        return arr[Math.floor(Math.random()*arr.length)];
+    }
+
+    function randomInt(min,max){
+        return Math.floor(Math.random()*(max-min+1))+min;
+    }
+
+    function makeName(){
+        return randomItem(firstNames)+" "+randomItem(lastNames);
+    }
+
+    function makeId(){
+        state.nextPlayerId++;
+        return state.nextPlayerId;
+    }
+
+
+    /* ==========================================================
+       TIER GENERATION
+       ========================================================== */
+
+    function universityTier(){
+
+        var roll=Math.random();
+
+        if(roll<.04) return "PLATINUM";
+        if(roll<.15) return "GOLD";
+        if(roll<.34) return "EMERALD";
+        if(roll<.57) return "OPAL";
+        if(roll<.76) return "SILVER";
+        if(roll<.90) return "COPPER";
+
+        return "TIN";
+    }
+
+    function youthTier(){
+
+        var roll=Math.random();
+
+        if(roll<.0005) return "RED DIAMOND";
+        if(roll<.0020) return "BLACK DIAMOND";
+        if(roll<.0060) return "WHITE DIAMOND";
+        if(roll<.03) return "PLATINUM";
+        if(roll<.12) return "GOLD";
+        if(roll<.30) return "EMERALD";
+        if(roll<.55) return "OPAL";
+        if(roll<.75) return "SILVER";
+
+        return "COPPER";
+    }
+
+    function professionalTier(){
+
+        var roll=Math.random();
+
+        if(roll<.0002) return "RED DIAMOND";
+        if(roll<.001) return "BLACK DIAMOND";
+        if(roll<.005) return "WHITE DIAMOND";
+        if(roll<.025) return "PLATINUM";
+        if(roll<.12) return "GOLD";
+        if(roll<.35) return "EMERALD";
+        if(roll<.58) return "OPAL";
+        if(roll<.75) return "SILVER";
+
+        return "COPPER";
+    }
+
+
+    /* ==========================================================
+       PLAYER CREATION
+       ========================================================== */
+
+    function createPlayer(origin){
+
+        var tier;
+
+        if(origin==="university")
+            tier=universityTier();
+
+        else if(origin==="youth")
+            tier=youthTier();
+
+        else
+            tier=professionalTier();
+
+        var tierData=tiers.find(function(t){
+            return t.name===tier;
+        });
+
+        var cap=tierData ? tierData.cap : 50;
+
+        var base=Math.max(
+            18,
+            cap-randomInt(5,22)
+        );
+
+        var player={
+
+            id:makeId(),
+
+            name:makeName(),
+
+            origin:origin,
+
+            position:randomItem(positions),
+
+            age:
+                origin==="youth"
+                ? randomInt(13,18)
+                : origin==="university"
+                ? randomInt(18,23)
+                : randomInt(19,34),
+
+            state:randomItem(states),
+
+            university:
+                origin==="university"
+                ? randomItem(universities)
+                : null,
+
+            tier:tier,
+
+            potentialCap:cap,
+
+            shooting:Math.min(cap,base+randomInt(-4,8)),
+            dribbling:Math.min(cap,base+randomInt(-6,7)),
+            passing:Math.min(cap,base+randomInt(-5,8)),
+            defense:Math.min(cap,base+randomInt(-7,7)),
+            athleticism:Math.min(cap,base+randomInt(-5,8)),
+            finishing:Math.min(cap,base+randomInt(-5,8)),
+            iq:Math.min(cap,base+randomInt(-5,7)),
+            strength:Math.min(cap,base+randomInt(-5,7)),
+
+            salary:randomInt(4500,18000),
+
+            marketValue:randomInt(4500,75000),
+
+            locked:false,
+
+            selected:false,
+
+            scoutingTeams:[],
+
+            abilities:[],
+
+            scoutingLevel:"Initial",
+
+            academyEligible:origin==="youth",
+
+            contractStatus:
+                origin==="university"
+                ? "University Ball"
+                : origin==="youth"
+                ? "Youth Prospect"
+                : "Free Agent"
+        };
+
+
+        /* Youth abilities */
+
+        if(origin==="youth"){
+
+            if(Math.random()<.12)
+                player.abilities.push("Rapid Learner");
+
+            if(Math.random()<.08)
+                player.abilities.push("Raw Creator");
+
+            if(Math.random()<.05)
+                player.abilities.push("Competitive Motor");
+
+            if(Math.random()<.015)
+                player.abilities.push("Gem Development Pattern");
+
+            if(tier.indexOf("DIAMOND")!==-1)
+                player.abilities.push("Generational Youth Projection");
+        }
+
+
+        /* University abilities */
+
+        if(origin==="university"){
+
+            if(Math.random()<.12)
+                player.abilities.push("College Floor General");
+
+            if(Math.random()<.08)
+                player.abilities.push("Transition Specialist");
+
+            if(Math.random()<.05)
+                player.abilities.push("Defensive Instinct");
+        }
+
+        return player;
+    }
+
+
+    /* ==========================================================
+       INITIALIZE WORLD
+       THIS WAS MISSING FROM YOUR ORIGINAL CODE.
+       ========================================================== */
+
+    function initializeWorld(){
+
+        if(state.initialized)
+            return;
+
+        state.initialized=true;
+
+
+        /* Professional teams */
+
+        state.teams.forEach(function(team){
+
+            for(var i=0;i<8;i++){
+
+                team.roster.push(
+                    createPlayer("professional")
+                );
+
+            }
+
+        });
+
+
+        /* University pipeline */
+
+        for(var u=0;u<18;u++){
+
+            var p=createPlayer("university");
+
+            p.scoutingTeams=randomScoutingTeams();
+
+            state.universityPlayers.push(p);
+        }
+
+
+        /* Youth */
+
+        for(var y=0;y<14;y++){
+
+            state.youthPlayers.push(
+                createPlayer("youth")
+            );
+
+        }
+
+
+        /* Free agents */
+
+        for(var f=0;f<8;f++){
+
+            state.freeAgents.push(
+                createPlayer("professional")
+            );
+
+        }
+
+
+        /* Auction */
+
+        createLiveAuction();
+
+
+        updateFunds();
+
+        bindExistingPlayerCards();
+
+    }
+
+
+    function randomScoutingTeams(){
+
+        var output=[];
+
+        state.teams.forEach(function(team){
+
+            if(Math.random()<.30)
+                output.push(team.name);
+
+        });
+
+        return output;
+    }
+
+
+    /* ==========================================================
+       PLAYER SEARCH
+       ========================================================== */
+
+    function findPlayer(id){
+
+        id=Number(id);
+
+        var found=null;
+
+        state.teams.forEach(function(team){
+
+            team.roster.forEach(function(p){
+
+                if(Number(p.id)===id)
+                    found=p;
+
+            });
+
+        });
+
+        state.universityPlayers.forEach(function(p){
+
+            if(Number(p.id)===id)
+                found=p;
+
+        });
+
+        state.youthPlayers.forEach(function(p){
+
+            if(Number(p.id)===id)
+                found=p;
+
+        });
+
+        state.freeAgents.forEach(function(p){
+
+            if(Number(p.id)===id)
+                found=p;
+
+        });
+
+        state.liveAuctions.forEach(function(a){
+
+            if(Number(a.player.id)===id)
+                found=a.player;
+
+        });
+
+        return found;
+    }
+
+
+    /* ==========================================================
+       PLAYER CARD CONNECTION
+       ========================================================== */
+
+    function bindExistingPlayerCards(){
+
+        var cards=document.querySelectorAll(".player-card");
+
+        cards.forEach(function(card,index){
+
+            if(card.dataset.mcBound==="1")
+                return;
+
+            card.dataset.mcBound="1";
+
+            card.classList.add(
+                "masterball-clickable"
+            );
+
+            card.addEventListener("click",function(e){
+
+                /*
+                 * Don't interfere with buttons/links
+                 * already inside the card.
+                 */
+
+                if(
+                    e.target.closest("button") ||
+                    e.target.closest("a") ||
+                    e.target.closest("input")
+                )
+                    return;
+
+                var id=card.getAttribute(
+                    "data-player-id"
+                );
+
+                var player=id
+                    ? findPlayer(id)
+                    : state.teams[0].roster[index];
+
+                if(player)
+                    openPlayer(player);
+
+            });
+
+        });
+
+    }
+
+
+    /* ==========================================================
+       PLAYER DETAIL
+       ========================================================== */
+
+    function openPlayer(player){
+
+        if(!player)
+            return;
+
+        var body=document.getElementById(
+            "player-detail-body"
+        );
+
+        if(!body)
+            return;
+
+        var tier=tiers.find(function(t){
+            return t.name===player.tier;
+        });
+
+        var color=tier
+            ? tier.color
+            : "#2c3e50";
+
+
+        body.innerHTML=
+
+        '<div class="hub-grid">'+
+
+            '<div class="hub-box">'+
+
+                '<h4>Masterball Card</h4>'+
+
+                '<div style="font-size:20px;font-weight:bold;color:#2c3e50;">'+
+                    player.name+
+                '</div>'+
+
+                '<div style="margin:5px 0;">'+
+
+                    '<span class="detail-tier" style="background:'+color+';">'+
+                        player.tier+
+                    '</span>'+
+
+                '</div>'+
+
+                stat("ID",player.id)+
+                stat("Position",player.position)+
+                stat("Age",player.age)+
+                stat("Origin",player.origin)+
+                stat("State",player.state)+
+
+                (
+                    player.university
+                    ? stat("University",player.university)
+                    : ""
+                )+
+
+            '</div>'+
+
+
+            '<div class="hub-box">'+
+
+                '<h4>Player Economics</h4>'+
+
+                stat(
+                    "Weekly Salary",
+                    "$"+player.salary.toLocaleString()
+                )+
+
+                stat(
+                    "Market Value",
+                    "$"+player.marketValue.toLocaleString()
+                )+
+
+                stat(
+                    "Potential Cap",
+                    player.potentialCap
+                )+
+
+                stat(
+                    "Contract",
+                    player.contractStatus
+                )+
+
+            '</div>'+
+
+        '</div>'+
+
+
+        '<div class="hub-box" style="margin-top:10px;">'+
+
+            '<h4>Skill Profile</h4>'+
+
+            skill("Shooting",player.shooting)+
+            skill("Dribbling",player.dribbling)+
+            skill("Passing",player.passing)+
+            skill("Defense",player.defense)+
+            skill("Athleticism",player.athleticism)+
+            skill("Finishing",player.finishing)+
+            skill("Basketball IQ",player.iq)+
+            skill("Strength",player.strength)+
+
+        '</div>'+
+
+
+        '<div class="hub-grid" style="margin-top:10px;">'+
+
+            '<div class="hub-box">'+
+
+                '<h4>Abilities</h4>'+
+
+                (
+                    player.abilities.length
+                    ?
+                    player.abilities.map(function(a){
+
+                        return '<span class="market-badge market-youth">'+
+                            a+
+                        '</span>';
+
+                    }).join("")
+                    :
+                    '<span style="font-size:11px;color:#777;">No special ability discovered.</span>'
+                )+
+
+            '</div>'+
+
+
+            '<div class="hub-box">'+
+
+                '<h4>Scouting Interest</h4>'+
+
+                (
+                    player.scoutingTeams.length
+                    ?
+                    player.scoutingTeams.map(function(t){
+
+                        return '<span class="interest-team">'+
+                            t+
+                        '</span>';
+
+                    }).join("")
+                    :
+                    '<span style="font-size:11px;">No competing team currently recorded.</span>'
+                )+
+
+            '</div>'+
+
+        '</div>'+
+
+
+        '<div style="margin-top:10px;text-align:right;">'+
+
+            '<button class="hub-action primary" onclick="MC.lockScouting('+player.id+')">'+
+
+                (
+                    player.locked
+                    ? "🔒 Scouting Locked"
+                    : "🔎 Lock Scouting File"
+                )+
+
+            '</button>'+
+
+        '</div>';
+
+
+        document.getElementById(
+            "detail-title"
+        ).innerText=
+            "Masterball Card — "+player.name;
+
+
+        openWindow(
+            "player-detail-overlay"
+        );
+
+    }
+
+
+    function stat(label,value){
+
+        return '<div class="hub-stat">'+
+            '<span>'+label+'</span>'+
+            '<strong>'+value+'</strong>'+
+        '</div>';
+    }
+
+
+    function skill(name,value){
+
+        var pct=Math.min(
+            100,
+            (value/80)*100
+        );
+
+        return '<div class="skill-row">'+
+
+            '<span>'+name+'</span>'+
+
+            '<div class="skill-track">'+
+
+                '<div class="skill-fill" style="width:'+pct+'%"></div>'+
+
+            '</div>'+
+
+            '<strong>'+value+'</
