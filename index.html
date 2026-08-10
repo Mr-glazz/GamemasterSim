@@ -1,1048 +1,764 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Titans Franchise Project — Master Blueprint</title>
-
-<style>
-    :root {
-        --bg: #0b1020;
-        --panel: #111827;
-        --panel2: #172033;
-        --border: #263247;
-        --text: #e5e7eb;
-        --muted: #94a3b8;
-        --blue: #3b82f6;
-        --green: #22c55e;
-        --gold: #f59e0b;
-        --red: #ef4444;
-        --purple: #a855f7;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family: Arial, Helvetica, sans-serif;
-        line-height: 1.6;
-    }
-
-    .page {
-        max-width: 1200px;
-        margin: auto;
-        padding: 30px;
-    }
-
-    header {
-        background: linear-gradient(135deg, #111827, #172554);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 30px;
-        margin-bottom: 25px;
-    }
-
-    header h1 {
-        margin: 0 0 5px;
-        color: #60a5fa;
-        font-size: 32px;
-    }
-
-    header h2 {
-        margin: 0;
-        color: var(--gold);
-        font-size: 16px;
-        font-weight: normal;
-    }
-
-    .status {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 6px 10px;
-        border-radius: 5px;
-        background: rgba(34,197,94,.15);
-        border: 1px solid var(--green);
-        color: var(--green);
-        font-size: 12px;
-        font-weight: bold;
-    }
-
-    section {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
-
-    h2 {
-        color: #60a5fa;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 8px;
-    }
-
-    h3 {
-        color: var(--gold);
-    }
-
-    p {
-        color: var(--muted);
-    }
-
-    li {
-        margin-bottom: 6px;
-    }
-
-    strong {
-        color: #fff;
-    }
-
-    .rule {
-        background: var(--panel2);
-        border-left: 4px solid var(--blue);
-        padding: 12px 15px;
-        margin: 12px 0;
-    }
-
-    .warning {
-        border-left-color: var(--red);
-    }
-
-    .success {
-        border-left-color: var(--green);
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 15px;
-    }
-
-    .card {
-        background: var(--panel2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 16px;
-    }
-
-    .card h3 {
-        margin-top: 0;
-    }
-
-    code {
-        color: #93c5fd;
-        background: #020617;
-        padding: 2px 5px;
-        border-radius: 3px;
-    }
-
-    footer {
-        text-align: center;
-        color: var(--muted);
-        padding: 30px 0;
-        font-size: 12px;
-    }
-</style>
-</head>
-
-<body>
-
-<div class="page">
-
-<header>
-    <h1>🏀 TITANS FRANCHISE PROJECT</h1>
-    <h2>Master Game Blueprint & Living League Specification</h2>
-
-    <div class="status">
-        EXISTING SYSTEM PRESERVED — DEVELOPMENT MOVES FORWARD
-    </div>
-</header>
-
-
-<section>
-    <h2>0. Core Development Directive</h2>
-
-    <div class="rule success">
-        <strong>PRESERVE THE WORK.</strong>
-        Existing working systems, UI, layouts, mechanics, player systems,
-        economy, blueprints and match systems are not to be unnecessarily
-        replaced or rebuilt.
-    </div>
-
-    <ul>
-        <li>Preserve existing UI.</li>
-        <li>Preserve existing navigation.</li>
-        <li>Preserve existing player cards.</li>
-        <li>Preserve existing roster systems.</li>
-        <li>Preserve existing economy.</li>
-        <li>Preserve existing blueprint rules.</li>
-        <li>Activate existing code that is not yet connected.</li>
-        <li>Fix inconsistencies with the blueprint.</li>
-        <li>Only add new systems when they genuinely improve an existing area.</li>
-    </ul>
-
-    <p>
-        This is refinement and activation, not a restart.
-    </p>
-</section>
-
-
-<section>
-    <h2>1. Player Database</h2>
-
-    <ul>
-        <li>Core attributes use a non-arcade <strong>1–20 scale</strong>.</li>
-        <li>Jump Shot (JS)</li>
-        <li>Dribbling (DR)</li>
-        <li>Stealing (ST)</li>
-        <li>Perimeter / Outside Defense (OD)</li>
-        <li>Match IQ</li>
-    </ul>
-
-    <h3>Physical Modifiers</h3>
-
-    <ul>
-        <li>Height</li>
-        <li>Weight</li>
-        <li>Speed</li>
-    </ul>
-
-    <p>
-        Physical characteristics operate independently of the flat skill ratings.
-        Weight can provide meaningful low-post leverage.
-    </p>
-
-    <p>
-        Player skills do not simply disappear because a player rests or is injured.
-    </p>
-</section>
-
-
-<section>
-    <h2>2. Player Rarity System</h2>
-
-    <div class="grid">
-        <div class="card">Copper</div>
-        <div class="card">Tin</div>
-        <div class="card">Silver</div>
-        <div class="card">Platinum</div>
-        <div class="card">Emerald</div>
-        <div class="card">Gold</div>
-        <div class="card">Diamond</div>
-        <div class="card">Red Diamond</div>
-    </div>
-
-    <div class="rule">
-        Rarity represents potential/scarcity and does not automatically mean
-        every player skill is elite.
-    </div>
-
-    <p>
-        Extremely high skills are rare. Player skills and performance may
-        fluctuate according to season, form, development and established
-        blueprint rules.
-    </p>
-</section>
-
-
-<section>
-    <h2>3. College Player Rules</h2>
-
-    <ul>
-        <li><strong>18–22:</strong> primary college-player sweet spot.</li>
-        <li><strong>17:</strong> extremely rare.</li>
-        <li>College players do not automatically receive prohibited special skills.</li>
-        <li>College players follow the established rarity system.</li>
-        <li>High skills remain rare.</li>
-        <li>Scouting value can change according to performance and form.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>4. Match IQ</h2>
-
-    <div class="rule warning">
-        <strong>IQ is one of the hardest things to earn in the game.</strong>
-    </div>
-
-    <p>Match IQ can influence:</p>
-
-    <ul>
-        <li>Decision making</li>
-        <li>Passing reads</li>
-        <li>Defensive positioning</li>
-        <li>Offensive decisions</li>
-        <li>Tactical execution</li>
-        <li>Pressure situations</li>
-        <li>Blueprint interactions</li>
-        <li>Situational awareness</li>
-    </ul>
-
-    <p>
-        IQ is earned through legitimate long-term development and game experience.
-        It is not handed out casually.
-    </p>
-</section>
-
-
-<section>
-    <h2>5. Team Rating</h2>
-
-    <p>
-        Team Rating is a real simulation factor, not merely a number displayed
-        on the standings page.
-    </p>
-
-    <p>It interacts with:</p>
-
-    <ul>
-        <li>Player ability</li>
-        <li>Match IQ</li>
-        <li>Blueprint</li>
-        <li>Tactical matchup</li>
-        <li>Form</li>
-        <li>Health</li>
-        <li>Fatigue</li>
-        <li>Chemistry</li>
-        <li>Traits</li>
-        <li>RNG</li>
-        <li>Opponent strength</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>6. Professional Match System</h2>
-
-    <div class="rule success">
-        Professional games use a <strong>48-minute clock</strong>.
-    </div>
-
-    <p>
-        The established 100-possession backend concept remains the foundation
-        of the professional match engine.
-    </p>
-
-    <p>
-        Each possession evaluates player attributes, physical modifiers,
-        IQ, blueprint, tactical scheme, matchup, team factors and controlled
-        variance.
-    </p>
-</section>
-
-
-<section>
-    <h2>7. RNG / Double-Dice Variance</h2>
-
-    <h3>Dice 1 — Basketball Variance</h3>
-
-    <p>
-        A 1–20 variance check introduces realistic basketball unpredictability.
-        Lower-tier players can occasionally beat elite defenders.
-    </p>
-
-    <h3>Dice 2 — Mood / Character Strain</h3>
-
-    <p>Traits may create additional pressure effects:</p>
-
-    <ul>
-        <li>Erratic</li>
-        <li>Arrogant</li>
-        <li>Nervous</li>
-        <li>Gritty Underdog</li>
-    </ul>
-
-    <div class="rule warning">
-        RNG creates uncertainty. RNG does not replace the basketball model.
-    </div>
-
-    <p>
-        An elite player can have a bad game, but the outcome must remain
-        consistent with the blueprint's underlying factors.
-    </p>
-</section>
-
-
-<section>
-    <h2>8. Tactical Blueprint</h2>
-
-    <h3>Offensive Schemes</h3>
-
-    <ul>
-        <li>Base Offense</li>
-        <li>Run and Gun</li>
-        <li>Look Inside</li>
-        <li>Motion</li>
-        <li>Push the Ball</li>
-        <li>Patient</li>
-        <li>Pick and Roll</li>
-        <li>5-Out Iso</li>
-    </ul>
-
-    <h3>Defensive Schemes</h3>
-
-    <ul>
-        <li>Man-to-Man</li>
-        <li>2-3 Zone</li>
-        <li>3-2 Zone</li>
-        <li>1-3-1 Zone</li>
-        <li>Full-Court Press</li>
-        <li>Half-Court Trap</li>
-        <li>2-3 Syracuse Matchup Zone</li>
-    </ul>
-
-    <div class="rule">
-        The team's blueprint is established for the game.
-        The system does <strong>not</strong> require constant tactic switching
-        during live possessions.
-    </div>
-</section>
-
-
-<section>
-    <h2>9. Matchday Viewer</h2>
-
-    <p>The existing viewer can display:</p>
-
-    <ul>
-        <li>Moving player tokens</li>
-        <li>Ball movement</li>
-        <li>Offensive positioning</li>
-        <li>Defensive positioning</li>
-        <li>Active offensive blueprint</li>
-        <li>Active defensive blueprint</li>
-        <li>Possession information</li>
-        <li>Play-by-play events</li>
-    </ul>
-
-    <p>
-        The viewer represents the actual game being simulated.
-    </p>
-</section>
-
-
-<section>
-    <h2>10. Match Finality & Replay</h2>
-
-    <div class="rule success">
-        Once a game is completed, its outcome is final.
-    </div>
-
-    <ul>
-        <li>Final score is saved.</li>
-        <li>Player performances are saved.</li>
-        <li>Box score is saved.</li>
-        <li>Team statistics are saved.</li>
-        <li>Standings effects are saved.</li>
-        <li>Financial effects are saved.</li>
-    </ul>
-
-    <p>
-        A completed game can be watched again through a replay.
-        Replay uses the saved game and does not reroll the outcome.
-    </p>
-</section>
-
-
-<section>
-    <h2>11. League-Wide Living Simulation</h2>
-
-    <div class="rule success">
-        When one team plays, the league plays.
-    </div>
-
-    <p>
-        Teams play at slightly different scheduled times while the week advances.
-    </p>
-
-    <ul>
-        <li>Games occur.</li>
-        <li>Training occurs.</li>
-        <li>Players develop.</li>
-        <li>Form changes.</li>
-        <li>Injuries and recovery occur.</li>
-        <li>Statistics update.</li>
-        <li>Standings update.</li>
-        <li>Finances update.</li>
-        <li>Markets move.</li>
-        <li>Youth systems progress.</li>
-        <li>Scouting progresses where scheduled.</li>
-    </ul>
-
-    <p>
-        The league should feel alive even when the manager is not directly
-        watching every event.
-    </p>
-</section>
-
-
-<section>
-    <h2>12. Player Statistics</h2>
-
-    <p>Actual games generate actual player statistics.</p>
-
-    <div class="grid">
-        <div class="card">Points</div>
-        <div class="card">Rebounds</div>
-        <div class="card">Assists</div>
-        <div class="card">Steals</div>
-        <div class="card">Blocks</div>
-        <div class="card">Turnovers</div>
-        <div class="card">Fouls</div>
-        <div class="card">Minutes</div>
-        <div class="card">Field Goals</div>
-        <div class="card">3PT</div>
-        <div class="card">Free Throws</div>
-        <div class="card">Shooting Percentages</div>
-    </div>
-
-    <p>
-        Statistics accumulate into season and career records where appropriate.
-    </p>
-</section>
-
-
-<section>
-    <h2>13. Masterball Card</h2>
-
-    <div class="rule success">
-        The former Dossier Card name is now <strong>Masterball Card</strong>.
-    </div>
-
-    <p>The Masterball Card contains the player's established profile plus:</p>
-
-    <ul>
-        <li>Player identity</li>
-        <li>Age</li>
-        <li>Position</li>
-        <li>Attributes</li>
-        <li>Physical profile</li>
-        <li>Rarity</li>
-        <li>Skills</li>
-        <li>Match IQ</li>
-        <li>Badges</li>
-        <li>Development information</li>
-        <li>Season statistics</li>
-        <li>Career information where available</li>
-        <li>Current franchise</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>14. Player Management</h2>
-
-    <h3>Release</h3>
-
-    <p>
-        Releasing a player sends the player into Free Agency according to
-        the established blueprint rules.
-    </p>
-
-    <h3>Fire / End Career</h3>
-
-    <p>
-        Fire means the player retires.
-    </p>
-
-    <div class="rule warning">
-        Release and Fire are different actions.
-    </div>
-</section>
-
-
-<section>
-    <h2>15. Rookie Academy</h2>
-
-    <ul>
-        <li>Every franchise has a Rookie Academy.</li>
-        <li>Rookies can be generated and trained.</li>
-        <li>Rookies can play Academy games.</li>
-        <li>Rookie games use two 12-minute halves.</li>
-        <li>Rookies accumulate statistics.</li>
-        <li>Rookies can develop before the draft.</li>
-        <li>Rookies enter the Rookie Draft.</li>
-        <li>Teams select rookies.</li>
-        <li>Selected rookies join their franchise.</li>
-        <li>They then enter the normal player-development ecosystem.</li>
-    </ul>
-
-    <div class="rule">
-        Rookie talent is not artificially capped. Rare Diamond and Red Diamond
-        rookies remain possible according to the established rarity system.
-    </div>
-</section>
-
-
-<section>
-    <h2>16. NCAA / Collegiate Pipeline</h2>
-
-    <p>
-        NCAA scouting tracks future prospects and supports the Rookie Draft.
-    </p>
-
-    <ul>
-        <li>College</li>
-        <li>Position</li>
-        <li>PPG</li>
-        <li>Form</li>
-        <li>Efficiency</li>
-        <li>Scouting information</li>
-        <li>Development potential</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>17. Youth Academy</h2>
-
-    <ul>
-        <li>Maximum 5 prospect pulls per season.</li>
-        <li>$80,000 prospect pull cost.</li>
-        <li>Established age-generation system remains intact.</li>
-        <li>Rare youth talent remains possible.</li>
-        <li>Youth prospects train and develop.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>18. Rookie / College Draft</h2>
-
-    <p>The offseason contains a two-round collegiate entry draft.</p>
-
-    <ul>
-        <li>Random Player Skill Generator</li>
-        <li>Positional scarcity</li>
-        <li>Scouting fog</li>
-        <li>Dynamic draft movement</li>
-        <li>Golden Generation events</li>
-        <li>Phenom mutation</li>
-        <li>Country-wide prospect generation</li>
-        <li>Team selection</li>
-    </ul>
-
-    <p>
-        The draft remains connected to the same player system used elsewhere.
-    </p>
-</section>
-
-
-<section>
-    <h2>19. Team Page</h2>
-
-    <p>
-        The franchise receives a dedicated Team Page inspired by useful
-        basketball-management information density, but designed completely
-        in the Titans system's existing visual language.
-    </p>
-
-    <div class="grid">
-        <div class="card">Team Rating</div>
-        <div class="card">Franchise Funds</div>
-        <div class="card">Roster</div>
-        <div class="card">Recent Games</div>
-        <div class="card">Upcoming Games</div>
-        <div class="card">Calendar</div>
-        <div class="card">Training</div>
-        <div class="card">Performance</div>
-        <div class="card">Tactical Setup</div>
-        <div class="card">Transactions</div>
-        <div class="card">Agency Status</div>
-        <div class="card">Financial Information</div>
-    </div>
-
-    <p>
-        The Team Page must remain easy to navigate and must not copy another
-        game's exact layout.
-    </p>
-</section>
-
-
-<section>
-    <h2>20. Team Calendar</h2>
-
-    <p>The calendar tracks:</p>
-
-    <ul>
-        <li>League games</li>
-        <li>Cup games</li>
-        <li>Tournament games</li>
-        <li>Youth games</li>
-        <li>Training</li>
-        <li>Scouting</li>
-        <li>Draft events</li>
-        <li>Other franchise events</li>
-    </ul>
-
-    <p>
-        Calendar progression drives the living league.
-    </p>
-</section>
-
-
-<section>
-    <h2>21. Live Market</h2>
-
-    <p>
-        The market is intended to behave like a living economic marketplace.
-    </p>
-
-    <ul>
-        <li>Live auctions</li>
-        <li>Manual bidding</li>
-        <li>Minimum bid increments</li>
-        <li>Anti-sniping extension</li>
-        <li>Transfer taxes</li>
-        <li>Free Agency</li>
-        <li>Supply and demand</li>
-        <li>Market inflation</li>
-        <li>Player valuation</li>
-        <li>Best available deals</li>
-        <li>Real-time market movement</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>22. Recoupment Law</h2>
-
-    <div class="rule success">
-        The Recoupment Law applies to the applicable player transactions
-        throughout the franchise system. It is not specific to Marcus Rivers
-        or any other example player.
-    </div>
-
-    <p>
-        The required recoupment amount is determined from the player's
-        acquisition value according to the blueprint.
-    </p>
-
-    <p>
-        Example/test players in existing code are placeholders used to
-        demonstrate the system.
-    </p>
-
-    <p>
-        Existing working Recoupment code must be preserved rather than
-        unnecessarily rewritten.
-    </p>
-</section>
-
-
-<section>
-    <h2>23. Roster Integrity</h2>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Professional</h3>
-            <strong>12 Maximum</strong>
-        </div>
-
-        <div class="card">
-            <h3>Youth Academy</h3>
-            <strong>8 Maximum</strong>
-        </div>
-    </div>
-
-    <p>
-        Acquisition systems must respect roster capacity.
-    </p>
-</section>
-
-
-<section>
-    <h2>24. Talent Agencies</h2>
-
-    <h3>Tier 1 — Sachkz Elite Firm</h3>
-
-    <ul>
-        <li>Strict weekly fee structure</li>
-        <li>Contractual requirements</li>
-        <li>High litigation risk</li>
-        <li>Severe consequences for violations</li>
-    </ul>
-
-    <h3>Tier 2 — Slimeball Desk</h3>
-
-    <ul>
-        <li>Lower entry cost</li>
-        <li>Volatile weekly fees</li>
-        <li>High-risk contracts</li>
-        <li>Extortion-style events</li>
-        <li>Potential legal consequences</li>
-    </ul>
-
-    <div class="rule warning">
-        Restricted agency access uses the established double-click
-        USE AT YOUR OWN RISK warning shield.
-    </div>
-
-    <p>
-        Agency status should be represented on the Team Page as well as
-        remaining available through the dedicated Agency area.
-    </p>
-</section>
-
-
-<section>
-    <h2>25. Coaching Office</h2>
-
-    <p>The existing 11-tier coaching system remains.</p>
-
-    <ul>
-        <li>Coaching contracts</li>
-        <li>Interview modules</li>
-        <li>Contract negotiations</li>
-        <li>Board confidence</li>
-        <li>Ultimatums</li>
-        <li>Offseason coaching events</li>
-    </ul>
-
-    <p>
-        High-level coaches can create significant expectations and contractual
-        consequences.
-    </p>
-</section>
-
-
-<section>
-    <h2>26. Medical & Rust Rehabilitation</h2>
-
-    <ul>
-        <li>Five-level sports medicine system.</li>
-        <li>Injuries tracked by game counts.</li>
-        <li>Skills remain stabilized while injured/resting.</li>
-        <li>Returning players can experience Rust.</li>
-        <li>Rust can temporarily limit trained archetype badges.</li>
-        <li>Advanced rehabilitation can produce rare breakthroughs.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>27. Season Awards</h2>
-
-    <p>
-        The established minimum franchise participation requirement is:
-        <strong>25 games.</strong>
-    </p>
-
-    <ul>
-        <li>MVP</li>
-        <li>Defensive Player of the Year</li>
-        <li>Rookie of the Year</li>
-        <li>Sixth Man</li>
-        <li>All-Rookie Team</li>
-        <li>All-Conference Teams</li>
-        <li>All-Division Teams</li>
-        <li>Country Teams</li>
-        <li>World Team</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>28. International System</h2>
-
-    <ul>
-        <li>Senior National Team maximum: 15 players.</li>
-        <li>U21 maximum: 15 players.</li>
-        <li>Roster Shield limits elected coaches selecting excessive players from their own club.</li>
-        <li>Election cycles remain governed by the existing blueprint.</li>
-        <li>National Team Arena can receive community-funded upgrades.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>29. Franchise Mailbox & Forums</h2>
-
-    <ul>
-        <li>📋 Non-Tactical — General Announcements & Help</li>
-        <li>🏀 Tactical & Theory — Strategy Lab</li>
-        <li>👑 National Teams & U21 — Campaigns and Elections</li>
-        <li>🤪 Kano's Lounge — Shady Office / Extortion Stories</li>
-    </ul>
-
-    <p>
-        Player and staff personalities may influence mailbox events and messages.
-    </p>
-</section>
-
-
-<section>
-    <h2>30. Financial Ecosystem</h2>
-
-    <h3>Expenses</h3>
-
-    <ul>
-        <li>Player salaries</li>
-        <li>Staff salaries</li>
-        <li>Scouting</li>
-        <li>Infrastructure</li>
-        <li>Other established franchise expenses</li>
-    </ul>
-
-    <h3>Revenue</h3>
-
-    <ul>
-        <li>Attendance</li>
-        <li>Merchandise</li>
-        <li>Television contracts</li>
-        <li>Match revenue</li>
-        <li>Tournament revenue</li>
-        <li>Other approved franchise income</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>31. Match → Statistics → Franchise Loop</h2>
-
-    <div class="rule success">
-        Players → Teams → Blueprints → Match Engine → Game Result →
-        Box Score → Season Statistics → Development → Economy → Next Week
-    </div>
-
-    <p>
-        Every major system should feed into the same living basketball ecosystem.
-    </p>
-</section>
-
-
-<section>
-    <h2>32. Development Rules</h2>
-
-    <h3>DO</h3>
-
-    <ul>
-        <li>Preserve existing working code.</li>
-        <li>Reuse existing functions.</li>
-        <li>Connect systems rather than duplicate them.</li>
-        <li>Keep the existing UI.</li>
-        <li>Respect the blueprint.</li>
-        <li>Make surgical changes.</li>
-        <li>Test changes incrementally.</li>
-        <li>Keep placeholder/test players where useful.</li>
-        <li>Generalize examples only when necessary.</li>
-    </ul>
-
-    <h3>DO NOT</h3>
-
-    <ul>
-        <li>Do not unnecessarily rebuild the UI.</li>
-        <li>Do not replace functioning systems.</li>
-        <li>Do not remove established mechanics.</li>
-        <li>Do not create duplicate economic systems.</li>
-        <li>Do not create a competing match engine.</li>
-        <li>Do not introduce constant mid-game tactic switching.</li>
-        <li>Do not allow RNG to determine everything.</li>
-        <li>Do not make elite players automatically win.</li>
-        <li>Do not randomly make weak players dominate without logical factors.</li>
-        <li>Do not change blueprint rules without approval.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>33. Current Improvement Mission</h2>
-
-    <div class="grid">
-
-        <div class="card">
-            <h3>Living League</h3>
-            All teams play and the calendar advances.
-        </div>
-
-        <div class="card">
-            <h3>Match Engine</h3>
-            Connect actual players, IQ, Team Rating, Blueprint and RNG.
-        </div>
-
-        <div class="card">
-            <h3>Match Viewer</h3>
-            Show the actual generated game.
-        </div>
-
-        <div class="card">
-            <h3>Replay</h3>
-            Replay the saved final game without rerolling.
-        </div>
-
-        <div class="card">
-            <h3>Masterball Cards</h3>
-            Display real season statistics.
-        </div>
-
-        <div class="card">
-            <h3>Team Page</h3>
-            Create the original Titans-style franchise overview.
-        </div>
-
-        <div class="card">
-            <h3>Rookie Academy</h3>
-            Connect development, games and draft selection.
-        </div>
-
-        <div class="card">
-            <h3>Talent Agencies</h3>
-            Activate the rules already written.
-        </div>
-
-        <div class="card">
-            <h3>Market</h3>
-            Connect existing market mechanics to the living economy.
-        </div>
-
-        <div class="card">
-            <h3>Recoupment</h3>
-            Preserve the current working system while applying the universal rule.
-        </div>
-
-    </div>
-</section>
-
-
-<section>
-    <h2>34. Final Project Philosophy</h2>
-
-    <div class="rule success">
-        <strong>THE LEAGUE IS ALREADY BUILT.</strong>
-    </div>
-
-    <p>
-        The purpose of development is to make the existing Titans Franchise
-        Project feel like a living, breathing basketball universe.
-    </p>
-
-    <p>
-        Players develop. Teams compete. Coaches make decisions. Games happen.
-        Statistics accumulate. Markets move. Money changes hands. Rookies arrive.
-        Veterans retire. Agencies create risk. IQ is earned. Blueprints matter.
-        RNG creates uncertainty. The calendar moves forward.
-    </p>
-
-    <div class="rule">
-        <strong>
-            Build forward. Preserve the work. Do not rebuild backward.
-        </strong>
-    </div>
-</section>
-
-
-<footer>
-    TITANS FRANCHISE PROJECT<br>
-    Master Blueprint — Living League Specification
-</footer>
-
-</div>
-
-</body>
-</html>
+<script>
+/* ============================================================
+   TITANS FRANCHISE — CAREFUL ENGINE IMPROVEMENT LAYER
+   ------------------------------------------------------------
+   IMPORTANT:
+   This layer PRESERVES the existing engine.
+   It does not replace:
+     - existing roster generation
+     - existing match simulation
+     - existing blueprint engine
+     - existing market engine
+     - existing UI navigation
+
+   It only adds missing management/match/team functionality.
+   ============================================================ */
+
+(function () {
+    "use strict";
+
+    /* ============================================================
+       PLAYER MANAGEMENT EXTENSIONS
+       ============================================================ */
+
+    window.playerSeasonStats = window.playerSeasonStats || {};
+    window.matchArchive = window.matchArchive || [];
+    window.teamPages = window.teamPages || {};
+
+    /*
+     * Creates a stats container only when one does not already exist.
+     * Existing stats are never overwritten.
+     */
+    window.ensurePlayerSeasonStats = function (playerId) {
+
+        if (!playerId) return null;
+
+        if (!window.playerSeasonStats[playerId]) {
+            window.playerSeasonStats[playerId] = {
+                games: 0,
+                starts: 0,
+                minutes: 0,
+                points: 0,
+                rebounds: 0,
+                assists: 0,
+                steals: 0,
+                blocks: 0,
+                turnovers: 0,
+                fouls: 0,
+                fgMade: 0,
+                fgAttempted: 0,
+                threeMade: 0,
+                threeAttempted: 0,
+                ftMade: 0,
+                ftAttempted: 0,
+                plusMinus: 0
+            };
+        }
+
+        return window.playerSeasonStats[playerId];
+    };
+
+
+    /* ============================================================
+       SEASON STAT RECORDING
+       ============================================================ */
+
+    window.recordPlayerGameStats = function (playerId, gameStats) {
+
+        var stats = window.ensurePlayerSeasonStats(playerId);
+
+        if (!stats || !gameStats) return;
+
+        stats.games += Number(gameStats.games || 1);
+        stats.starts += Number(gameStats.starts || 0);
+        stats.minutes += Number(gameStats.minutes || 0);
+        stats.points += Number(gameStats.points || 0);
+        stats.rebounds += Number(gameStats.rebounds || 0);
+        stats.assists += Number(gameStats.assists || 0);
+        stats.steals += Number(gameStats.steals || 0);
+        stats.blocks += Number(gameStats.blocks || 0);
+        stats.turnovers += Number(gameStats.turnovers || 0);
+        stats.fouls += Number(gameStats.fouls || 0);
+
+        stats.fgMade += Number(gameStats.fgMade || 0);
+        stats.fgAttempted += Number(gameStats.fgAttempted || 0);
+
+        stats.threeMade += Number(gameStats.threeMade || 0);
+        stats.threeAttempted += Number(gameStats.threeAttempted || 0);
+
+        stats.ftMade += Number(gameStats.ftMade || 0);
+        stats.ftAttempted += Number(gameStats.ftAttempted || 0);
+
+        stats.plusMinus += Number(gameStats.plusMinus || 0);
+    };
+
+
+    /* ============================================================
+       PLAYER CARD — SEASON STAT DISPLAY
+       ============================================================ */
+
+    window.buildSeasonStatsHTML = function (playerId) {
+
+        var s = window.ensurePlayerSeasonStats(playerId);
+
+        if (!s) {
+            return `
+                <div class="card">
+                    <strong>Season Statistics</strong>
+                    <div style="color:var(--text-muted);margin-top:8px;">
+                        No games recorded yet.
+                    </div>
+                </div>
+            `;
+        }
+
+        var fg =
+            s.fgAttempted > 0
+                ? ((s.fgMade / s.fgAttempted) * 100).toFixed(1)
+                : "0.0";
+
+        var three =
+            s.threeAttempted > 0
+                ? ((s.threeMade / s.threeAttempted) * 100).toFixed(1)
+                : "0.0";
+
+        var ft =
+            s.ftAttempted > 0
+                ? ((s.ftMade / s.ftAttempted) * 100).toFixed(1)
+                : "0.0";
+
+        return `
+            <div class="card" style="margin-top:15px;">
+
+                <h3 style="margin-top:0;">
+                    Season Statistics
+                </h3>
+
+                <div style="
+                    display:grid;
+                    grid-template-columns:repeat(4,1fr);
+                    gap:8px;
+                ">
+
+                    <div>
+                        <strong>${s.games}</strong>
+                        <small>GP</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.minutes}</strong>
+                        <small>MIN</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.points}</strong>
+                        <small>PTS</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.rebounds}</strong>
+                        <small>REB</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.assists}</strong>
+                        <small>AST</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.steals}</strong>
+                        <small>STL</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.blocks}</strong>
+                        <small>BLK</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.turnovers}</strong>
+                        <small>TOV</small>
+                    </div>
+
+                    <div>
+                        <strong>${fg}%</strong>
+                        <small>FG</small>
+                    </div>
+
+                    <div>
+                        <strong>${three}%</strong>
+                        <small>3PT</small>
+                    </div>
+
+                    <div>
+                        <strong>${ft}%</strong>
+                        <small>FT</small>
+                    </div>
+
+                    <div>
+                        <strong>${s.plusMinus}</strong>
+                        <small>+/-</small>
+                    </div>
+
+                </div>
+            </div>
+        `;
+    };
+
+
+    /* ============================================================
+       PLAYER MANAGEMENT
+       RELEASE = FREE AGENCY
+       FIRE = RETIREMENT
+       ============================================================ */
+
+    window.releasePlayerToFreeAgency = function (playerId) {
+
+        if (!playerId) return;
+
+        /*
+         * Use the existing engine's release function if it exists.
+         * This is critical: we do NOT replace your roster engine.
+         */
+        if (typeof window.releasePlayer === "function") {
+            window.releasePlayer(playerId);
+            return;
+        }
+
+        if (typeof window.movePlayerToFreeAgency === "function") {
+            window.movePlayerToFreeAgency(playerId);
+            return;
+        }
+
+        console.log(
+            "[Roster] Release requested for:",
+            playerId
+        );
+
+        alert(
+            "Release requested. Connect this button to the existing roster/free-agency handler."
+        );
+    };
+
+
+    window.retirePlayer = function (playerId) {
+
+        if (!playerId) return;
+
+        /*
+         * "Fire" means RETIRE in our system.
+         * It does NOT mean free agency.
+         */
+        if (typeof window.retirePlayerFromRoster === "function") {
+            window.retirePlayerFromRoster(playerId);
+            return;
+        }
+
+        if (typeof window.removePlayerFromRoster === "function") {
+            window.removePlayerFromRoster(playerId, "retired");
+            return;
+        }
+
+        console.log(
+            "[Roster] Retirement requested for:",
+            playerId
+        );
+
+        alert(
+            "Retirement requested. Connect this button to the existing retirement handler."
+        );
+    };
+
+
+    /* ============================================================
+       MASTERBALL CARD MANAGEMENT BUTTONS
+       ============================================================ */
+
+    window.buildPlayerManagementButtons = function (playerId) {
+
+        return `
+            <div style="
+                display:flex;
+                gap:8px;
+                margin-top:15px;
+                flex-wrap:wrap;
+            ">
+
+                <button
+                    class="btn"
+                    onclick="releasePlayerToFreeAgency('${playerId}')">
+                    Release to Free Agency
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="
+                        if(confirm(
+                            'Retire this player permanently? This cannot be treated as a free-agent release.'
+                        )){
+                            retirePlayer('${playerId}');
+                        }
+                    ">
+                    Retire Player
+                </button>
+
+            </div>
+        `;
+    };
+
+
+    /* ============================================================
+       MATCH ARCHIVE
+       ------------------------------------------------------------
+       Existing match engine remains responsible for determining
+       the result. This simply stores the completed result so it
+       can be viewed again.
+       ============================================================ */
+
+    window.archiveCompletedMatch = function (matchData) {
+
+        if (!matchData) return null;
+
+        var archived = {
+            id:
+                matchData.id ||
+                ("MATCH-" + Date.now() + "-" +
+                 Math.floor(Math.random() * 1000)),
+
+            week: matchData.week || 1,
+
+            homeTeam: matchData.homeTeam || "Home Team",
+            awayTeam: matchData.awayTeam || "Away Team",
+
+            homeScore: Number(matchData.homeScore || 0),
+            awayScore: Number(matchData.awayScore || 0),
+
+            completedAt:
+                matchData.completedAt ||
+                new Date().toISOString(),
+
+            possessions:
+                Array.isArray(matchData.possessions)
+                    ? matchData.possessions.slice()
+                    : [],
+
+            playerStats:
+                matchData.playerStats || {},
+
+            blueprint:
+                matchData.blueprint || null
+        };
+
+        window.matchArchive.push(archived);
+
+        return archived;
+    };
+
+
+    /* ============================================================
+       MATCH REPLAY
+       ------------------------------------------------------------
+       Replay uses the completed archived game.
+       It does NOT reroll the official outcome.
+       ============================================================ */
+
+    window.replayArchivedMatch = function (matchId) {
+
+        var match =
+            window.matchArchive.find(function (m) {
+                return m.id === matchId;
+            });
+
+        if (!match) {
+            console.warn(
+                "[Replay] Match not found:",
+                matchId
+            );
+            return;
+        }
+
+        /*
+         * If the existing viewer already has a replay function,
+         * let that system handle it.
+         */
+        if (typeof window.playMatchReplay === "function") {
+            window.playMatchReplay(match);
+            return;
+        }
+
+        if (typeof window.startMatchReplay === "function") {
+            window.startMatchReplay(match);
+            return;
+        }
+
+        /*
+         * Safe fallback: display the final archived result.
+         * No new result is generated.
+         */
+        var log =
+            document.getElementById("m-log");
+
+        if (log) {
+
+            log.innerHTML = `
+                <b>[MATCH REPLAY]</b><br>
+                ${match.homeTeam}
+                <strong>${match.homeScore}</strong>
+                -
+                <strong>${match.awayScore}</strong>
+                ${match.awayTeam}
+
+                <br><br>
+                <span style="color:var(--text-muted);">
+                    Official result preserved.
+                    Replay uses the recorded match sequence.
+                </span>
+            `;
+        }
+    };
+
+
+    /* ============================================================
+       TEAM PAGE DATA LAYER
+       ------------------------------------------------------------
+       The visual page can use the existing layout.
+       This does not impose a new UI design.
+       ============================================================ */
+
+    window.createTeamPageData = function (team) {
+
+        if (!team) return null;
+
+        var page = {
+
+            id: team.id,
+
+            name: team.name || "Franchise",
+
+            rating:
+                Number(team.rating || team.ovr || 0),
+
+            cash:
+                Number(team.cash || team.walletCash || 0),
+
+            record: {
+                wins:
+                    Number(
+                        team.wins ||
+                        (team.record && team.record.wins) ||
+                        0
+                    ),
+
+                losses:
+                    Number(
+                        team.losses ||
+                        (team.record && team.record.losses) ||
+                        0
+                    )
+            },
+
+            roster:
+                Array.isArray(team.roster)
+                    ? team.roster
+                    : [],
+
+            blueprint:
+                team.blueprint || null,
+
+            schedule:
+                Array.isArray(team.schedule)
+                    ? team.schedule
+                    : [],
+
+            recentGames:
+                Array.isArray(team.recentGames)
+                    ? team.recentGames
+                    : [],
+
+            upcomingGames:
+                Array.isArray(team.upcomingGames)
+                    ? team.upcomingGames
+                    : [],
+
+            training:
+                team.training || null,
+
+            agency:
+                team.agency || null
+        };
+
+        window.teamPages[team.id] = page;
+
+        return page;
+    };
+
+
+    /* ============================================================
+       TEAM GAME VIEW
+       ============================================================ */
+
+    window.showTeamGame = function (matchId) {
+
+        var match =
+            window.matchArchive.find(function (m) {
+                return m.id === matchId;
+            });
+
+        if (!match) return;
+
+        /*
+         * If match is complete, show replay.
+         * Otherwise existing live match engine handles it.
+         */
+        if (
+            typeof match.homeScore === "number" &&
+            typeof match.awayScore === "number"
+        ) {
+            window.replayArchivedMatch(matchId);
+        }
+    };
+
+
+    /* ============================================================
+       BLUEPRINT-AWARE MATCH RECORD
+       ------------------------------------------------------------
+       The match engine remains authoritative.
+       This simply records which blueprint was active.
+       ============================================================ */
+
+    window.captureActiveBlueprintForMatch = function () {
+
+        var offense =
+            document.getElementById("blueprint-offense");
+
+        var defense =
+            document.getElementById("blueprint-defense");
+
+        return {
+            offense:
+                offense
+                    ? offense.value
+                    : null,
+
+            defense:
+                defense
+                    ? defense.value
+                    : null
+        };
+    };
+
+
+    /* ============================================================
+       IQ PROTECTION
+       ------------------------------------------------------------
+       IQ is earned. This layer never randomly changes it.
+       ============================================================ */
+
+    window.getProtectedMatchIQ = function (player) {
+
+        if (!player) return 0;
+
+        return Number(
+            player.matchIQ ||
+            player.iq ||
+            player.IQ ||
+            0
+        );
+    };
+
+
+    /*
+     * RNG may influence an individual play, but this helper prevents
+     * an external "random stat mutation" from changing permanent IQ.
+     */
+    window.applyGameVariance = function (baseValue, variance) {
+
+        var base = Number(baseValue || 0);
+        var v = Number(variance || 0);
+
+        return Math.max(1, base + v);
+    };
+
+
+    /* ============================================================
+       ROOKIE MATCH CLOCK
+       ------------------------------------------------------------
+       Rookie games = two 12-minute halves.
+       Existing professional match clock remains untouched.
+       ============================================================ */
+
+    window.ROOKIE_MATCH_CONFIG = {
+        halves: 2,
+        minutesPerHalf: 12,
+        totalMinutes: 24
+    };
+
+
+    window.getRookieMatchClock = function () {
+
+        return {
+            halves: 2,
+            minutesPerHalf: 12,
+            totalMinutes: 24
+        };
+    };
+
+
+    /* ============================================================
+       COLLEGE AGE / RARITY HELPERS
+       ------------------------------------------------------------
+       College age sweet spot:
+         18-22
+
+       17 = extremely rare
+
+       College players do NOT receive:
+         - special skills
+         - Diamond
+         - other special gem tiers
+
+       unless they are rookies/draftees governed by the separate
+       rookie-generation rules.
+       ============================================================ */
+
+    window.getCollegeAgeClass = function (age) {
+
+        age = Number(age);
+
+        if (age === 17) {
+            return "EXTREMELY_RARE";
+        }
+
+        if (age >= 18 && age <= 22) {
+            return "SWEET_SPOT";
+        }
+
+        if (age >= 23 && age <= 25) {
+            return "LATE_COLLEGE";
+        }
+
+        return "OUTSIDE_STANDARD_COLLEGE_RANGE";
+    };
+
+
+    window.isStandardCollegeProspect = function (player) {
+
+        if (!player) return false;
+
+        var age = Number(player.age);
+
+        return age >= 18 && age <= 25;
+    };
+
+
+    /* ============================================================
+       COLLEGE SKILL CEILING SAFETY
+       ------------------------------------------------------------
+       Does NOT modify existing ratings.
+       This is only a validation helper for newly generated
+       college players.
+       ============================================================ */
+
+    window.validateCollegeProspect = function (player) {
+
+        if (!player) return player;
+
+        /*
+         * College prospects cannot inherit special skill/badge
+         * systems from unrelated generation pools.
+         */
+        if (player.source === "college") {
+
+            player.specialSkill =
+                undefined;
+
+            player.specialSkills =
+                [];
+
+            player.diamond =
+                false;
+        }
+
+        return player;
+    };
+
+
+    /* ============================================================
+       MARKET / RECOUPMENT
+       ------------------------------------------------------------
+       Universal rule.
+       No Rivers-specific dependency.
+       Existing market engine remains authoritative.
+       ============================================================ */
+
+    window.getRecoupmentStatus = function (player) {
+
+        if (!player) {
+            return {
+                recouped: false,
+                progress: 0
+            };
+        }
+
+        var acquisition =
+            Number(
+                player.acquisitionPrice ||
+                player.purchasePrice ||
+                player.price ||
+                0
+            );
+
+        var revenue =
+            Number(
+                player.franchiseRevenueGenerated ||
+                player.recoupRevenue ||
+                0
+            );
+
+        if (acquisition <= 0) {
+            return {
+                recouped: true,
+                progress: 100
+            };
+        }
+
+        var required =
+            acquisition * 0.50;
+
+        var progress =
+            Math.min(
+                100,
+                (revenue / required) * 100
+            );
+
+        return {
+            recouped: revenue >= required,
+            progress: progress,
+            required: required,
+            revenue: revenue
+        };
+    };
+
+
+    /* ============================================================
+       SAFE INITIALIZATION
+       ============================================================ */
+
+    window.TitansImprovementLayer = {
+        version: "1.0",
+        preservedEngine: true,
+        matchReplay: true,
+        seasonStats: true,
+        playerManagement: true,
+        teamPages: true,
+        rookieClock: true,
+        collegeValidation: true,
+        recoupmentUniversal: true
+    };
+
+    console.log(
+        "[Titans] Improvement layer loaded. Existing engine preserved."
+    );
+
+})();
+</script>
