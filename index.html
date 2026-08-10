@@ -2876,6 +2876,537 @@ syncCoach();
 resetMarket();
 
 </script>
+<!-- =========================================================
+     TITANS — TEAM DEVELOPMENT / TRAINING + YOUTH ACADEMY
+     ADDITIVE SECTION — DO NOT REMOVE EXISTING SYSTEMS
+     ========================================================= -->
 
+<!-- TEAM TRAINING PANEL -->
+<div id="training-panel" class="panel">
+
+    <div class="card">
+        <h2>🏋️ Weekly Training</h2>
+
+        <p>
+            <strong>Viewing Team:</strong>
+            <span id="training-team-name">Motor City Hustle</span>
+        </p>
+
+        <p>
+            <strong>Training Infrastructure:</strong>
+            <span id="training-facility-name">
+                Recreational Facility
+            </span>
+        </p>
+
+        <p>
+            Distributed Clock Pool:
+            <strong id="team-training-clock">
+                100 / 100
+            </strong>
+        </p>
+
+        <hr>
+
+        <label>Marcus Rivers Minutes:</label>
+        <input type="range"
+               id="team-training-p1"
+               min="0"
+               max="100"
+               value="30"
+               oninput="updateTeamTraining()">
+
+        <span id="team-training-p1-txt">30</span>
+
+        <br><br>
+
+        <label>Devin Hayes Minutes:</label>
+        <input type="range"
+               id="team-training-p2"
+               min="0"
+               max="100"
+               value="20"
+               oninput="updateTeamTraining()">
+
+        <span id="team-training-p2-txt">20</span>
+
+        <br><br>
+
+        <label>Training Focus:</label>
+
+        <select id="team-training-focus"
+                class="action-select">
+
+            <option value="balanced">
+                Balanced Development
+            </option>
+
+            <option value="shooting">
+                Jump Shot / Shooting
+            </option>
+
+            <option value="dribbling">
+                Dribbling
+            </option>
+
+            <option value="defense">
+                Outside Defense
+            </option>
+
+            <option value="stealing">
+                Stealing / Perimeter Pressure
+            </option>
+
+            <option value="iq">
+                Film Study / Match IQ
+            </option>
+        </select>
+
+        <br><br>
+
+        <button class="btn-retro"
+                onclick="processTeamTraining()">
+            Process Weekly Training
+        </button>
+
+        <div id="team-training-log"
+             class="log-box"
+             style="margin-top:10px;">
+            [Gym Desk Stable] Ready.
+        </div>
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     YOUTH ACADEMY PANEL
+     ========================================================= -->
+
+<div id="academy-panel" class="panel">
+
+    <div class="card">
+
+        <h2>🏀 Youth Academy</h2>
+
+        <p>
+            <strong>Viewing Team:</strong>
+            <span id="academy-team-name">
+                Motor City Hustle
+            </span>
+        </p>
+
+        <p>
+            Academy Capacity:
+            <strong>8 Prospects Maximum</strong>
+        </p>
+
+        <p>
+            Seasonal Prospect Pulls:
+            <strong id="academy-pulls">
+                0 / 5
+            </strong>
+        </p>
+
+        <p>
+            Prospect Pull Cost:
+            <strong>$80,000</strong>
+        </p>
+
+        <hr>
+
+        <div id="academy-prospect-list">
+
+            <div class="card">
+                <strong>No youth prospects currently displayed.</strong>
+
+                <p>
+                    Generate a prospect through the established
+                    Youth Academy system.
+                </p>
+            </div>
+
+        </div>
+
+        <button class="btn-retro"
+                onclick="generateTeamYouthProspect()">
+            Generate Youth Prospect — $80,000
+        </button>
+
+        <div id="academy-log"
+             class="log-box"
+             style="margin-top:10px;">
+            [Youth Academy] System ready.
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TEAM DEVELOPMENT DATA / FUNCTIONS
+     ========================================================= -->
+
+<script>
+
+(function () {
+
+    /*
+     * Existing game systems remain untouched.
+     * This layer only connects the Team selector to
+     * the Training and Youth Academy displays.
+     */
+
+    const titanTeamDevelopment = {
+
+        motor: {
+            name: "Motor City Hustle",
+            facility: "Recreational Facility",
+            trainingMinutes: 100,
+            academyPulls: 0,
+            prospects: []
+        },
+
+        lake: {
+            name: "Lakefront Falcons",
+            facility: "Recreational Facility",
+            trainingMinutes: 100,
+            academyPulls: 0,
+            prospects: []
+        },
+
+        capital: {
+            name: "Capital City Comets",
+            facility: "Recreational Facility",
+            trainingMinutes: 100,
+            academyPulls: 0,
+            prospects: []
+        },
+
+        desert: {
+            name: "Desert Valley Scorch",
+            facility: "Recreational Facility",
+            trainingMinutes: 100,
+            academyPulls: 0,
+            prospects: []
+        },
+
+        atlantic: {
+            name: "Atlantic Harbor Kings",
+            facility: "Recreational Facility",
+            trainingMinutes: 100,
+            academyPulls: 0,
+            prospects: []
+        },
+
+        prairie: {
+            name: "Prairie State Outlaws",
+            facility: "Recreational Facility",
+            trainingMinutes: 100,
+            academyPulls: 0,
+            prospects: []
+        }
+
+    };
+
+
+    function getCurrentDevelopmentTeam() {
+
+        const selector =
+            document.getElementById("team-select");
+
+        if (!selector) return null;
+
+        return titanTeamDevelopment[selector.value] ||
+               titanTeamDevelopment.motor;
+    }
+
+
+    function refreshTeamDevelopmentUI() {
+
+        const team = getCurrentDevelopmentTeam();
+
+        if (!team) return;
+
+
+        const trainingName =
+            document.getElementById("training-team-name");
+
+        const trainingFacility =
+            document.getElementById("training-facility-name");
+
+        const trainingClock =
+            document.getElementById("team-training-clock");
+
+        const academyName =
+            document.getElementById("academy-team-name");
+
+        const academyPulls =
+            document.getElementById("academy-pulls");
+
+
+        if (trainingName)
+            trainingName.textContent = team.name;
+
+        if (trainingFacility)
+            trainingFacility.textContent = team.facility;
+
+        if (trainingClock)
+            trainingClock.textContent =
+                team.trainingMinutes + " / 100";
+
+        if (academyName)
+            academyName.textContent = team.name;
+
+        if (academyPulls)
+            academyPulls.textContent =
+                team.academyPulls + " / 5";
+
+
+        renderYouthProspects(team);
+
+    }
+
+
+    window.updateTeamTraining = function () {
+
+        const p1 =
+            Number(document.getElementById(
+                "team-training-p1"
+            ).value);
+
+        const p2 =
+            Number(document.getElementById(
+                "team-training-p2"
+            ).value);
+
+
+        document.getElementById(
+            "team-training-p1-txt"
+        ).textContent = p1;
+
+        document.getElementById(
+            "team-training-p2-txt"
+        ).textContent = p2;
+
+
+        const used = p1 + p2;
+
+        const remaining =
+            Math.max(0, 100 - used);
+
+        document.getElementById(
+            "team-training-clock"
+        ).textContent =
+            remaining + " / 100";
+
+    };
+
+
+    window.processTeamTraining = function () {
+
+        const team =
+            getCurrentDevelopmentTeam();
+
+        if (!team) return;
+
+
+        const p1 =
+            Number(document.getElementById(
+                "team-training-p1"
+            ).value);
+
+        const p2 =
+            Number(document.getElementById(
+                "team-training-p2"
+            ).value);
+
+        const focus =
+            document.getElementById(
+                "team-training-focus"
+            ).value;
+
+
+        if (p1 + p2 > 100) {
+
+            document.getElementById(
+                "team-training-log"
+            ).innerHTML =
+                "[Gym Desk] Training allocation cannot exceed 100 minutes.";
+
+            return;
+        }
+
+
+        team.trainingMinutes =
+            100 - (p1 + p2);
+
+
+        /*
+         * IMPORTANT:
+         *
+         * This does not overwrite your existing
+         * player-development engine.
+         *
+         * When your existing training function is
+         * connected, call it here instead of creating
+         * a second development system.
+         */
+
+        document.getElementById(
+            "team-training-log"
+        ).innerHTML =
+            "[Gym Desk] " +
+            team.name +
+            " training processed.<br>" +
+            "Focus: " +
+            focus +
+            "<br>" +
+            "Training allocation recorded.";
+
+        refreshTeamDevelopmentUI();
+
+    };
+
+
+    window.generateTeamYouthProspect = function () {
+
+        const team =
+            getCurrentDevelopmentTeam();
+
+        if (!team) return;
+
+
+        if (team.academyPulls >= 5) {
+
+            document.getElementById(
+                "academy-log"
+            ).innerHTML =
+                "[Youth Academy] Seasonal pull limit reached: 5 / 5.";
+
+            return;
+        }
+
+
+        team.academyPulls++;
+
+
+        /*
+         * Temporary prospect generation layer.
+         *
+         * Your existing Random Player Skill Generator,
+         * rarity system and youth-generation rules should
+         * be connected here rather than replaced.
+         */
+
+        const prospect = {
+
+            name:
+                "Academy Prospect #" +
+                team.academyPulls,
+
+            age:
+                14 + Math.floor(Math.random() * 5),
+
+            position:
+                ["PG", "SG", "SF", "PF", "C"]
+                [Math.floor(Math.random() * 5)],
+
+            status:
+                "Youth Prospect"
+
+        };
+
+
+        team.prospects.push(prospect);
+
+
+        document.getElementById(
+            "academy-log"
+        ).innerHTML =
+            "[Youth Academy] New prospect generated for " +
+            team.name + ".";
+
+
+        refreshTeamDevelopmentUI();
+
+    };
+
+
+    function renderYouthProspects(team) {
+
+        const container =
+            document.getElementById(
+                "academy-prospect-list"
+            );
+
+        if (!container) return;
+
+
+        if (!team.prospects.length) {
+
+            container.innerHTML =
+                '<div class="card">' +
+                '<strong>No youth prospects currently displayed.</strong>' +
+                '<p>Generate a prospect through the established Youth Academy system.</p>' +
+                '</div>';
+
+            return;
+        }
+
+
+        container.innerHTML =
+            team.prospects.map(function (prospect) {
+
+                return `
+                    <div class="card" style="margin-bottom:10px;">
+                        <strong>${prospect.name}</strong>
+
+                        <p>
+                            Age: ${prospect.age}
+                            &nbsp; | &nbsp;
+                            Position: ${prospect.position}
+                        </p>
+
+                        <span class="no-diamond-note">
+                            Youth Prospect
+                        </span>
+                    </div>
+                `;
+
+            }).join("");
+
+    }
+
+
+    /*
+     * Connect to the EXISTING team selector.
+     * We do not replace changeViewedTeam().
+     */
+
+    const teamSelector =
+        document.getElementById("team-select");
+
+
+    if (teamSelector) {
+
+        teamSelector.addEventListener(
+            "change",
+            refreshTeamDevelopmentUI
+        );
+
+    }
+
+
+    /*
+     * Initial display.
+     */
+
+    refreshTeamDevelopmentUI();
+
+})();
+
+</script>
 </body>
 </html>
