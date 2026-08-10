@@ -1,1048 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Master Sim - Complete Franchise & League Master Architecture</title>
+    <style>
+        :root {
+            --bg-main: #0a0f1d;
+            --bg-surface: #111827;
+            --bg-card: #1f2937;
+            --border-color: #374151;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-gold: #fbbf24;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
 
-<title>Titans Franchise Project — Master Blueprint</title>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; padding: 0; user-select: none; }
+        
+        .header { background-color: var(--bg-surface); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .team-title-banner { font-size: 20px; font-weight: bold; color: var(--text-main); display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .finances { font-size: 16px; color: var(--accent-green); font-weight: bold; background: #064e3b; padding: 4px 10px; border-radius: 4px; border: 1px solid #059669; }
+        .schedule { background: var(--bg-card); padding: 4px 10px; border-radius: 4px; font-size: 13px; color: var(--text-main); border: 1px solid var(--border-color); }
 
-<style>
-    :root {
-        --bg: #0b1020;
-        --panel: #111827;
-        --panel2: #172033;
-        --border: #263247;
-        --text: #e5e7eb;
-        --muted: #94a3b8;
-        --blue: #3b82f6;
-        --green: #22c55e;
-        --gold: #f59e0b;
-        --red: #ef4444;
-        --purple: #a855f7;
-    }
+        .container { display: flex; height: calc(100vh - 55px); }
+        .sidebar { width: 260px; background-color: #080d19; padding: 15px 8px; border-right: 1px solid var(--border-color); overflow-y: auto; }
+        .nav-section-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin: 12px 0 6px 10px; font-weight: bold; letter-spacing: 0.05em; }
+        .nav-button { display: block; width: 100%; padding: 9px 12px; margin-bottom: 4px; background: none; border: none; color: var(--text-muted); text-align: left; font-size: 13px; cursor: pointer; border-radius: 4px; transition: all 0.2s ease; }
+        .nav-button:hover { background-color: #1f2937; color: #fff; }
+        .nav-button.active { background-color: var(--accent-blue); color: #ffffff; font-weight: bold; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3); }
+        
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; background: radial-gradient(circle at top right, #111827 0%, #0a0f1d 100%); }
+        .section-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #ffffff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
-    * {
-        box-sizing: border-box;
-    }
+        /* Panini Trading Cards Grid & Styles */
+        .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
+        .player-card { background: linear-gradient(145deg, #111827, #1f2937); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
+        .player-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5); border-color: var(--accent-blue); }
+        
+        .card-tier-standard { border-top: 4px solid #3b82f6; }
+        .card-tier-red { border-top: 4px solid var(--accent-red); box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.15); }
+        .card-tier-black { border-top: 4px solid var(--accent-gold); box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.15); }
 
-    body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family: Arial, Helvetica, sans-serif;
-        line-height: 1.6;
-    }
+        .player-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 10px; }
+        .player-name { font-weight: bold; font-size: 15px; color: #fff; }
+        .player-pos { font-size: 11px; background: var(--accent-blue); padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: bold; }
+        
+        .player-photo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .jersey-badge { background: #374151; color: #fff; padding: 3px 7px; border-radius: 4px; font-weight: bold; font-size: 11px; border: 1px solid #4b5563; }
+        .player-face-art { width: 42px; height: 42px; border-radius: 50%; position: relative; overflow: hidden; border: 2px solid #4b5563; background: #e5a954; }
+        .eyes { width: 5px; height: 3px; background: #000; position: absolute; top: 15px; border-radius: 50%; }
+        .eye-left { left: 11px; }
+        .eye-right { right: 11px; }
+        .jersey-fill { position: absolute; bottom: 0; width: 100%; height: 16px; background: #2563eb; }
 
-    .page {
-        max-width: 1200px;
-        margin: auto;
-        padding: 30px;
-    }
+        .meta-info { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .meta-info p { margin: 2px 0; color: #d1d5db; }
+        
+        .skills-grid-system { font-size: 11px; color: var(--text-muted); display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; margin-bottom: 8px; font-family: monospace; background: #030712; padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); }
+        .skill-lbl { color: #9ca3af; }
+        .skill-val { font-weight: bold; color: #38bdf8; }
 
-    header {
-        background: linear-gradient(135deg, #111827, #172554);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 30px;
-        margin-bottom: 25px;
-    }
+        .card-footer-info { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px; font-size: 11px; color: var(--text-muted); }
 
-    header h1 {
-        margin: 0 0 5px;
-        color: #60a5fa;
-        font-size: 32px;
-    }
-
-    header h2 {
-        margin: 0;
-        color: var(--gold);
-        font-size: 16px;
-        font-weight: normal;
-    }
-
-    .status {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 6px 10px;
-        border-radius: 5px;
-        background: rgba(34,197,94,.15);
-        border: 1px solid var(--green);
-        color: var(--green);
-        font-size: 12px;
-        font-weight: bold;
-    }
-
-    section {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }
-
-    h2 {
-        color: #60a5fa;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 8px;
-    }
-
-    h3 {
-        color: var(--gold);
-    }
-
-    p {
-        color: var(--muted);
-    }
-
-    li {
-        margin-bottom: 6px;
-    }
-
-    strong {
-        color: #fff;
-    }
-
-    .rule {
-        background: var(--panel2);
-        border-left: 4px solid var(--blue);
-        padding: 12px 15px;
-        margin: 12px 0;
-    }
-
-    .warning {
-        border-left-color: var(--red);
-    }
-
-    .success {
-        border-left-color: var(--green);
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 15px;
-    }
-
-    .card {
-        background: var(--panel2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 16px;
-    }
-
-    .card h3 {
-        margin-top: 0;
-    }
-
-    code {
-        color: #93c5fd;
-        background: #020617;
-        padding: 2px 5px;
-        border-radius: 3px;
-    }
-
-    footer {
-        text-align: center;
-        color: var(--muted);
-        padding: 30px 0;
-        font-size: 12px;
-    }
-</style>
+        .card { background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
+        .btn { background-color: var(--accent-blue); color: white; border: none; padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn:hover { background-color: #1d4ed8; }
+        .btn-success { background-color: var(--accent-green); }
+        .btn-success:hover { background-color: #059669; }
+        .btn-danger { background-color: var(--accent-red); }
+        .btn-danger:hover { background-color: #dc2626; }
+        .btn-warning { background-color: #f59e0b; color: #000; }
+        .btn-warning:hover { background-color: #d97706; }
+        
+        input[type="number"], select { background-color: #1f2937; color: #fff; border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        .terminal-box { background-color: #030712; border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; color: #38bdf8; min-height: 50px; margin-top: 10px; max-height: 200px; overflow-y: auto; }
+        
+        .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .league-table th, .league-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .league-table th { background-color: var(--bg-card); color: var(--text-muted); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+        .league-table tr:hover { background-color: rgba(255, 255, 255, 0.02); cursor: pointer; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: var(--bg-surface); border: 2px solid var(--accent-blue); width: 520px; padding: 25px; border-radius: 10px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); position: relative; max-height: 90vh; overflow-y: auto; }
+        
+        #court-canvas { background: #0f172a; border: 2px solid var(--border-color); display: block; margin: 0 auto; border-radius: 6px; }
+    </style>
 </head>
-
 <body>
-
-<div class="page">
-
-<header>
-    <h1>🏀 TITANS FRANCHISE PROJECT</h1>
-    <h2>Master Game Blueprint & Living League Specification</h2>
-
-    <div class="status">
-        EXISTING SYSTEM PRESERVED — DEVELOPMENT MOVES FORWARD
-    </div>
-</header>
-
-
-<section>
-    <h2>0. Core Development Directive</h2>
-
-    <div class="rule success">
-        <strong>PRESERVE THE WORK.</strong>
-        Existing working systems, UI, layouts, mechanics, player systems,
-        economy, blueprints and match systems are not to be unnecessarily
-        replaced or rebuilt.
-    </div>
-
-    <ul>
-        <li>Preserve existing UI.</li>
-        <li>Preserve existing navigation.</li>
-        <li>Preserve existing player cards.</li>
-        <li>Preserve existing roster systems.</li>
-        <li>Preserve existing economy.</li>
-        <li>Preserve existing blueprint rules.</li>
-        <li>Activate existing code that is not yet connected.</li>
-        <li>Fix inconsistencies with the blueprint.</li>
-        <li>Only add new systems when they genuinely improve an existing area.</li>
-    </ul>
-
-    <p>
-        This is refinement and activation, not a restart.
-    </p>
-</section>
-
-
-<section>
-    <h2>1. Player Database</h2>
-
-    <ul>
-        <li>Core attributes use a non-arcade <strong>1–20 scale</strong>.</li>
-        <li>Jump Shot (JS)</li>
-        <li>Dribbling (DR)</li>
-        <li>Stealing (ST)</li>
-        <li>Perimeter / Outside Defense (OD)</li>
-        <li>Match IQ</li>
-    </ul>
-
-    <h3>Physical Modifiers</h3>
-
-    <ul>
-        <li>Height</li>
-        <li>Weight</li>
-        <li>Speed</li>
-    </ul>
-
-    <p>
-        Physical characteristics operate independently of the flat skill ratings.
-        Weight can provide meaningful low-post leverage.
-    </p>
-
-    <p>
-        Player skills do not simply disappear because a player rests or is injured.
-    </p>
-</section>
-
-
-<section>
-    <h2>2. Player Rarity System</h2>
-
-    <div class="grid">
-        <div class="card">Copper</div>
-        <div class="card">Tin</div>
-        <div class="card">Silver</div>
-        <div class="card">Platinum</div>
-        <div class="card">Emerald</div>
-        <div class="card">Gold</div>
-        <div class="card">Diamond</div>
-        <div class="card">Red Diamond</div>
-    </div>
-
-    <div class="rule">
-        Rarity represents potential/scarcity and does not automatically mean
-        every player skill is elite.
-    </div>
-
-    <p>
-        Extremely high skills are rare. Player skills and performance may
-        fluctuate according to season, form, development and established
-        blueprint rules.
-    </p>
-</section>
-
-
-<section>
-    <h2>3. College Player Rules</h2>
-
-    <ul>
-        <li><strong>18–22:</strong> primary college-player sweet spot.</li>
-        <li><strong>17:</strong> extremely rare.</li>
-        <li>College players do not automatically receive prohibited special skills.</li>
-        <li>College players follow the established rarity system.</li>
-        <li>High skills remain rare.</li>
-        <li>Scouting value can change according to performance and form.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>4. Match IQ</h2>
-
-    <div class="rule warning">
-        <strong>IQ is one of the hardest things to earn in the game.</strong>
-    </div>
-
-    <p>Match IQ can influence:</p>
-
-    <ul>
-        <li>Decision making</li>
-        <li>Passing reads</li>
-        <li>Defensive positioning</li>
-        <li>Offensive decisions</li>
-        <li>Tactical execution</li>
-        <li>Pressure situations</li>
-        <li>Blueprint interactions</li>
-        <li>Situational awareness</li>
-    </ul>
-
-    <p>
-        IQ is earned through legitimate long-term development and game experience.
-        It is not handed out casually.
-    </p>
-</section>
-
-
-<section>
-    <h2>5. Team Rating</h2>
-
-    <p>
-        Team Rating is a real simulation factor, not merely a number displayed
-        on the standings page.
-    </p>
-
-    <p>It interacts with:</p>
-
-    <ul>
-        <li>Player ability</li>
-        <li>Match IQ</li>
-        <li>Blueprint</li>
-        <li>Tactical matchup</li>
-        <li>Form</li>
-        <li>Health</li>
-        <li>Fatigue</li>
-        <li>Chemistry</li>
-        <li>Traits</li>
-        <li>RNG</li>
-        <li>Opponent strength</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>6. Professional Match System</h2>
-
-    <div class="rule success">
-        Professional games use a <strong>48-minute clock</strong>.
-    </div>
-
-    <p>
-        The established 100-possession backend concept remains the foundation
-        of the professional match engine.
-    </p>
-
-    <p>
-        Each possession evaluates player attributes, physical modifiers,
-        IQ, blueprint, tactical scheme, matchup, team factors and controlled
-        variance.
-    </p>
-</section>
-
-
-<section>
-    <h2>7. RNG / Double-Dice Variance</h2>
-
-    <h3>Dice 1 — Basketball Variance</h3>
-
-    <p>
-        A 1–20 variance check introduces realistic basketball unpredictability.
-        Lower-tier players can occasionally beat elite defenders.
-    </p>
-
-    <h3>Dice 2 — Mood / Character Strain</h3>
-
-    <p>Traits may create additional pressure effects:</p>
-
-    <ul>
-        <li>Erratic</li>
-        <li>Arrogant</li>
-        <li>Nervous</li>
-        <li>Gritty Underdog</li>
-    </ul>
-
-    <div class="rule warning">
-        RNG creates uncertainty. RNG does not replace the basketball model.
-    </div>
-
-    <p>
-        An elite player can have a bad game, but the outcome must remain
-        consistent with the blueprint's underlying factors.
-    </p>
-</section>
-
-
-<section>
-    <h2>8. Tactical Blueprint</h2>
-
-    <h3>Offensive Schemes</h3>
-
-    <ul>
-        <li>Base Offense</li>
-        <li>Run and Gun</li>
-        <li>Look Inside</li>
-        <li>Motion</li>
-        <li>Push the Ball</li>
-        <li>Patient</li>
-        <li>Pick and Roll</li>
-        <li>5-Out Iso</li>
-    </ul>
-
-    <h3>Defensive Schemes</h3>
-
-    <ul>
-        <li>Man-to-Man</li>
-        <li>2-3 Zone</li>
-        <li>3-2 Zone</li>
-        <li>1-3-1 Zone</li>
-        <li>Full-Court Press</li>
-        <li>Half-Court Trap</li>
-        <li>2-3 Syracuse Matchup Zone</li>
-    </ul>
-
-    <div class="rule">
-        The team's blueprint is established for the game.
-        The system does <strong>not</strong> require constant tactic switching
-        during live possessions.
-    </div>
-</section>
-
-
-<section>
-    <h2>9. Matchday Viewer</h2>
-
-    <p>The existing viewer can display:</p>
-
-    <ul>
-        <li>Moving player tokens</li>
-        <li>Ball movement</li>
-        <li>Offensive positioning</li>
-        <li>Defensive positioning</li>
-        <li>Active offensive blueprint</li>
-        <li>Active defensive blueprint</li>
-        <li>Possession information</li>
-        <li>Play-by-play events</li>
-    </ul>
-
-    <p>
-        The viewer represents the actual game being simulated.
-    </p>
-</section>
-
-
-<section>
-    <h2>10. Match Finality & Replay</h2>
-
-    <div class="rule success">
-        Once a game is completed, its outcome is final.
-    </div>
-
-    <ul>
-        <li>Final score is saved.</li>
-        <li>Player performances are saved.</li>
-        <li>Box score is saved.</li>
-        <li>Team statistics are saved.</li>
-        <li>Standings effects are saved.</li>
-        <li>Financial effects are saved.</li>
-    </ul>
-
-    <p>
-        A completed game can be watched again through a replay.
-        Replay uses the saved game and does not reroll the outcome.
-    </p>
-</section>
-
-
-<section>
-    <h2>11. League-Wide Living Simulation</h2>
-
-    <div class="rule success">
-        When one team plays, the league plays.
-    </div>
-
-    <p>
-        Teams play at slightly different scheduled times while the week advances.
-    </p>
-
-    <ul>
-        <li>Games occur.</li>
-        <li>Training occurs.</li>
-        <li>Players develop.</li>
-        <li>Form changes.</li>
-        <li>Injuries and recovery occur.</li>
-        <li>Statistics update.</li>
-        <li>Standings update.</li>
-        <li>Finances update.</li>
-        <li>Markets move.</li>
-        <li>Youth systems progress.</li>
-        <li>Scouting progresses where scheduled.</li>
-    </ul>
-
-    <p>
-        The league should feel alive even when the manager is not directly
-        watching every event.
-    </p>
-</section>
-
-
-<section>
-    <h2>12. Player Statistics</h2>
-
-    <p>Actual games generate actual player statistics.</p>
-
-    <div class="grid">
-        <div class="card">Points</div>
-        <div class="card">Rebounds</div>
-        <div class="card">Assists</div>
-        <div class="card">Steals</div>
-        <div class="card">Blocks</div>
-        <div class="card">Turnovers</div>
-        <div class="card">Fouls</div>
-        <div class="card">Minutes</div>
-        <div class="card">Field Goals</div>
-        <div class="card">3PT</div>
-        <div class="card">Free Throws</div>
-        <div class="card">Shooting Percentages</div>
-    </div>
-
-    <p>
-        Statistics accumulate into season and career records where appropriate.
-    </p>
-</section>
-
-
-<section>
-    <h2>13. Masterball Card</h2>
-
-    <div class="rule success">
-        The former Dossier Card name is now <strong>Masterball Card</strong>.
-    </div>
-
-    <p>The Masterball Card contains the player's established profile plus:</p>
-
-    <ul>
-        <li>Player identity</li>
-        <li>Age</li>
-        <li>Position</li>
-        <li>Attributes</li>
-        <li>Physical profile</li>
-        <li>Rarity</li>
-        <li>Skills</li>
-        <li>Match IQ</li>
-        <li>Badges</li>
-        <li>Development information</li>
-        <li>Season statistics</li>
-        <li>Career information where available</li>
-        <li>Current franchise</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>14. Player Management</h2>
-
-    <h3>Release</h3>
-
-    <p>
-        Releasing a player sends the player into Free Agency according to
-        the established blueprint rules.
-    </p>
-
-    <h3>Fire / End Career</h3>
-
-    <p>
-        Fire means the player retires.
-    </p>
-
-    <div class="rule warning">
-        Release and Fire are different actions.
-    </div>
-</section>
-
-
-<section>
-    <h2>15. Rookie Academy</h2>
-
-    <ul>
-        <li>Every franchise has a Rookie Academy.</li>
-        <li>Rookies can be generated and trained.</li>
-        <li>Rookies can play Academy games.</li>
-        <li>Rookie games use two 12-minute halves.</li>
-        <li>Rookies accumulate statistics.</li>
-        <li>Rookies can develop before the draft.</li>
-        <li>Rookies enter the Rookie Draft.</li>
-        <li>Teams select rookies.</li>
-        <li>Selected rookies join their franchise.</li>
-        <li>They then enter the normal player-development ecosystem.</li>
-    </ul>
-
-    <div class="rule">
-        Rookie talent is not artificially capped. Rare Diamond and Red Diamond
-        rookies remain possible according to the established rarity system.
-    </div>
-</section>
-
-
-<section>
-    <h2>16. NCAA / Collegiate Pipeline</h2>
-
-    <p>
-        NCAA scouting tracks future prospects and supports the Rookie Draft.
-    </p>
-
-    <ul>
-        <li>College</li>
-        <li>Position</li>
-        <li>PPG</li>
-        <li>Form</li>
-        <li>Efficiency</li>
-        <li>Scouting information</li>
-        <li>Development potential</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>17. Youth Academy</h2>
-
-    <ul>
-        <li>Maximum 5 prospect pulls per season.</li>
-        <li>$80,000 prospect pull cost.</li>
-        <li>Established age-generation system remains intact.</li>
-        <li>Rare youth talent remains possible.</li>
-        <li>Youth prospects train and develop.</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>18. Rookie / College Draft</h2>
-
-    <p>The offseason contains a two-round collegiate entry draft.</p>
-
-    <ul>
-        <li>Random Player Skill Generator</li>
-        <li>Positional scarcity</li>
-        <li>Scouting fog</li>
-        <li>Dynamic draft movement</li>
-        <li>Golden Generation events</li>
-        <li>Phenom mutation</li>
-        <li>Country-wide prospect generation</li>
-        <li>Team selection</li>
-    </ul>
-
-    <p>
-        The draft remains connected to the same player system used elsewhere.
-    </p>
-</section>
-
-
-<section>
-    <h2>19. Team Page</h2>
-
-    <p>
-        The franchise receives a dedicated Team Page inspired by useful
-        basketball-management information density, but designed completely
-        in the Titans system's existing visual language.
-    </p>
-
-    <div class="grid">
-        <div class="card">Team Rating</div>
-        <div class="card">Franchise Funds</div>
-        <div class="card">Roster</div>
-        <div class="card">Recent Games</div>
-        <div class="card">Upcoming Games</div>
-        <div class="card">Calendar</div>
-        <div class="card">Training</div>
-        <div class="card">Performance</div>
-        <div class="card">Tactical Setup</div>
-        <div class="card">Transactions</div>
-        <div class="card">Agency Status</div>
-        <div class="card">Financial Information</div>
-    </div>
-
-    <p>
-        The Team Page must remain easy to navigate and must not copy another
-        game's exact layout.
-    </p>
-</section>
-
-
-<section>
-    <h2>20. Team Calendar</h2>
-
-    <p>The calendar tracks:</p>
-
-    <ul>
-        <li>League games</li>
-        <li>Cup games</li>
-        <li>Tournament games</li>
-        <li>Youth games</li>
-        <li>Training</li>
-        <li>Scouting</li>
-        <li>Draft events</li>
-        <li>Other franchise events</li>
-    </ul>
-
-    <p>
-        Calendar progression drives the living league.
-    </p>
-</section>
-
-
-<section>
-    <h2>21. Live Market</h2>
-
-    <p>
-        The market is intended to behave like a living economic marketplace.
-    </p>
-
-    <ul>
-        <li>Live auctions</li>
-        <li>Manual bidding</li>
-        <li>Minimum bid increments</li>
-        <li>Anti-sniping extension</li>
-        <li>Transfer taxes</li>
-        <li>Free Agency</li>
-        <li>Supply and demand</li>
-        <li>Market inflation</li>
-        <li>Player valuation</li>
-        <li>Best available deals</li>
-        <li>Real-time market movement</li>
-    </ul>
-</section>
-
-
-<section>
-    <h2>22. Recoupment Law</h2>
-
-    <div class="rule success">
-        The Recoupment Law applies to the applicable player transactions
-        throughout the franchise system. It is not specific to Marcus Rivers
-        or any other example player.
-    </div>
-
-    <p>
-        The required recoupment amount is determined from the player's
-        acquisition value according to the blueprint.
-    </p>
-
-    <p>
-        Example/test players in existing code are placeholders used to
-        demonstrate the system.
-    </p>
-
-    <p>
-        Existing working Recoupment code must be preserved rather than
-        unnecessarily rewritten.
-    </p>
-</section>
-
-
-<section>
-    <h2>23. Roster Integrity</h2>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Professional</h3>
-            <strong>12 Maximum</strong>
+    <div class="header">
+        <div class="team-title-banner" onclick="openActiveTeamHub()">
+            <span id="header-team-logo">🏀</span> 
+            <div>
+                <span id="header-team-name">Boston Titans</span>
+                <div style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Click to view Franchise HQ</div>
+            </div>
         </div>
+        <div class="schedule" id="header-schedule">Season 1 | Week 1 | Pro 48M / Youth 24M Engine</div>
+        <div class="finances" id="header-funds">Club Funds: $525,000</div>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="nav-section-title">Franchise & League</div>
+            <button class="nav-button active" onclick="switchTab(event, 'roster')">📋 Master Roster & Cards</button>
+            <button class="nav-button" onclick="switchTab(event, 'standings')">🏆 12-Team League Standings</button>
+            <button class="nav-button" onclick="switchTab(event, 'tactics')">⚡ Blueprints & Tactics</button>
+            
+            <div class="nav-section-title">Operations & Market</div>
+            <button class="nav-button" onclick="switchTab(event, 'transfer')">🏪 Live Auction & Free Agency</button>
+            <button class="nav-button" onclick="switchTab(event, 'youth')">🏫 Youth Academy & U21 Matches</button>
+            <button class="nav-button" onclick="switchTab(event, 'college')">🎓 NCAA Scouting Pipeline</button>
+            <button class="nav-button" onclick="switchTab(event, 'med')">🏥 Medical & Rust Rehab Bay</button>
 
-        <div class="card">
-            <h3>Youth Academy</h3>
-            <strong>8 Maximum</strong>
+            <div class="nav-section-title">Match & Management</div>
+            <button class="nav-button" onclick="switchTab(event, 'match')">📺 Matchday Live Stream</button>
+            <button class="nav-button" onclick="switchTab(event, 'cup')">🥇 Sunday Cup Tournament</button>
+            <button class="nav-button" onclick="switchTab(event, 'desk')">💼 Franchise Desk & Coaches</button>
+            <button class="nav-button" onclick="switchTab(event, 'draft')">📜 Offseason Rookie Draft</button>
+            <button class="nav-button" onclick="switchTab(event, 'agencies')">⚖️ Talent Agencies & Risks</button>
+        </div>
+        
+        <div class="main-content">
+            
+            <!-- 1. ROSTER & CARDS TAB -->
+            <div id="roster" class="tab-panel active">
+                <div class="section-title">
+                    <span id="active-roster-title">Boston Titans - Active Panini Roster Grid</span>
+                    <span style="font-size: 14px; color: var(--text-muted);">Squad Count: <span id="roster-count">12</span>/15</span>
+                </div>
+                <div class="roster-grid" id="master-roster-grid"></div>
+            </div>
+
+            <!-- 2. LEAGUE STANDINGS & TEAM HUBS TAB -->
+            <div id="standings" class="tab-panel">
+                <div class="section-title">12-Team League Standings & Franchise Hubs</div>
+                <div class="card">
+                    <p style="color: var(--text-muted); font-size: 13px;">Click on any team in the league standings to inspect their roster, finances, and tactical setup.</p>
+                    <table class="league-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Team Name</th>
+                                <th>W - L</th>
+                                <th>GB</th>
+                                <th>Rating OVR</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="league-standings-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. BLUEPRINTS & TACTICS TAB -->
+            <div id="tactics" class="tab-panel">
+                <div class="section-title">Live Upgradable Blueprint Schemes</div>
+                <div class="card">
+                    <h3>Tactical Synergy Engine</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="font-size: 13px; color: var(--text-muted);">Offensive Scheme:</label>
+                            <select id="blueprint-offense" onchange="updateBlueprints()">
+                                <option value="Base Offense">Base Offense</option>
+                                <option value="Run and Gun">Run and Gun (High Pace / Fastbreak)</option>
+                                <option value="Look Inside">Look Inside (Post Dominance)</option>
+                                <option value="Motion">Motion (Passing & Movement)</option>
+                                <option value="Push the Ball">Push the Ball (Transition Attack)</option>
+                                <option value="Patient">Patient (Clock Control)</option>
+                                <option value="Pick and Roll">Pick and Roll (P&R Maestro)</option>
+                                <option value="5-Out Iso">5-Out Iso (Spacing & Drives)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 13px; color: var(--text-muted);">Defensive Scheme:</label>
+                            <select id="blueprint-defense" onchange="updateBlueprints()">
+                                <option value="Man-to-Man">Man-to-Man (Standard Lockdown)</option>
+                                <option value="2-3 Zone">2-3 Zone (Paint Protection)</option>
+                                <option value="3-2 Zone">3-2 Zone (Perimeter Lockdown)</option>
+                                <option value="1-3-1 Zone">1-3-1 Zone (Pass Interception)</option>
+                                <option value="Full-Court Press">Full-Court Press (High Turnover / Fatigue)</option>
+                                <option value="Half-Court Trap">Half-Court Trap</option>
+                                <option value="2-3 Syracuse Matchup">2-3 Syracuse Matchup Zone</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 15px; border-radius: 6px; border: 1px solid var(--border-color);">
+                        <p style="margin: 0 0 8px 0;">Active Synergy Level: <strong id="blueprint-level" style="color: var(--accent-green);">Level 1 (Fresh Implementation)</strong></p>
+                        <p style="margin: 0; font-size: 13px; color: var(--text-muted);" id="blueprint-desc">Run matches successfully with this loadout to increase blueprint tier and unlock passive team-wide stat multipliers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. TRANSFER MARKET & FREE AGENCY TAB -->
+            <div id="transfer" class="tab-panel">
+                <div class="section-title">Live Auction & Free Agency Market (100+ Players)</div>
+                <div class="card">
+                    <p style="color: var(--text-muted); font-size: 13px;">Every player features independent countdown timers. Click any player name to inspect their full Panini trading card before bidding!</p>
+                    <table class="league-table">
+                        <thead>
+                            <tr>
+                                <th>Player Name</th>
+                                <th>Pos</th>
+                                <th>OVR / Tier</th>
+                                <th>Current Bid</th>
+                                <th>Time Left</th>
+                                <th>Your Bid ($)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfer-market-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. YOUTH ACADEMY & U21 MATCHES TAB -->
+            <div id="youth" class="tab-panel">
+                <div class="section-title">Youth Academy & U21 Match Engine</div>
+                <div class="card">
+                    <h3>Academy Operations ($80,000 Prospect Pull)</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Pull elite under-19 prospects into your developmental squad. U21 matches run on a 24-minute game clock (2 halves of 12 mins).</p>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn btn-success" onclick="pullYouthProspect()">Pull Youth Prospect ($80,000)</button>
+                        <button class="btn" onclick="simYouthMatch()">Simulate U21 Youth Match (24M Clock)</button>
+                    </div>
+                    <div class="terminal-box" id="youth-terminal">[Academy Initialized] Ready to draft youth talent or run U21 fixtures.</div>
+                </div>
+            </div>
+
+            <!-- 6. NCAA SCOUTING PIPELINE TAB -->
+            <div id="college" class="tab-panel">
+                <div class="section-title">NCAA Scouting & Collegiate Pipeline</div>
+                <div class="card">
+                    <h3>Collegiate Conference Scouting & Prospects</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Scout top college conferences to track future draft prospects, PPG averages, efficiency ratings, and form fluctuations. Click any prospect name to inspect their card dossier!</p>
+                    <button class="btn btn-success" onclick="scoutNCAAPipeline()">Scout NCAA Pipeline ($15,000)</button>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: var(--text-main); margin-bottom: 8px;">Active NCAA Scouting Watchlist</h4>
+                        <table class="league-table">
+                            <thead>
+                                <tr>
+                                    <th>Prospect Name</th>
+                                    <th>Pos</th>
+                                    <th>College</th>
+                                    <th>PPG / Form</th>
+                                    <th>Efficiency</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ncaa-pipeline-body">
+                                <tr>
+                                    <td colspan="6" style="color: var(--text-muted); text-align: center;">Click "Scout NCAA Pipeline" above to reveal and track collegiate prospects.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="terminal-box" id="college-terminal" style="margin-top: 15px;">[NCAA Hub] Scouting database primed. Click above to analyze collegiate conferences.</div>
+                </div>
+            </div>
+
+            <!-- 7. MEDICAL & RUST REHAB BAY TAB -->
+            <div id="med" class="tab-panel">
+                <div class="section-title">Medical & Rust Rehabilitation Bay</div>
+                <div class="card">
+                    <h3>Active Roster Conditioning Assignment</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Select players from your active squad and assign them to customized rehabilitation protocols to eliminate rust and recover fitness.</p>
+                    <div style="margin-top: 15px;">
+                        <label style="font-size: 13px; color: var(--text-muted);">Select Roster Player:</label>
+                        <select id="med-player-select" style="margin-bottom: 12px;"></select>
+                        <label style="font-size: 13px; color: var(--text-muted);">Select Rehabilitation Protocol:</label>
+                        <select id="med-protocol-select" style="margin-bottom: 15px;">
+                            <option value="Conditioning">Cardio & Conditioning Rehab (Fatigue Recovery)</option>
+                            <option value="Rust">Skill Rust Removal (Sharpening Attributes)</option>
+                            <option value="Load">Load Management & Rest Protocol</option>
+                            <option value="Explosiveness">Explosive Athleticism & Recovery Bay</option>
+                        </select>
+                        <button class="btn btn-success" onclick="assignRehabProtocol()">Assign to Protocol</button>
+                    </div>
+                    <div class="terminal-box" id="med-terminal">[Medical Bay] All players reporting standard physical conditioning.</div>
+                </div>
+            </div>
+
+            <!-- 8. MATCHDAY LIVE STREAM TAB -->
+            <div id="match" class="tab-panel">
+                <div class="section-title">Matchday Broadcast & 100-Possession Simulator</div>
+                <div class="card">
+                    <h3>Pro League Matchday Engine (48-Minute Clock)</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="btn btn-success" onclick="runGlobalMatchSim()">Start Live Match Simulation</button>
+                    </div>
+                    <canvas id="court-canvas" width="600" height="300"></canvas>
+                    <div class="terminal-box" id="m-log" style="margin-top: 15px; height: 130px;">[System] Press "Start Live Match Simulation" to execute play-by-play.</div>
+                </div>
+            </div>
+
+            <!-- 9. SUNDAY CUP TOURNAMENT TAB -->
+            <div id="cup" class="tab-panel">
+                <div class="section-title">Sunday Cross-Division Cup Tournament</div>
+                <div class="card">
+                    <h3>Knockout Cup Brackets & Live Match Scores</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">Compete across divisions in sudden-death cup matches for prize money and global prestige. Click any completed cup matchup score below to inspect each team's individual player game box score performance!</p>
+                    <button class="btn btn-success" onclick="simSundayCupMatch()">Simulate Sunday Cup Round</button>
+                    <div id="cup-alert" style="display:none;background:rgba(16,185,129,0.2);border:1px solid var(--accent-green);color:var(--accent-green);padding:10px;border-radius:4px;margin-top:10px;">Sunday Cup Round Simulated! +$50,000 Prize Pool Awarded.</div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: var(--text-main); margin-bottom: 8px;">Sunday Cup Matchup Bracket</h4>
+                        <table class="league-table">
+                            <thead>
+                                <tr>
+                                    <th>Match #</th>
+                                    <th>Home Team</th>
+                                    <th>Score</th>
+                                    <th>Away Team</th>
+                                    <th>Status / Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cup-bracket-body">
+                                <tr>
+                                    <td>Match 1</td>
+                                    <td>Boston Titans</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">104 - 98</td>
+                                    <td>Chicago Vipers</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(0)">View Box Score</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Match 2</td>
+                                    <td>Los Angeles Apex</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">112 - 105</td>
+                                    <td>New York Metros</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(1)">View Box Score</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Match 3</td>
+                                    <td>Miami Heatwave</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">96 - 91</td>
+                                    <td>Dallas Mavericks X</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(2)">View Box Score</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Match 4</td>
+                                    <td>Golden State Dynasty</td>
+                                    <td style="color:var(--accent-gold); font-weight:bold;">118 - 110</td>
+                                    <td>Denver Mountain Lions</td>
+                                    <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(3)">View Box Score</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. FRANCHISE DESK & COACHES TAB -->
+            <div id="desk" class="tab-panel">
+                <div class="section-title">Franchise Desk & 11-Tier Coaching Matrix</div>
+                <div class="card">
+                    <h3>Front Office & Coaching Contracts</h3>
+                    <button class="btn btn-warning" onclick="triggerCoachUltimatum()">Check Board Confidence / Ultimatum Status</button>
+                    <div class="terminal-box" id="desk-terminal" style="margin-top: 15px;">[Desk Active] Management contracts stable. Board expects top-4 finish.</div>
+                </div>
+            </div>
+
+            <!-- 11. OFFSEASON ROOKIE DRAFT TAB -->
+            <div id="draft" class="tab-panel">
+                <div class="section-title">2-Round Offseason Collegiate Entry Draft</div>
+                <div class="card">
+                    <h3>Annual Draft Class Generation</h3>
+                    <button class="btn btn-success" onclick="generateDraftClass()">Generate Annual Draft Class</button>
+                    <div id="draft-container" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+
+            <!-- 12. TALENT AGENCIES & RISKS TAB -->
+            <div id="agencies" class="tab-panel">
+                <div class="section-title">Talent Agencies & Double-Gated Warning Shields</div>
+                <div class="card" style="border-color: var(--accent-red);">
+                    <h3 style="color: var(--accent-red);">⚠️ RESTRICTED TALENT AGENCIES (USE AT YOUR OWN RISK)</h3>
+                    <p style="color: var(--text-muted); font-size: 13px;">High-stakes agencies offer immediate elite talent but carry severe league regulatory risks.</p>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn btn-danger" onclick="accessAgency('tier1')">Tier 1: Sachkz Elite Firm</button>
+                        <button class="btn btn-danger" onclick="accessAgency('tier2')">Tier 2: Slimeball Desk (Kano's Management)</button>
+                    </div>
+                    <div class="terminal-box" id="agency-terminal" style="margin-top: 15px;">[Secure] No agency litigation currently pending.</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <p>
-        Acquisition systems must respect roster capacity.
-    </p>
-</section>
-
-
-<section>
-    <h2>24. Talent Agencies</h2>
-
-    <h3>Tier 1 — Sachkz Elite Firm</h3>
-
-    <ul>
-        <li>Strict weekly fee structure</li>
-        <li>Contractual requirements</li>
-        <li>High litigation risk</li>
-        <li>Severe consequences for violations</li>
-    </ul>
-
-    <h3>Tier 2 — Slimeball Desk</h3>
-
-    <ul>
-        <li>Lower entry cost</li>
-        <li>Volatile weekly fees</li>
-        <li>High-risk contracts</li>
-        <li>Extortion-style events</li>
-        <li>Potential legal consequences</li>
-    </ul>
-
-    <div class="rule warning">
-        Restricted agency access uses the established double-click
-        USE AT YOUR OWN RISK warning shield.
+    <!-- Upgraded Panini Player Card Detail Modal -->
+    <div class="modal-overlay" id="player-modal" onclick="closePlayerModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <h3 id="modal-player-name" style="margin-top:0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Player Profile</h3>
+            <div id="modal-player-content" style="font-size: 13px; color: var(--text-muted); line-height: 1.6;"></div>
+            <button class="btn" style="margin-top: 15px; width: 100%;" onclick="document.getElementById('player-modal').style.display='none'">Close Card</button>
+        </div>
     </div>
 
-    <p>
-        Agency status should be represented on the Team Page as well as
-        remaining available through the dedicated Agency area.
-    </p>
-</section>
+    <script>
+        // Procedural generator helpers for robust 10-15 player rosters and 100+ auction pool
+        const firstNamesList = ["Marcus", "Tavion", "Kobe", "Deuce", "Zavier", "Darius", "Malachi", "Jaylen", "Devonte", "Cade", "Jayson", "Trae", "De'Aaron", "Tyrese", "Paolo", "Chet", "Evan", "Scottie", "Anfernee", "Mikal", "OG", "Jarrett", "Desmond", "Bennedict", "Josh", "Franz", "Tyrese", "Immanuel", "Keldon", "Tre", "Walker", "Ochai", "Jalen", "Jabari", "Keegan", "Shaedon", "Ayo", "Herb", "Quentin", "Naji"];
+        const lastNamesList = ["Vance", "Starks", "Booker", "O'Neal", "Ivey", "Aldridge", "Giddey", "Brown", "Tatum", "Young", "Fox", "Haliburton", "Banchero", "Holmgren", "Mobley", "Barnes", "Simons", "Bridges", "Anunoby", "Allen", "Bane", "Mathurin", "Giddey", "Wagner", "Maxey", "Quickley", "Johnson", "Jones", "Kessler", "Agbaji", "Green", "Smith Jr.", "Murray", "Sharpe", "Dosunmu", "Jones", "Grimes", "Marshall", "White", "Williams"];
+        const positionsList = ["PG", "SG", "SF", "PF", "C"];
+        const tiersList = ["Standard", "Standard", "Red Diamond", "Regular Diamond", "Black Diamond"];
+        const collegesList = ["Kentucky", "Duke", "UNC", "Kansas", "UCLA", "Gonzaga", "Villanova", "Arizona", "Houston", "Baylor", "Texas", "Michigan State", "UConn", "Purdue", "Arkansas"];
 
+        function generateRandomPlayer(forcedTier = null) {
+            const fName = firstNamesList[Math.floor(Math.random() * firstNamesList.length)];
+            const lName = lastNamesList[Math.floor(Math.random() * lastNamesList.length)];
+            const pos = positionsList[Math.floor(Math.random() * positionsList.length)];
+            const tier = forcedTier || tiersList[Math.floor(Math.random() * tiersList.length)];
+            const age = Math.floor(Math.random() * 10) + 19; // 19 to 28
+            const iq = Math.floor(Math.random() * 30) + 70;
+            
+            return {
+                name: `${fName} ${lName}`,
+                pos: pos,
+                age: age,
+                height: `${Math.floor(Math.random() * 3) + 6}'${Math.floor(Math.random() * 11)}\" / ${Math.floor(Math.random() * 25) + 185} cm`,
+                tier: tier,
+                role: age < 22 ? "rotation player" : (iq > 88 ? "franchise player" : "star player"),
+                salary: Math.floor(Math.random() * 8000) + 3000,
+                potential: age < 22 ? "superstar" : "allstar",
+                gameShape: "proficient (9)",
+                iq: iq,
+                chemistry: Math.floor(Math.random() * 20) + 80, // Dynamic chemistry %
+                marketValuePct: Math.floor(Math.random() * 40) + 85, // NBA-style market value relative %
+                mood: "Content & Motivated",
+                xp: Math.floor(Math.random() * 500),
+                js: ["respectable (7)", "prominent (10)", "sensational (12)", "prolific (14)"][Math.floor(Math.random()*4)],
+                jr: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                od: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                handling: ["strong (8)", "prolific (14)", "sensational (12)"][Math.floor(Math.random()*3)],
+                driving: ["respectable (7)", "prolific (14)", "sensational (12)"][Math.floor(Math.random()*3)],
+                passing: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                insideShot: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                insideDef: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                rebounding: ["respectable (7)", "prominent (10)", "prominent (10)"][Math.floor(Math.random()*3)],
+                shotBlocking: ["respectable (7)", "prominent (10)", "sensational (12)"][Math.floor(Math.random()*3)],
+                stamina: "proficient (9)",
+                freeThrow: ["respectable (7)", "prolific (14)"][Math.floor(Math.random()*2)],
+                experience: age > 24 ? "respectable (7)" : "pitiful (2)"
+            };
+        }
 
-<section>
-    <h2>25. Coaching Office</h2>
+        // Initialize 100+ players for Transfer Market and 10-15 players for all 12 teams
+        let initialTransferMarket = [];
+        for(let i=0; i<105; i++) {
+            let p = generateRandomPlayer();
+            p.currentBid = Math.floor(Math.random() * 60000) + 20000;
+            p.timeLeft = Math.floor(Math.random() * 300) + 30;
+            initialTransferMarket.push(p);
+        }
 
-    <p>The existing 11-tier coaching system remains.</p>
+        let initialTeams = [
+            { name: "Boston Titans", wins: 0, losses: 0, roster: [] },
+            { name: "Chicago Vipers", wins: 0, losses: 0, roster: [] },
+            { name: "Los Angeles Apex", wins: 0, losses: 0, roster: [] },
+            { name: "New York Metros", wins: 0, losses: 0, roster: [] },
+            { name: "Miami Heatwave", wins: 0, losses: 0, roster: [] },
+            { name: "Dallas Mavericks X", wins: 0, losses: 0, roster: [] },
+            { name: "Golden State Dynasty", wins: 0, losses: 0, roster: [] },
+            { name: "Brooklyn Knights", wins: 0, losses: 0, roster: [] },
+            { name: "Seattle Supersonics X", wins: 0, losses: 0, roster: [] },
+            { name: "Denver Mountain Lions", wins: 0, losses: 0, roster: [] },
+            { name: "Phoenix Sunsational", wins: 0, losses: 0, roster: [] },
+            { name: "Philadelphia Bell", wins: 0, losses: 0, roster: [] }
+        ];
 
-    <ul>
-        <li>Coaching contracts</li>
-        <li>Interview modules</li>
-        <li>Contract negotiations</li>
-        <li>Board confidence</li>
-        <li>Ultimatums</li>
-        <li>Offseason coaching events</li>
-    </ul>
+        // Fill each team roster to 12-15 players
+        initialTeams.forEach(team => {
+            const rosterSize = Math.floor(Math.random() * 4) + 12; // 12 to 15 players
+            for(let j=0; j<rosterSize; j++) {
+                team.roster.push(generateRandomPlayer());
+            }
+        });
 
-    <p>
-        High-level coaches can create significant expectations and contractual
-        consequences.
-    </p>
-</section>
+        let gameData = {
+            funds: 525000,
+            activeTeamIndex: 0,
+            offensiveBlueprint: "Base Offense",
+            defensiveBlueprint: "Man-to-Man",
+            blueprintXP: 0,
+            teams: initialTeams,
+            transferMarket: initialTransferMarket,
+            ncaaProspects: []
+        };
 
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (tabId === 'roster') renderMasterRoster();
+            if (tabId === 'standings') renderStandings();
+            if (tabId === 'transfer') renderTransferMarket();
+            if (tabId === 'med') populateMedSelect();
+        }
 
-<section>
-    <h2>26. Medical & Rust Rehabilitation</h2>
+        function renderMasterRoster() {
+            const team = gameData.teams[gameData.activeTeamIndex];
+            document.getElementById('header-team-name').innerText = team.name;
+            document.getElementById('active-roster-title').innerText = `${team.name} - Active Panini Roster Grid`;
+            document.getElementById('roster-count').innerText = team.roster.length;
+            
+            const grid = document.getElementById('master-roster-grid');
+            grid.innerHTML = '';
 
-    <ul>
-        <li>Five-level sports medicine system.</li>
-        <li>Injuries tracked by game counts.</li>
-        <li>Skills remain stabilized while injured/resting.</li>
-        <li>Returning players can experience Rust.</li>
-        <li>Rust can temporarily limit trained archetype badges.</li>
-        <li>Advanced rehabilitation can produce rare breakthroughs.</li>
-    </ul>
-</section>
+            team.roster.forEach((p, idx) => {
+                let tierClass = "card-tier-standard";
+                if (p.tier === "Red Diamond") tierClass = "card-tier-red";
+                if (p.tier === "Black Diamond" || p.tier === "Regular Diamond") tierClass = "card-tier-black";
 
+                grid.innerHTML += `
+                    <div class="player-card ${tierClass}" onclick="openPlayerDetail(${gameData.activeTeamIndex}, ${idx})">
+                        <div class="player-header">
+                            <span class="player-name">${p.name}</span>
+                            <span class="player-pos">${p.pos}</span>
+                        </div>
+                        <div class="player-photo-area">
+                            <div class="jersey-badge">#${idx + 1}</div>
+                            <div class="player-face-art">
+                                <div class="eyes eye-left"></div>
+                                <div class="eyes eye-right"></div>
+                                <div class="jersey-fill"></div>
+                            </div>
+                            <div class="meta-info">
+                                <p><strong>Tier:</strong> ${p.tier}</p>
+                                <p><strong>Age:</strong> ${p.age} | <strong>Chem:</strong> <span style="color:var(--accent-green);">${p.chemistry}%</span></p>
+                            </div>
+                        </div>
+                        <div class="skills-grid-system">
+                            <div><span class="skill-lbl">OVR IQ:</span> <span class="skill-val">${p.iq}</span></div>
+                            <div><span class="skill-lbl">J. Shot:</span> <span class="skill-val">${p.js.split(' ')[0]}</span></div>
+                            <div><span class="skill-lbl">Defense:</span> <span class="skill-val">${p.od.split(' ')[0]}</span></div>
+                            <div><span class="skill-lbl">Market Val:</span> <span class="skill-val">${p.marketValuePct}%</span></div>
+                        </div>
+                        <div class="card-footer-info">
+                            <span>Role: ${p.role}</span>
+                            <span style="color: var(--accent-green);">Salary: $${p.salary.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
-<section>
-    <h2>27. Season Awards</h2>
+        function openPlayerDetail(teamIdx, playerIdx) {
+            const p = gameData.teams[teamIdx].roster[playerIdx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - Complete Panini Dossier`;
+            
+            let content = `
+                <p><strong>Team:</strong> ${gameData.teams[teamIdx].name}</p>
+                <p><strong>Tier / Potential:</strong> ${p.tier} / <span style="color:var(--accent-gold);">${p.potential}</span></p>
+                <p><strong>Age & Height:</strong> ${p.age} years old | ${p.height}</p>
+                <p><strong>Role & Salary:</strong> ${p.role} | $${p.salary.toLocaleString()} per week</p>
+                <p><strong>Dynamic Chemistry (Tactic Fit):</strong> <span style="color:var(--accent-green);">${p.chemistry}%</span> | <strong>Mood / Morale:</strong> ${p.mood}</p>
+                <p><strong>NBA-Style Market Valuation Index:</strong> <span style="color:var(--accent-gold);">${p.marketValuePct}%</span> of Positional Peak</p>
+                <hr style="border-color:var(--border-color); margin: 10px 0;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family:monospace;">
+                    <div>Tactical IQ: ${p.iq}</div>
+                    <div>Dynamic XP: ${p.xp}</div>
+                    <div>Jump Shot: ${p.js}</div>
+                    <div>Jump Range: ${p.jr}</div>
+                    <div>Outside Def.: ${p.od}</div>
+                    <div>Handling: ${p.handling}</div>
+                    <div>Driving: ${p.driving}</div>
+                    <div>Passing: ${p.passing}</div>
+                    <div>Inside Shot: ${p.insideShot}</div>
+                    <div>Inside Def.: ${p.insideDef}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                    <div>Shot Blocking: ${p.shotBlocking}</div>
+                    <div>Stamina: ${p.stamina}</div>
+                    <div>Free Throw: ${p.freeThrow}</div>
+                    <div>Experience: ${p.experience}</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
 
-    <p>
-        The established minimum franchise participation requirement is:
-        <strong>25 games.</strong>
-    </p>
+        function openCollegePlayerDetail(prospectIdx) {
+            const p = gameData.ncaaProspects[prospectIdx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - NCAA Collegiate Dossier`;
+            
+            let content = `
+                <p><strong>Collegiate Program:</strong> ${p.college}</p>
+                <p><strong>Prospect Potential:</strong> <span style="color:var(--accent-gold);">${p.potential}</span></p>
+                <p><strong>Age & Height:</strong> ${p.age} years old | ${p.height}</p>
+                <p><strong>Performance Form:</strong> ${p.ppg} PPG | Efficiency: <span style="color:var(--accent-green);">${p.efficiency}</span></p>
+                <hr style="border-color:var(--border-color); margin: 10px 0;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family:monospace;">
+                    <div>Tactical IQ: ${p.iq}</div>
+                    <div>Jump Shot: ${p.js}</div>
+                    <div>Jump Range: ${p.jr}</div>
+                    <div>Outside Def.: ${p.od}</div>
+                    <div>Handling: ${p.handling}</div>
+                    <div>Driving: ${p.driving}</div>
+                    <div>Passing: ${p.passing}</div>
+                    <div>Inside Shot: ${p.insideShot}</div>
+                    <div>Inside Def.: ${p.insideDef}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                    <div>Shot Blocking: ${p.shotBlocking}</div>
+                    <div>Stamina: ${p.stamina}</div>
+                    <div>Free Throw: ${p.freeThrow}</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
 
-    <ul>
-        <li>MVP</li>
-        <li>Defensive Player of the Year</li>
-        <li>Rookie of the Year</li>
-        <li>Sixth Man</li>
-        <li>All-Rookie Team</li>
-        <li>All-Conference Teams</li>
-        <li>All-Division Teams</li>
-        <li>Country Teams</li>
-        <li>World Team</li>
-    </ul>
-</section>
+        function closePlayerModal(e) {
+            if (e.target.id === 'player-modal') {
+                document.getElementById('player-modal').style.display = 'none';
+            }
+        }
 
+        function renderStandings() {
+            const tbody = document.getElementById('league-standings-body');
+            tbody.innerHTML = '';
+            
+            let sortedTeams = [...gameData.teams].map((t, originalIndex) => ({...t, originalIndex})).sort((a, b) => b.wins - a.wins);
 
-<section>
-    <h2>28. International System</h2>
+            sortedTeams.forEach((t, index) => {
+                let totalOvr = Math.round(t.roster.reduce((acc, p) => acc + p.iq, 0) / (t.roster.length || 1));
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${index + 1}</td>
+                        <td style="font-weight:bold; color:#fff;" onclick="inspectTeamHub(${t.originalIndex})">${t.name}</td>
+                        <td>${t.wins} - ${t.losses}</td>
+                        <td>${index === 0 ? '-' : (sortedTeams[0].wins - t.wins)}</td>
+                        <td><span style="color:var(--accent-blue); font-weight:bold;">${totalOvr} OVR</span></td>
+                        <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="inspectTeamHub(${t.originalIndex})">Inspect Hub</button></td>
+                    </tr>
+                `;
+            });
+        }
 
-    <ul>
-        <li>Senior National Team maximum: 15 players.</li>
-        <li>U21 maximum: 15 players.</li>
-        <li>Roster Shield limits elected coaches selecting excessive players from their own club.</li>
-        <li>Election cycles remain governed by the existing blueprint.</li>
-        <li>National Team Arena can receive community-funded upgrades.</li>
-    </ul>
-</section>
+        function inspectTeamHub(originalIndex) {
+            gameData.activeTeamIndex = originalIndex;
+            switchTab({ currentTarget: document.querySelectorAll('.nav-button')[0] }, 'roster');
+            renderMasterRoster();
+        }
 
+        function openActiveTeamHub() {
+            inspectTeamHub(gameData.activeTeamIndex);
+        }
 
-<section>
-    <h2>29. Franchise Mailbox & Forums</h2>
+        function updateBlueprints() {
+            gameData.offensiveBlueprint = document.getElementById('blueprint-offense').value;
+            gameData.defensiveBlueprint = document.getElementById('blueprint-defense').value;
+            document.getElementById('blueprint-level').innerText = `Level 1 (${gameData.offensiveBlueprint} + ${gameData.defensiveBlueprint})`;
+            document.getElementById('blueprint-desc').innerText = `Active chemistry locked in. Run simulated matches to gain XP and scale team execution multipliers.`;
+            
+            // Adjust team chemistry dynamically based on tactics
+            gameData.teams[gameData.activeTeamIndex].roster.forEach(p => {
+                p.chemistry = Math.min(100, Math.max(65, p.chemistry + (Math.random() > 0.5 ? 3 : -2)));
+            });
+        }
 
-    <ul>
-        <li>📋 Non-Tactical — General Announcements & Help</li>
-        <li>🏀 Tactical & Theory — Strategy Lab</li>
-        <li>👑 National Teams & U21 — Campaigns and Elections</li>
-        <li>🤪 Kano's Lounge — Shady Office / Extortion Stories</li>
-    </ul>
+        function renderTransferMarket() {
+            const tbody = document.getElementById('transfer-market-body');
+            tbody.innerHTML = '';
+            gameData.transferMarket.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:#fff; cursor:pointer;" onclick="openMarketPlayerModal(${idx})">${p.name}</td>
+                        <td><span class="player-pos">${p.pos}</span></td>
+                        <td>${p.tier}</td>
+                        <td style="color:var(--accent-green); font-weight:bold;">$${p.currentBid.toLocaleString()}</td>
+                        <td id="auction-timer-${idx}" style="color:var(--accent-gold); font-family:monospace;">${p.timeLeft}s</td>
+                        <td><input type="number" id="bid-input-${idx}" value="${p.currentBid + 5000}" style="width:110px; padding:4px;"></td>
+                        <td><button class="btn btn-success" style="padding:4px 10px; font-size:12px;" onclick="placeBid(${idx})">Bid Now</button></td>
+                    </tr>
+                `;
+            });
+        }
 
-    <p>
-        Player and staff personalities may influence mailbox events and messages.
-    </p>
-</section>
+        function openMarketPlayerModal(idx) {
+            const p = gameData.transferMarket[idx];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - Transfer Market Dossier`;
+            let content = `
+                <p><strong>Tier / Potential:</strong> ${p.tier} / <span style="color:var(--accent-gold);">${p.potential}</span></p>
+                <p><strong>Age & Height:</strong> ${p.age} years old | ${p.height}</p>
+                <p><strong>Current Bid:</strong> $${p.currentBid.toLocaleString()} | NBA Market Val Index: <span style="color:var(--accent-gold);">${p.marketValuePct}%</span></p>
+                <hr style="border-color:var(--border-color); margin: 10px 0;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family:monospace;">
+                    <div>Tactical IQ: ${p.iq}</div>
+                    <div>Jump Shot: ${p.js}</div>
+                    <div>Perimeter Def: ${p.od}</div>
+                    <div>Handling: ${p.handling}</div>
+                    <div>Driving: ${p.driving}</div>
+                    <div>Passing: ${p.passing}</div>
+                    <div>Inside Def: ${p.insideDef}</div>
+                    <div>Rebounding: ${p.rebounding}</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
 
+        function placeBid(idx) {
+            const val = parseInt(document.getElementById(`bid-input-${idx}`).value);
+            if (isNaN(val) || val <= gameData.transferMarket[idx].currentBid) {
+                alert("Bid must be higher than current standing bid!");
+                return;
+            }
+            if (gameData.funds < val) {
+                alert("Insufficient club funds!");
+                return;
+            }
+            gameData.funds -= val;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            // Move player to active team roster
+            let wonPlayer = gameData.transferMarket.splice(idx, 1)[0];
+            gameData.teams[gameData.activeTeamIndex].roster.push(wonPlayer);
+            
+            alert(`Successful acquisition! ${wonPlayer.name} has joined your franchise roster.`);
+            renderTransferMarket();
+            renderMasterRoster();
+        }
 
-<section>
-    <h2>30. Financial Ecosystem</h2>
+        function pullYouthProspect() {
+            if (gameData.funds < 80000) {
+                alert("Insufficient funds for youth academy prospect pull ($80,000 required)!");
+                return;
+            }
+            gameData.funds -= 80000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            let newProspect = generateRandomPlayer();
+            gameData.teams[gameData.activeTeamIndex].roster.push(newProspect);
+            document.getElementById('youth-terminal').innerHTML += `<br>[Prospect Pulled] Elite U19 Prospect <strong>${newProspect.name} (${newProspect.pos})</strong> added directly to active franchise roster!`;
+            renderMasterRoster();
+        }
 
-    <h3>Expenses</h3>
+        function simYouthMatch() {
+            document.getElementById('youth-terminal').innerHTML += `<br>[U21 Match Simulation] 24M Clock Active... Academy squad secures a hard-fought 58-52 victory. Development XP distributed!`;
+        }
 
-    <ul>
-        <li>Player salaries</li>
-        <li>Staff salaries</li>
-        <li>Scouting</li>
-        <li>Infrastructure</li>
-        <li>Other established franchise expenses</li>
-    </ul>
+        function scoutNCAAPipeline() {
+            if (gameData.funds < 15000) {
+                alert("Insufficient funds for NCAA scouting report ($15,000 required)!");
+                return;
+            }
+            gameData.funds -= 15000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            gameData.ncaaProspects = [];
+            for(let i=0; i<8; i++) {
+                let p = generateRandomPlayer();
+                p.college = collegesList[Math.floor(Math.random() * collegesList.length)];
+                p.ppg = (Math.random() * 12 + 12).toFixed(1);
+                p.efficiency = (Math.random() * 8 + 45).toFixed(1) + "%";
+                gameData.ncaaProspects.push(p);
+            }
 
-    <h3>Revenue</h3>
+            const tbody = document.getElementById('ncaa-pipeline-body');
+            tbody.innerHTML = '';
+            gameData.ncaaProspects.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:#fff; cursor:pointer;" onclick="openCollegePlayerDetail(${idx})">${p.name}</td>
+                        <td><span class="player-pos">${p.pos}</span></td>
+                        <td>${p.college}</td>
+                        <td style="color:var(--accent-gold); font-weight:bold;">${p.ppg} PPG (Form Up)</td>
+                        <td>${p.efficiency}</td>
+                        <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCollegePlayerDetail(${idx})">Inspect Prospect</button></td>
+                    </tr>
+                `;
+            });
 
-    <ul>
-        <li>Attendance</li>
-        <li>Merchandise</li>
-        <li>Television contracts</li>
-        <li>Match revenue</li>
-        <li>Tournament revenue</li>
-        <li>Other approved franchise income</li>
-    </ul>
-</section>
+            document.getElementById('college-terminal').innerHTML += `<br>[NCAA Pipeline] Scouting report generated: ACC, Big East & SEC sleeper prospects analyzed. 8 collegiate talents added to draft board watchlist.`;
+        }
 
+        function populateMedSelect() {
+            const select = document.getElementById('med-player-select');
+            select.innerHTML = '';
+            const roster = gameData.teams[gameData.activeTeamIndex].roster;
+            roster.forEach((p, idx) => {
+                select.innerHTML += `<option value="${idx}">${p.name} (${p.pos}) - Shape: ${p.gameShape}</option>`;
+            });
+        }
 
-<section>
-    <h2>31. Match → Statistics → Franchise Loop</h2>
+        function assignRehabProtocol() {
+            const pIndex = document.getElementById('med-player-select').value;
+            const protocol = document.getElementById('med-protocol-select').value;
+            if (pIndex === "") {
+                alert("Please select a valid player.");
+                return;
+            }
+            const player = gameData.teams[gameData.activeTeamIndex].roster[pIndex];
+            player.gameShape = "proficient (9)";
+            player.mood = "Peak Condition";
+            document.getElementById('med-terminal').innerHTML += `<br>[Rehab Assigned] Protocol "${protocol}" successfully completed for <strong>${player.name}</strong>. Game Shape restored and mood optimized!`;
+            alert(`Rehab protocol completed for ${player.name}. Fitness optimized.`);
+        }
 
-    <div class="rule success">
-        Players → Teams → Blueprints → Match Engine → Game Result →
-        Box Score → Season Statistics → Development → Economy → Next Week
-    </div>
+        function runGlobalMatchSim() {
+            const canvas = document.getElementById('court-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 40, 0, Math.PI * 2);
+            ctx.stroke();
 
-    <p>
-        Every major system should feed into the same living basketball ecosystem.
-    </p>
-</section>
+            ctx.beginPath();
+            ctx.arc(0, canvas.height / 2, 110, -Math.PI/2, Math.PI/2);
+            ctx.stroke();
 
+            ctx.beginPath();
+            ctx.arc(canvas.width, canvas.height / 2, 110, Math.PI/2, -Math.PI/2);
+            ctx.stroke();
 
-<section>
-    <h2>32. Development Rules</h2>
+            let ballX = 50, ballY = 150;
+            let targetX = canvas.width - 50, targetY = 150;
+            
+            let animStep = 0;
+            const interval = setInterval(() => {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.strokeStyle = '#334155';
+                ctx.beginPath(); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, 40, 0, Math.PI * 2); ctx.stroke();
 
-    <h3>DO</h3>
+                ballX += (targetX - ballX) * 0.1;
+                ballY += (targetY - ballY) * 0.1;
 
-    <ul>
-        <li>Preserve existing working code.</li>
-        <li>Reuse existing functions.</li>
-        <li>Connect systems rather than duplicate them.</li>
-        <li>Keep the existing UI.</li>
-        <li>Respect the blueprint.</li>
-        <li>Make surgical changes.</li>
-        <li>Test changes incrementally.</li>
-        <li>Keep placeholder/test players where useful.</li>
-        <li>Generalize examples only when necessary.</li>
-    </ul>
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, 10, 0, Math.PI * 2);
+                ctx.fill();
 
-    <h3>DO NOT</h3>
+                animStep++;
+                if (animStep > 35) {
+                    clearInterval(interval);
+                    const activeTeam = gameData.teams[gameData.activeTeamIndex];
+                    activeTeam.wins += 1;
+                    renderStandings();
+                    document.getElementById('m-log').innerHTML = `[Match Completed] <strong>${activeTeam.name}</strong> executes flawless ${gameData.offensiveBlueprint} and defeats opponent 108 - 94! +1 Win recorded to league standings.`;
+                }
+            }, 40);
+        }
 
-    <ul>
-        <li>Do not unnecessarily rebuild the UI.</li>
-        <li>Do not replace functioning systems.</li>
-        <li>Do not remove established mechanics.</li>
-        <li>Do not create duplicate economic systems.</li>
-        <li>Do not create a competing match engine.</li>
-        <li>Do not introduce constant mid-game tactic switching.</li>
-        <li>Do not allow RNG to determine everything.</li>
-        <li>Do not make elite players automatically win.</li>
-        <li>Do not randomly make weak players dominate without logical factors.</li>
-        <li>Do not change blueprint rules without approval.</li>
-    </ul>
-</section>
+        // Sunday Cup Box Score System
+        let cupMatchups = [
+            { home: "Boston Titans", away: "Chicago Vipers", homeScore: 104, awayScore: 98 },
+            { home: "Los Angeles Apex", away: "New York Metros", homeScore: 112, awayScore: 105 },
+            { home: "Miami Heatwave", away: "Dallas Mavericks X", homeScore: 96, awayScore: 91 },
+            { home: "Golden State Dynasty", away: "Denver Mountain Lions", homeScore: 118, awayScore: 110 }
+        ];
 
+        function simSundayCupMatch() {
+            document.getElementById('cup-alert').style.display = 'block';
+            gameData.funds += 50000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${gameData.funds.toLocaleString()}`;
+            
+            // Randomize scores slightly on simulation
+            cupMatchups.forEach(m => {
+                m.homeScore = Math.floor(Math.random() * 25) + 95;
+                m.awayScore = Math.floor(Math.random() * 25) + 90;
+            });
 
-<section>
-    <h2>33. Current Improvement Mission</h2>
+            // Update bracket table UI dynamically
+            const tbody = document.getElementById('cup-bracket-body');
+            tbody.innerHTML = '';
+            cupMatchups.forEach((m, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>Match ${idx + 1}</td>
+                        <td>${m.home}</td>
+                        <td style="color:var(--accent-gold); font-weight:bold; cursor:pointer;" onclick="openCupGameDetail(${idx})">${m.homeScore} - ${m.awayScore}</td>
+                        <td>${m.away}</td>
+                        <td><button class="btn" style="padding:4px 8px; font-size:11px;" onclick="openCupGameDetail(${idx})">View Box Score</button></td>
+                    </tr>
+                `;
+            });
+        }
 
-    <div class="grid">
+        function openCupGameDetail(matchIdx) {
+            const match = cupMatchups[matchIdx];
+            document.getElementById('modal-player-name').innerText = `Sunday Cup Box Score: ${match.home} vs ${match.away} (${match.homeScore} - ${match.awayScore})`;
+            
+            // Generate simulated player stats for this game
+            let content = `
+                <p style="color:var(--text-main); font-weight:bold;">${match.home} Player Game Performance</p>
+                <div style="font-family:monospace; font-size:12px; margin-bottom:12px; background:#030712; padding:8px; border-radius:4px;">
+                    <div>Dorian Freeman (PF): 24 PTS, 11 REB, 4 AST, 36 MIN</div>
+                    <div>King Bronny (SF): 28 PTS, 7 REB, 9 AST, 38 MIN</div>
+                    <div>RJ Mobley (SG): 14 PTS, 3 REB, 2 AST, 24 MIN</div>
+                    <div>Icetee Marrow (PG): 22 PTS, 6 REB, 11 AST, 35 MIN</div>
+                </div>
+                <p style="color:var(--text-main); font-weight:bold;">${match.away} Player Game Performance</p>
+                <div style="font-family:monospace; font-size:12px; background:#030712; padding:8px; border-radius:4px;">
+                    <div>Zach LaVine Jr. (SG): 31 PTS, 5 REB, 4 AST, 37 MIN</div>
+                    <div>Starting Forward (SF): 19 PTS, 8 REB, 2 AST, 33 MIN</div>
+                    <div>Floor General (PG): 15 PTS, 4 REB, 12 AST, 35 MIN</div>
+                    <div>Center Anchor (C): 12 PTS, 14 REB, 1 BLK, 30 MIN</div>
+                </div>
+            `;
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
 
-        <div class="card">
-            <h3>Living League</h3>
-            All teams play and the calendar advances.
-        </div>
+        function triggerCoachUltimatum() {
+            document.getElementById('desk-terminal').innerHTML = `[Board Ultimatum] Directors are pleased with recent squad synergy. Contract extension unlocked for Coaching Staff Tier 11.`;
+            alert("Board confidence stable. Franchise security confirmed.");
+        }
 
-        <div class="card">
-            <h3>Match Engine</h3>
-            Connect actual players, IQ, Team Rating, Blueprint and RNG.
-        </div>
+        function generateDraftClass() {
+            const container = document.getElementById('draft-container');
+            container.innerHTML = `
+                <h4 style="color:var(--accent-green);">2-Round Collegiate Draft Board Generated</h4>
+                <p style="font-size:13px; color:var(--text-muted);">Round 1, Pick 1: <strong>Cade Miller Jr. (PG, 19, Kentucky)</strong></p>
+                <p style="font-size:13px; color:var(--text-muted);">Round 1, Pick 2: <strong>Julian Vance (PF, 20, Duke)</strong></p>
+                <p style="font-size:13px; color:var(--text-muted);">Round 2, Pick 1: <strong>Treyvion Scott (SG, 19, UNC)</strong></p>
+            `;
+        }
 
-        <div class="card">
-            <h3>Match Viewer</h3>
-            Show the actual generated game.
-        </div>
+        function accessAgency(tier) {
+            if (tier === 'tier1') {
+                document.getElementById('agency-terminal').innerHTML = `<span style="color:var(--accent-red);">[ALERT] Sachkz Elite Firm engaged. Elite player acquisition unsealed, but league regulatory scrutiny triggered (+10% salary tax).</span>`;
+            } else {
+                document.getElementById('agency-terminal').innerHTML = `<span style="color:var(--accent-red);">[CRITICAL] Slimeball Desk engaged. High-risk player management active. Proceed with extreme caution!</span>`;
+            }
+        }
 
-        <div class="card">
-            <h3>Replay</h3>
-            Replay the saved final game without rerolling.
-        </div>
-
-        <div class="card">
-            <h3>Masterball Cards</h3>
-            Display real season statistics.
-        </div>
-
-        <div class="card">
-            <h3>Team Page</h3>
-            Create the original Titans-style franchise overview.
-        </div>
-
-        <div class="card">
-            <h3>Rookie Academy</h3>
-            Connect development, games and draft selection.
-        </div>
-
-        <div class="card">
-            <h3>Talent Agencies</h3>
-            Activate the rules already written.
-        </div>
-
-        <div class="card">
-            <h3>Market</h3>
-            Connect existing market mechanics to the living economy.
-        </div>
-
-        <div class="card">
-            <h3>Recoupment</h3>
-            Preserve the current working system while applying the universal rule.
-        </div>
-
-    </div>
-</section>
-
-
-<section>
-    <h2>34. Final Project Philosophy</h2>
-
-    <div class="rule success">
-        <strong>THE LEAGUE IS ALREADY BUILT.</strong>
-    </div>
-
-    <p>
-        The purpose of development is to make the existing Titans Franchise
-        Project feel like a living, breathing basketball universe.
-    </p>
-
-    <p>
-        Players develop. Teams compete. Coaches make decisions. Games happen.
-        Statistics accumulate. Markets move. Money changes hands. Rookies arrive.
-        Veterans retire. Agencies create risk. IQ is earned. Blueprints matter.
-        RNG creates uncertainty. The calendar moves forward.
-    </p>
-
-    <div class="rule">
-        <strong>
-            Build forward. Preserve the work. Do not rebuild backward.
-        </strong>
-    </div>
-</section>
-
-
-<footer>
-    TITANS FRANCHISE PROJECT<br>
-    Master Blueprint — Living League Specification
-</footer>
-
-</div>
-
+        // Initialize view on load
+        window.onload = function() {
+            renderMasterRoster();
+            renderStandings();
+            renderTransferMarket();
+        };
+    </script>
 </body>
 </html>
