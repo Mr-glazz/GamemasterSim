@@ -75,7 +75,7 @@
         .btn-success:hover { background-color: #059669; }
         .btn-danger { background-color: var(--accent-red); }
         .btn-danger:hover { background-color: #dc2626; }
-        .btn-warning { background-color: #f59e0b; color: #000; }
+        .btn-warning { background-color: var(--accent-warning, #f59e0b); color: #000; }
         .btn-warning:hover { background-color: #d97706; }
         
         input[type="number"], select { background-color: #1f2937; color: #fff; border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; }
@@ -128,6 +128,7 @@
         
         <div class="main-content">
             
+            <!-- 1. ROSTER & CARDS TAB -->
             <div id="roster" class="tab-panel active">
                 <div class="section-title">
                     <span id="active-roster-title">Boston Titans - Active Panini Roster Grid</span>
@@ -136,10 +137,11 @@
                 <div class="roster-grid" id="master-roster-grid"></div>
             </div>
 
+            <!-- 2. LEAGUE STANDINGS & TEAM HUBS TAB -->
             <div id="standings" class="tab-panel">
                 <div class="section-title">12-Team League Standings & Franchise Hubs</div>
                 <div class="card">
-                    <p style="color: var(--text-muted); font-size: 13px;">Click on any team in the league standings to inspect their roster, finances, and tactical setup.</p>
+                    <p style="color: var(--text-muted); font-size: 13px;">Click on any team in the 12-team league standings below to inspect their roster, finances, and tactical setup.</p>
                     <table class="league-table">
                         <thead>
                             <tr>
@@ -156,6 +158,7 @@
                 </div>
             </div>
 
+            <!-- 3. BLUEPRINTS & TACTICS TAB -->
             <div id="tactics" class="tab-panel">
                 <div class="section-title">Live Upgradable Blueprint Schemes</div>
                 <div class="card">
@@ -194,6 +197,7 @@
                 </div>
             </div>
 
+            <!-- 4. TRANSFER MARKET & FREE AGENCY TAB -->
             <div id="transfer" class="tab-panel">
                 <div class="section-title">Live Auction & Free Agency Market</div>
                 <div class="card">
@@ -215,6 +219,7 @@
                 </div>
             </div>
 
+            <!-- 5. YOUTH ACADEMY & U21 MATCHES TAB -->
             <div id="youth" class="tab-panel">
                 <div class="section-title">Youth Academy & U21 Match Engine</div>
                 <div class="card">
@@ -228,6 +233,7 @@
                 </div>
             </div>
 
+            <!-- 6. NCAA SCOUTING PIPELINE TAB -->
             <div id="college" class="tab-panel">
                 <div class="section-title">NCAA Scouting & Collegiate Pipeline</div>
                 <div class="card">
@@ -259,6 +265,7 @@
                 </div>
             </div>
 
+            <!-- 7. MEDICAL & RUST REHAB BAY TAB -->
             <div id="med" class="tab-panel">
                 <div class="section-title">Medical & Rust Rehabilitation Bay</div>
                 <div class="card">
@@ -280,6 +287,7 @@
                 </div>
             </div>
 
+            <!-- 8. MATCHDAY LIVE STREAM TAB -->
             <div id="match" class="tab-panel">
                 <div class="section-title">Matchday Broadcast & 100-Possession Simulator</div>
                 <div class="card">
@@ -292,6 +300,7 @@
                 </div>
             </div>
 
+            <!-- 9. SUNDAY CUP TOURNAMENT TAB -->
             <div id="cup" class="tab-panel">
                 <div class="section-title">Sunday Cross-Division Cup Tournament</div>
                 <div class="card">
@@ -347,6 +356,7 @@
                 </div>
             </div>
 
+            <!-- 10. FRANCHISE DESK & COACHES TAB -->
             <div id="desk" class="tab-panel">
                 <div class="section-title">Franchise Desk & 11-Tier Coaching Matrix</div>
                 <div class="card">
@@ -356,6 +366,7 @@
                 </div>
             </div>
 
+            <!-- 11. OFFSEASON ROOKIE DRAFT TAB -->
             <div id="draft" class="tab-panel">
                 <div class="section-title">2-Round Offseason Collegiate Entry Draft</div>
                 <div class="card">
@@ -365,6 +376,7 @@
                 </div>
             </div>
 
+            <!-- 12. TALENT AGENCIES & RISKS TAB -->
             <div id="agencies" class="tab-panel">
                 <div class="section-title">Talent Agencies & Double-Gated Warning Shields</div>
                 <div class="card" style="border-color: var(--accent-red);">
@@ -381,6 +393,7 @@
         </div>
     </div>
 
+    <!-- Upgraded Panini Player Card Detail Modal -->
     <div class="modal-overlay" id="player-modal" onclick="closePlayerModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
             <h3 id="modal-player-name" style="margin-top:0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Player Profile</h3>
@@ -395,20 +408,36 @@
         const positionsList = ["PG", "SG", "SF", "PF", "C"];
         const tiersList = ["Standard", "Standard", "Red Diamond", "Regular Diamond", "Black Diamond"];
 
+        const teamNamesList = [
+            "Boston Titans", "Chicago Vipers", "Los Angeles Apex", "New York Metros",
+            "Miami Heatwave", "Dallas Mavericks X", "Golden State Dynasty", "Denver Mountain Lions",
+            "Seattle Supersonics", "Toronto Raptors Pro", "Brooklyn Kings", "Phoenix Suns Elite"
+        ];
+
+        let leagueTeams = [];
+        let activeTeamIndex = 0;
         let clubFunds = 525000;
-        let playerRoster = [];
         let transferMarketPool = [];
 
-        for(let i=0; i<12; i++) {
-            playerRoster.push(generateRandomPlayer(i === 0 ? "Black Diamond" : null));
+        function initLeague() {
+            leagueTeams = [];
+            for (let i = 0; i < teamNamesList.length; i++) {
+                let roster = [];
+                for (let j = 0; j < 12; j++) {
+                    roster.push(generateRandomPlayer(i === 0 && j === 0 ? "Black Diamond" : null));
+                }
+                leagueTeams.push({
+                    name: teamNamesList[i],
+                    wins: i === 0 ? 14 : Math.floor(Math.random() * 8) + 6,
+                    losses: i === 0 ? 2 : Math.floor(Math.random() * 8) + 6,
+                    ovr: Math.floor(Math.random() * 10) + 80,
+                    funds: Math.floor(Math.random() * 300000) + 400000,
+                    roster: roster
+                });
+            }
         }
 
-        for(let i=0; i<5; i++) {
-            let p = generateRandomPlayer();
-            p.currentBid = Math.floor(Math.random() * 30000) + 15000;
-            p.timeLeft = Math.floor(Math.random() * 300) + 60;
-            transferMarketPool.push(p);
-        }
+        initLeague();
 
         function generateRandomPlayer(forcedTier = null) {
             const fName = firstNamesList[Math.floor(Math.random() * firstNamesList.length)];
@@ -442,6 +471,13 @@
             };
         }
 
+        for(let i=0; i<5; i++) {
+            let p = generateRandomPlayer();
+            p.currentBid = Math.floor(Math.random() * 30000) + 15000;
+            p.timeLeft = Math.floor(Math.random() * 300) + 60;
+            transferMarketPool.push(p);
+        }
+
         function switchTab(event, tabId) {
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
@@ -454,9 +490,13 @@
         }
 
         function renderMasterRoster() {
+            let activeTeam = leagueTeams[activeTeamIndex];
+            document.getElementById('header-team-name').innerText = activeTeam.name;
+            document.getElementById('active-roster-title').innerText = `${activeTeam.name} - Active Panini Roster Grid`;
+            
             const grid = document.getElementById('master-roster-grid');
             grid.innerHTML = '';
-            playerRoster.forEach((p, idx) => {
+            activeTeam.roster.forEach((p, idx) => {
                 let tierClass = 'card-tier-standard';
                 if(p.tier.includes('Red')) tierClass = 'card-tier-red';
                 if(p.tier.includes('Black')) tierClass = 'card-tier-black';
@@ -464,7 +504,7 @@
                 grid.innerHTML += `
                     <div class="player-card ${tierClass}">
                         <div class="player-header">
-                            <span class="player-name" onclick="openPlayerModalDirect(playerRoster[${idx}])">${p.name}</span>
+                            <span class="player-name" onclick="openPlayerModalDirect(leagueTeams[activeTeamIndex].roster[${idx}])">${p.name}</span>
                             <span class="player-pos">${p.pos}</span>
                         </div>
                         <div class="player-photo-area">
@@ -492,7 +532,8 @@
                     </div>
                 `;
             });
-            document.getElementById('roster-count').innerText = playerRoster.length;
+            document.getElementById('roster-count').innerText = activeTeam.roster.length;
+            document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
         }
 
         function openPlayerModalDirect(p) {
@@ -515,13 +556,33 @@
         }
 
         function renderStandings() {
+            let sortedTeams = [...leagueTeams].sort((a, b) => b.wins - a.wins);
             const body = document.getElementById('league-standings-body');
-            body.innerHTML = `
-                <tr><td>1</td><td>Boston Titans (You)</td><td>14 - 2</td><td>-</td><td>89 OVR</td><td><button class="btn" style="padding:4px 8px;font-size:11px;">Inspect HQ</button></td></tr>
-                <tr><td>2</td><td>Chicago Vipers</td><td>12 - 4</td><td>2.0</td><td>87 OVR</td><td><button class="btn" style="padding:4px 8px;font-size:11px;">Inspect HQ</button></td></tr>
-                <tr><td>3</td><td>Los Angeles Apex</td><td>11 - 5</td><td>3.0</td><td>86 OVR</td><td><button class="btn" style="padding:4px 8px;font-size:11px;">Inspect HQ</button></td></tr>
-                <tr><td>4</td><td>New York Metros</td><td>10 - 6</td><td>4.0</td><td>84 OVR</td><td><button class="btn" style="padding:4px 8px;font-size:11px;">Inspect HQ</button></td></tr>
-            `;
+            body.innerHTML = '';
+            sortedTeams.forEach((team, idx) => {
+                let isUser = team.name === leagueTeams[activeTeamIndex].name;
+                let gb = idx === 0 ? "-" : (sortedTeams[0].wins - team.wins).toFixed(1);
+                let rowStyle = isUser ? "background: rgba(37, 99, 235, 0.15); font-weight: bold;" : "";
+                let teamOriginalIndex = leagueTeams.findIndex(t => t.name === team.name);
+
+                body.innerHTML += `
+                    <tr style="${rowStyle}">
+                        <td>${idx + 1}</td>
+                        <td>${team.name} ${isUser ? '(You)' : ''}</td>
+                        <td>${team.wins} - ${team.losses}</td>
+                        <td>${gb}</td>
+                        <td>${team.ovr} OVR</td>
+                        <td><button class="btn" style="padding:4px 8px;font-size:11px;" onclick="switchTeamHQ(${teamOriginalIndex})">Inspect HQ</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function switchTeamHQ(index) {
+            activeTeamIndex = index;
+            clubFunds = leagueTeams[activeTeamIndex].funds;
+            switchTab({ currentTarget: document.querySelectorAll('.nav-button')[0] }, 'roster');
+            alert(`Switched franchise focus to ${leagueTeams[activeTeamIndex].name}!`);
         }
 
         function renderTransferMarket() {
@@ -584,12 +645,13 @@
                 return;
             }
             clubFunds -= inputVal;
+            leagueTeams[activeTeamIndex].funds = clubFunds;
             p.currentBid = inputVal;
             document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             document.getElementById(`market-bid-${idx}`).innerText = `$${p.currentBid.toLocaleString()}`;
             
             if (Math.random() > 0.5) {
-                playerRoster.push(p);
+                leagueTeams[activeTeamIndex].roster.push(p);
                 alert(`Congratulations! You successfully acquired ${p.name} via free agency auction!`);
                 transferMarketPool.splice(idx, 1);
                 renderTransferMarket();
@@ -602,7 +664,7 @@
         function renderMedSelect() {
             const sel = document.getElementById('med-player-select');
             sel.innerHTML = '';
-            playerRoster.forEach(p => {
+            leagueTeams[activeTeamIndex].roster.forEach(p => {
                 sel.innerHTML += `<option value="${p.name}">${p.name} (${p.pos})</option>`;
             });
         }
@@ -618,6 +680,7 @@
                 return;
             }
             clubFunds -= 80000;
+            leagueTeams[activeTeamIndex].funds = clubFunds;
             document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             document.getElementById('youth-terminal').innerText = "[Academy] Successfully recruited elite prospect Damian Cross (PG, 18 yrs old, Potential: Superstar)! Added to reserves.";
         }
@@ -632,6 +695,7 @@
                 return;
             }
             clubFunds -= 15000;
+            leagueTeams[activeTeamIndex].funds = clubFunds;
             document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             const body = document.getElementById('ncaa-pipeline-body');
             body.innerHTML = `
@@ -661,7 +725,7 @@
             let simInterval = setInterval(() => {
                 if (currentPossessionCount > maxPossessions) {
                     clearInterval(simInterval);
-                    log.innerHTML += `<br><strong>[Final Score] Boston Titans ${homeScore} - ${awayScore} Opponent</strong>`;
+                    log.innerHTML += `<br><strong>[Final Score] ${leagueTeams[activeTeamIndex].name} ${homeScore} - ${awayScore} Opponent</strong>`;
                     return;
                 }
 
@@ -677,7 +741,7 @@
 
                 let success = Math.random() > 0.45;
                 let points = Math.random() > 0.6 ? 3 : 2;
-                let teamName = possession === "home" ? "Boston Titans" : "Visiting Rivals";
+                let teamName = possession === "home" ? leagueTeams[activeTeamIndex].name : "Visiting Rivals";
 
                 let ballX, ballY;
                 if (possession === "home") {
@@ -714,6 +778,7 @@
 
         function simSundayCupMatch() {
             clubFunds += 50000;
+            leagueTeams[activeTeamIndex].funds = clubFunds;
             document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             document.getElementById('cup-alert').style.display = 'block';
         }
