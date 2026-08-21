@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +49,8 @@
         .card-tier-black { border-top: 4px solid var(--accent-gold); box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.15); }
 
         .player-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 10px; }
-        .player-name { font-weight: bold; font-size: 15px; color: #fff; }
+        .player-name { font-weight: bold; font-size: 15px; color: #fff; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
+        .player-name:hover { color: var(--accent-blue); }
         .player-pos { font-size: 11px; background: var(--accent-blue); padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: bold; }
         
         .player-photo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -199,9 +201,9 @@
 
             <!-- 4. TRANSFER MARKET & FREE AGENCY TAB -->
             <div id="transfer" class="tab-panel">
-                <div class="section-title">Live Auction & Free Agency Market (100+ Players)</div>
+                <div class="section-title">Live Auction & Free Agency Market</div>
                 <div class="card">
-                    <p style="color: var(--text-muted); font-size: 13px;">Every player features independent countdown timers. Click any player name to inspect their full Panini trading card before bidding!</p>
+                    <p style="color: var(--text-muted); font-size: 13px;">Every player features independent live countdown timers. Click any player name to inspect their full Panini trading card before bidding!</p>
                     <table class="league-table">
                         <thead>
                             <tr>
@@ -408,7 +410,23 @@
         const lastNamesList = ["Vance", "Starks", "Booker", "O'Neal", "Ivey", "Aldridge", "Giddey", "Brown", "Tatum", "Young", "Fox", "Haliburton", "Banchero", "Holmgren", "Mobley", "Barnes", "Simons", "Bridges", "Anunoby", "Allen", "Bane", "Mathurin", "Wagner", "Maxey", "Quickley", "Johnson", "Jones", "Kessler", "Agbaji", "Green", "Smith Jr.", "Murray", "Sharpe", "Dosunmu", "Grimes", "Marshall", "White", "Williams"];
         const positionsList = ["PG", "SG", "SF", "PF", "C"];
         const tiersList = ["Standard", "Standard", "Red Diamond", "Regular Diamond", "Black Diamond"];
-        const collegesList = ["Kentucky", "Duke", "UNC", "Kansas", "UCLA", "Gonzaga", "Villanova", "Arizona", "Houston", "Baylor", "Texas", "Michigan State", "UConn", "Purdue", "Arkansas"];
+
+        // Global simulation state variables
+        let clubFunds = 525000;
+        let playerRoster = [];
+        let transferMarketPool = [];
+
+        for(let i=0; i<12; i++) {
+            playerRoster.push(generateRandomPlayer(i === 0 ? "Black Diamond" : null));
+        }
+
+        // Initialize 5 active market auction listings with independent countdowns in seconds
+        for(let i=0; i<5; i++) {
+            let p = generateRandomPlayer();
+            p.currentBid = Math.floor(Math.random() * 30000) + 15000;
+            p.timeLeft = Math.floor(Math.random() * 300) + 60; // 60 to 360 seconds
+            transferMarketPool.push(p);
+        }
 
         function generateRandomPlayer(forcedTier = null) {
             const fName = firstNamesList[Math.floor(Math.random() * firstNamesList.length)];
@@ -422,7 +440,7 @@
                 name: `${fName} ${lName}`,
                 pos: pos,
                 age: age,
-                height: `${Math.floor(Math.random() * 3) + 6}'${Math.floor(Math.random() * 11)\" / ${Math.floor(Math.random() * 25) + 185} cm`,
+                height: `${Math.floor(Math.random() * 3) + 6}'${Math.floor(Math.random() * 11)}\"`,
                 tier: tier,
                 role: age < 22 ? "rotation player" : (iq > 88 ? "franchise player" : "star player"),
                 salary: Math.floor(Math.random() * 8000) + 3000,
@@ -440,12 +458,6 @@
                 driving: ["respectable (7)", "prolific (14)", "sensational (12)"][Math.floor(Math.random()*3)],
                 passing: ["proficient (9)", "strong (8)", "prominent (10)"][Math.floor(Math.random()*3)]
             };
-        }
-
-        // Initialize state arrays
-        let playerRoster = [];
-        for(let i=0; i<12; i++) {
-            playerRoster.push(generateRandomPlayer(i === 0 ? "Black Diamond" : null));
         }
 
         function switchTab(event, tabId) {
@@ -468,9 +480,9 @@
                 if(p.tier.includes('Black')) tierClass = 'card-tier-black';
 
                 grid.innerHTML += `
-                    <div class="player-card ${tierClass}" onclick="openPlayerDetail(${idx})">
+                    <div class="player-card ${tierClass}">
                         <div class="player-header">
-                            <span class="player-name">${p.name}</span>
+                            <span class="player-name" onclick="openPlayerDetailFromRoster(${idx})">${p.name}</span>
                             <span class="player-pos">${p.pos}</span>
                         </div>
                         <div class="player-photo-area">
@@ -501,8 +513,11 @@
             document.getElementById('roster-count').innerText = playerRoster.length;
         }
 
-        function openPlayerDetail(idx) {
-            const p = playerRoster[idx];
+        function openPlayerDetailFromRoster(idx) {
+            openPlayerModalDirect(playerRoster[idx]);
+        }
+
+        function openPlayerModalDirect(p) {
             document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - Dossier`;
             document.getElementById('modal-player-content').innerHTML = `
                 <p><strong>Tier / Role:</strong> ${p.tier} — ${p.role}</p>
@@ -533,10 +548,78 @@
 
         function renderTransferMarket() {
             const body = document.getElementById('transfer-market-body');
-            body.innerHTML = `
-                <tr><td>Marcus Vance</td><td>PG</td><td>85 / Red Diamond</td><td>$42,000</td><td>04:12:15</td><td><input type="number" value="45000" style="width:100px;"></td><td><button class="btn btn-success" style="padding:4px 8px;">Place Bid</button></td></tr>
-                <tr><td>Tavion Starks</td><td>SG</td><td>82 / Standard</td><td>$28,000</td><td>01:45:00</td><td><input type="number" value="30000" style="width:100px;"></td><td><button class="btn btn-success" style="padding:4px 8px;">Place Bid</button></td></tr>
-            `;
+            body.innerHTML = '';
+            transferMarketPool.forEach((p, idx) => {
+                let timeStr = formatTimer(p.timeLeft);
+                body.innerHTML = `
+                    <tr>
+                        <td><a href="javascript:void(0)" onclick="openPlayerModalDirect(transferMarketPool[${idx}])" style="color:#38bdf8; text-decoration:none;">${p.name}</a></td>
+                        <td>${p.pos}</td>
+                        <td>${p.tier}</td>
+                        <td id="market-bid-${idx}">$${p.currentBid.toLocaleString()}</td>
+                        <td id="market-timer-${idx}" style="font-family: monospace; color: var(--accent-gold); font-weight: bold;">${timeStr}</td>
+                        <td><input type="number" id="bid-input-${idx}" value="${p.currentBid + 5000}" style="width:100px;"></td>
+                        <td><button class="btn btn-success" style="padding:4px 8px;" onclick="placeAuctionBid(${idx})">Place Bid</button></td>
+                    </tr>
+                ` + body.innerHTML;
+            });
+        }
+
+        function formatTimer(totalSecs) {
+            if (totalSecs <= 0) return "EXPIRED / SOLD";
+            const hrs = Math.floor(totalSecs / 3600);
+            const mins = Math.floor((totalSecs % 3600) / 60);
+            const secs = totalSecs % 60;
+            return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Real-time ticking engine for auction countdowns
+        setInterval(() => {
+            transferMarketPool.forEach((p, idx) => {
+                if (p.timeLeft > 0) {
+                    p.timeLeft--;
+                    const timerElem = document.getElementById(`market-timer-${idx}`);
+                    if (timerElem) {
+                        timerElem.innerText = formatTimer(p.timeLeft);
+                        if (p.timeLeft <= 0) {
+                            timerElem.style.color = 'var(--accent-red)';
+                            timerElem.innerText = 'AUCTION CLOSED';
+                        }
+                    }
+                }
+            });
+        }, 1000);
+
+        function placeAuctionBid(idx) {
+            const p = transferMarketPool[idx];
+            if (p.timeLeft <= 0) {
+                alert("This auction has already concluded!");
+                return;
+            }
+            const inputVal = parseInt(document.getElementById(`bid-input-${idx}`).value);
+            if (isNaN(inputVal) || inputVal <= p.currentBid) {
+                alert("Your bid must be higher than the current standing bid!");
+                return;
+            }
+            if (clubFunds < inputVal) {
+                alert("Insufficient club funds to place this bid!");
+                return;
+            }
+            clubFunds -= inputVal;
+            p.currentBid = inputVal;
+            document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
+            document.getElementById(`market-bid-${idx}`).innerText = `$${p.currentBid.toLocaleString()}`;
+            
+            // If user outbids or wins, add to roster after brief simulation check
+            if (Math.random() > 0.5) {
+                playerRoster.push(p);
+                alert(`Congratulations! You successfully acquired ${p.name} via free agency auction!`);
+                transferMarketPool.splice(idx, 1);
+                renderTransferMarket();
+                renderMasterRoster();
+            } else {
+                alert(`Bid placed successfully on ${p.name}! Waiting for opposing front office counter-bids.`);
+            }
         }
 
         function renderMedSelect() {
@@ -553,6 +636,12 @@
         }
 
         function pullYouthProspect() {
+            if (clubFunds < 80000) {
+                alert("Insufficient club funds! Academy prospect pulls cost $80,000.");
+                return;
+            }
+            clubFunds -= 80000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             document.getElementById('youth-terminal').innerText = "[Academy] Successfully recruited elite prospect Damian Cross (PG, 18 yrs old, Potential: Superstar)! Added to reserves.";
         }
 
@@ -561,6 +650,12 @@
         }
 
         function scoutNCAAPipeline() {
+            if (clubFunds < 15000) {
+                alert("Insufficient club funds! NCAA Scouting pipeline runs cost $15,000.");
+                return;
+            }
+            clubFunds -= 15000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             const body = document.getElementById('ncaa-pipeline-body');
             body.innerHTML = `
                 <tr><td>Zion Miller</td><td>SF</td><td>Duke</td><td>18.4 PPG / Hot</td><td>92.4 EFF</td><td><button class="btn" style="padding:4px 8px;">Track</button></td></tr>
@@ -573,17 +668,86 @@
             document.getElementById('med-terminal').innerText = "[Medical Bay] Player assigned to rehabilitation protocol. Fatigue and rust decreasing.";
         }
 
+        // Live Court Simulation Engine (Canvas Play-by-Play Rendering)
         function runGlobalMatchSim() {
+            const canvas = document.getElementById('court-canvas');
+            const ctx = canvas.getContext('2d');
             const log = document.getElementById('m-log');
-            log.innerHTML = "[Match Start] Tip-off won by Boston Titans.<br>[Q1 11:02] Marcus Vance drives hard to the paint for a slam dunk! (2-0)<br>[Q1 10:45] Lockdown perimeter defense forces shot clock violation.<br>[Q1 09:30] Fluid motion offense results in an open 3-pointer splash!";
+            
+            let homeScore = 0;
+            let awayScore = 0;
+            let possession = "home";
+            let currentPossessionCount = 1;
+            const maxPossessions = 20;
+
+            log.innerHTML = "[Match Live Broadcast] Tip-off underway...<br>";
+
+            let simInterval = setInterval(() => {
+                if (currentPossessionCount > maxPossessions) {
+                    clearInterval(simInterval);
+                    log.innerHTML += `<br><strong>[Final Score] Boston Titans ${homeScore} - ${awayScore} Opponent</strong>`;
+                    return;
+                }
+
+                // Draw basketball court background
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw Court Lines
+                ctx.strokeStyle = '#334155';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Simulate play outcome
+                let success = Math.random() > 0.45;
+                let points = Math.random() > 0.6 ? 3 : 2;
+                let teamName = possession === "home" ? "Boston Titans" : "Visiting Rivals";
+
+                let ballX, ballY;
+                if (possession === "home") {
+                    if (success) {
+                        homeScore += points;
+                        log.innerHTML += `[Possession ${currentPossessionCount}] ${teamName} executes fluid motion offense -> SWISH! (+${points} pts). Score: ${homeScore} - ${awayScore}<br>`;
+                        ballX = canvas.width - 60; ballY = canvas.height / 2;
+                    } else {
+                        log.innerHTML += `[Possession ${currentPossessionCount}] ${teamName} misses jumper. Defensive rebound gathered.<br>`;
+                        ballX = canvas.width / 2; ballY = canvas.height / 2;
+                    }
+                    possession = "away";
+                } else {
+                    if (success) {
+                        awayScore += points;
+                        log.innerHTML += `[Possession ${currentPossessionCount}] ${teamName} converts fastbreak drive -> SCORE! (+${points} pts). Score: ${homeScore} - ${awayScore}<br>`;
+                        ballX = 60; ballY = canvas.height / 2;
+                    } else {
+                        log.innerHTML += `[Possession ${currentPossessionCount}] ${teamName} turns ball over on perimeter defense!<br>`;
+                        ballX = canvas.width / 2; ballY = canvas.height / 2;
+                    }
+                    possession = "home";
+                }
+
+                // Draw moving ball asset on canvas
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(ballX || canvas.width / 2, ballY || canvas.height / 2, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                log.scrollTop = log.scrollHeight;
+                currentPossessionCount++;
+            }, 800);
         }
 
         function simSundayCupMatch() {
+            clubFunds += 50000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             document.getElementById('cup-alert').style.display = 'block';
         }
 
         function openCupGameDetail(id) {
-            alert("Opening detailed box score metrics for Cup Match #" + (id + 1));
+            alert("Opening detailed box score metrics and individual player evaluations for Cup Match #" + (id + 1));
         }
 
         function triggerCoachUltimatum() {
@@ -607,3 +771,5 @@
     </script>
 </body>
 </html>
+
+```
