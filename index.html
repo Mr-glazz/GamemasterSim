@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +38,6 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* Panini Trading Cards Grid & Styles */
         .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 20px; }
         .player-card { background: linear-gradient(145deg, #111827, #1f2937); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
         .player-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5); border-color: var(--accent-blue); }
@@ -130,7 +128,6 @@
         
         <div class="main-content">
             
-            <!-- 1. ROSTER & CARDS TAB -->
             <div id="roster" class="tab-panel active">
                 <div class="section-title">
                     <span id="active-roster-title">Boston Titans - Active Panini Roster Grid</span>
@@ -139,7 +136,6 @@
                 <div class="roster-grid" id="master-roster-grid"></div>
             </div>
 
-            <!-- 2. LEAGUE STANDINGS & TEAM HUBS TAB -->
             <div id="standings" class="tab-panel">
                 <div class="section-title">12-Team League Standings & Franchise Hubs</div>
                 <div class="card">
@@ -160,7 +156,6 @@
                 </div>
             </div>
 
-            <!-- 3. BLUEPRINTS & TACTICS TAB -->
             <div id="tactics" class="tab-panel">
                 <div class="section-title">Live Upgradable Blueprint Schemes</div>
                 <div class="card">
@@ -199,7 +194,6 @@
                 </div>
             </div>
 
-            <!-- 4. TRANSFER MARKET & FREE AGENCY TAB -->
             <div id="transfer" class="tab-panel">
                 <div class="section-title">Live Auction & Free Agency Market</div>
                 <div class="card">
@@ -221,7 +215,6 @@
                 </div>
             </div>
 
-            <!-- 5. YOUTH ACADEMY & U21 MATCHES TAB -->
             <div id="youth" class="tab-panel">
                 <div class="section-title">Youth Academy & U21 Match Engine</div>
                 <div class="card">
@@ -235,7 +228,6 @@
                 </div>
             </div>
 
-            <!-- 6. NCAA SCOUTING PIPELINE TAB -->
             <div id="college" class="tab-panel">
                 <div class="section-title">NCAA Scouting & Collegiate Pipeline</div>
                 <div class="card">
@@ -267,7 +259,6 @@
                 </div>
             </div>
 
-            <!-- 7. MEDICAL & RUST REHAB BAY TAB -->
             <div id="med" class="tab-panel">
                 <div class="section-title">Medical & Rust Rehabilitation Bay</div>
                 <div class="card">
@@ -289,7 +280,6 @@
                 </div>
             </div>
 
-            <!-- 8. MATCHDAY LIVE STREAM TAB -->
             <div id="match" class="tab-panel">
                 <div class="section-title">Matchday Broadcast & 100-Possession Simulator</div>
                 <div class="card">
@@ -302,7 +292,6 @@
                 </div>
             </div>
 
-            <!-- 9. SUNDAY CUP TOURNAMENT TAB -->
             <div id="cup" class="tab-panel">
                 <div class="section-title">Sunday Cross-Division Cup Tournament</div>
                 <div class="card">
@@ -358,7 +347,6 @@
                 </div>
             </div>
 
-            <!-- 10. FRANCHISE DESK & COACHES TAB -->
             <div id="desk" class="tab-panel">
                 <div class="section-title">Franchise Desk & 11-Tier Coaching Matrix</div>
                 <div class="card">
@@ -368,7 +356,6 @@
                 </div>
             </div>
 
-            <!-- 11. OFFSEASON ROOKIE DRAFT TAB -->
             <div id="draft" class="tab-panel">
                 <div class="section-title">2-Round Offseason Collegiate Entry Draft</div>
                 <div class="card">
@@ -378,7 +365,6 @@
                 </div>
             </div>
 
-            <!-- 12. TALENT AGENCIES & RISKS TAB -->
             <div id="agencies" class="tab-panel">
                 <div class="section-title">Talent Agencies & Double-Gated Warning Shields</div>
                 <div class="card" style="border-color: var(--accent-red);">
@@ -395,7 +381,6 @@
         </div>
     </div>
 
-    <!-- Upgraded Panini Player Card Detail Modal -->
     <div class="modal-overlay" id="player-modal" onclick="closePlayerModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
             <h3 id="modal-player-name" style="margin-top:0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Player Profile</h3>
@@ -405,13 +390,11 @@
     </div>
 
     <script>
-        // Procedural generator helpers for robust 10-15 player rosters and 100+ auction pool
         const firstNamesList = ["Marcus", "Tavion", "Kobe", "Deuce", "Zavier", "Darius", "Malachi", "Jaylen", "Devonte", "Cade", "Jayson", "Trae", "De'Aaron", "Tyrese", "Paolo", "Chet", "Evan", "Scottie", "Anfernee", "Mikal", "OG", "Jarrett", "Desmond", "Bennedict", "Josh", "Franz", "Immanuel", "Keldon", "Tre", "Walker", "Ochai", "Jalen", "Jabari", "Keegan", "Shaedon", "Ayo", "Herb", "Quentin", "Naji"];
         const lastNamesList = ["Vance", "Starks", "Booker", "O'Neal", "Ivey", "Aldridge", "Giddey", "Brown", "Tatum", "Young", "Fox", "Haliburton", "Banchero", "Holmgren", "Mobley", "Barnes", "Simons", "Bridges", "Anunoby", "Allen", "Bane", "Mathurin", "Wagner", "Maxey", "Quickley", "Johnson", "Jones", "Kessler", "Agbaji", "Green", "Smith Jr.", "Murray", "Sharpe", "Dosunmu", "Grimes", "Marshall", "White", "Williams"];
         const positionsList = ["PG", "SG", "SF", "PF", "C"];
         const tiersList = ["Standard", "Standard", "Red Diamond", "Regular Diamond", "Black Diamond"];
 
-        // Global simulation state variables
         let clubFunds = 525000;
         let playerRoster = [];
         let transferMarketPool = [];
@@ -420,11 +403,10 @@
             playerRoster.push(generateRandomPlayer(i === 0 ? "Black Diamond" : null));
         }
 
-        // Initialize 5 active market auction listings with independent countdowns in seconds
         for(let i=0; i<5; i++) {
             let p = generateRandomPlayer();
             p.currentBid = Math.floor(Math.random() * 30000) + 15000;
-            p.timeLeft = Math.floor(Math.random() * 300) + 60; // 60 to 360 seconds
+            p.timeLeft = Math.floor(Math.random() * 300) + 60;
             transferMarketPool.push(p);
         }
 
@@ -440,7 +422,7 @@
                 name: `${fName} ${lName}`,
                 pos: pos,
                 age: age,
-                height: `${Math.floor(Math.random() * 3) + 6}'${Math.floor(Math.random() * 11)}\"`,
+                height: `${Math.floor(Math.random() * 3) + 6}'${Math.floor(Math.random() * 11)}"`,
                 tier: tier,
                 role: age < 22 ? "rotation player" : (iq > 88 ? "franchise player" : "star player"),
                 salary: Math.floor(Math.random() * 8000) + 3000,
@@ -482,7 +464,7 @@
                 grid.innerHTML += `
                     <div class="player-card ${tierClass}">
                         <div class="player-header">
-                            <span class="player-name" onclick="openPlayerDetailFromRoster(${idx})">${p.name}</span>
+                            <span class="player-name" onclick="openPlayerModalDirect(playerRoster[${idx}])">${p.name}</span>
                             <span class="player-pos">${p.pos}</span>
                         </div>
                         <div class="player-photo-area">
@@ -511,10 +493,6 @@
                 `;
             });
             document.getElementById('roster-count').innerText = playerRoster.length;
-        }
-
-        function openPlayerDetailFromRoster(idx) {
-            openPlayerModalDirect(playerRoster[idx]);
         }
 
         function openPlayerModalDirect(p) {
@@ -551,7 +529,7 @@
             body.innerHTML = '';
             transferMarketPool.forEach((p, idx) => {
                 let timeStr = formatTimer(p.timeLeft);
-                body.innerHTML = `
+                let rowHtml = `
                     <tr>
                         <td><a href="javascript:void(0)" onclick="openPlayerModalDirect(transferMarketPool[${idx}])" style="color:#38bdf8; text-decoration:none;">${p.name}</a></td>
                         <td>${p.pos}</td>
@@ -561,7 +539,8 @@
                         <td><input type="number" id="bid-input-${idx}" value="${p.currentBid + 5000}" style="width:100px;"></td>
                         <td><button class="btn btn-success" style="padding:4px 8px;" onclick="placeAuctionBid(${idx})">Place Bid</button></td>
                     </tr>
-                ` + body.innerHTML;
+                `;
+                body.innerHTML += rowHtml;
             });
         }
 
@@ -573,7 +552,6 @@
             return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // Real-time ticking engine for auction countdowns
         setInterval(() => {
             transferMarketPool.forEach((p, idx) => {
                 if (p.timeLeft > 0) {
@@ -610,7 +588,6 @@
             document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
             document.getElementById(`market-bid-${idx}`).innerText = `$${p.currentBid.toLocaleString()}`;
             
-            // If user outbids or wins, add to roster after brief simulation check
             if (Math.random() > 0.5) {
                 playerRoster.push(p);
                 alert(`Congratulations! You successfully acquired ${p.name} via free agency auction!`);
@@ -668,7 +645,6 @@
             document.getElementById('med-terminal').innerText = "[Medical Bay] Player assigned to rehabilitation protocol. Fatigue and rust decreasing.";
         }
 
-        // Live Court Simulation Engine (Canvas Play-by-Play Rendering)
         function runGlobalMatchSim() {
             const canvas = document.getElementById('court-canvas');
             const ctx = canvas.getContext('2d');
@@ -689,11 +665,9 @@
                     return;
                 }
 
-                // Draw basketball court background
                 ctx.fillStyle = '#0f172a';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Draw Court Lines
                 ctx.strokeStyle = '#334155';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
@@ -701,7 +675,6 @@
                 ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
                 ctx.stroke();
 
-                // Simulate play outcome
                 let success = Math.random() > 0.45;
                 let points = Math.random() > 0.6 ? 3 : 2;
                 let teamName = possession === "home" ? "Boston Titans" : "Visiting Rivals";
@@ -729,7 +702,6 @@
                     possession = "home";
                 }
 
-                // Draw moving ball asset on canvas
                 ctx.fillStyle = '#f59e0b';
                 ctx.beginPath();
                 ctx.arc(ballX || canvas.width / 2, ballY || canvas.height / 2, 10, 0, Math.PI * 2);
@@ -766,10 +738,7 @@
             switchTab({ currentTarget: document.querySelectorAll('.nav-button')[0] }, 'roster');
         }
 
-        // Render initial view
         renderMasterRoster();
     </script>
 </body>
 </html>
-
-```
