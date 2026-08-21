@@ -948,6 +948,236 @@ DOCTYPE html>
             renderStandings();
             renderTransferMarket();
         };
-    </script>
+    </script>// Global Game State
+        let clubFunds = 525000;
+        let activeTeamName = "Boston Titans";
+        let masterRoster = [];
+        let leagueTeams = [
+            { name: "Boston Titans", wins: 0, losses: 0, ovr: 88, active: true },
+            { name: "Chicago Vipers", wins: 0, losses: 0, ovr: 85, active: false },
+            { name: "Los Angeles Apex", wins: 0, losses: 0, ovr: 89, active: false },
+            { name: "New York Metros", wins: 0, losses: 0, ovr: 84, active: false },
+            { name: "Miami Heatwave", wins: 0, losses: 0, ovr: 86, active: false },
+            { name: "Dallas Mavericks X", wins: 0, losses: 0, ovr: 82, active: false },
+            { name: "Golden State Dynasty", wins: 0, losses: 0, ovr: 90, active: false },
+            { name: "Denver Mountain Lions", wins: 0, losses: 0, ovr: 83, active: false },
+            { name: "Seattle Supersonics", wins: 0, losses: 0, ovr: 81, active: false },
+            { name: "Toronto Huskies", wins: 0, losses: 0, ovr: 80, active: false },
+            { name: "Phoenix Sunsational", wins: 0, losses: 0, ovr: 87, active: false },
+            { name: "Brooklyn Monarchs", wins: 0, losses: 0, ovr: 82, active: false }
+        ];
+        let transferMarketPool = [];
+
+        // Initialize 12-Player Roster for Boston Titans
+        function initGame() {
+            for (let i = 0; i < 12; i++) {
+                masterRoster.push(generateRandomPlayer(i === 0 ? "Black Diamond" : (i < 3 ? "Red Diamond" : "Standard")));
+            }
+            // Initialize 100+ Market Pool
+            for (let i = 0; i < 100; i++) {
+                transferMarketPool.push({
+                    id: i,
+                    ...generateRandomPlayer(),
+                    currentBid: Math.floor(Math.random() * 50000) + 10000,
+                    timeLeft: `${Math.floor(Math.random() * 47) + 1}h ${Math.floor(Math.random() * 59) + 1}m`,
+                    userBidInput: 0
+                });
+            }
+            renderRoster();
+            renderStandings();
+            renderTransferMarket();
+            populateMedicalSelects();
+        }
+
+        // Tab Switching Engine
+        function switchTab(evt, tabId) {
+            const panels = document.querySelectorAll('.tab-panel');
+            panels.forEach(p => p.classList.remove('active'));
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Render Roster Grid
+        function renderRoster() {
+            const grid = document.getElementById('master-roster-grid');
+            grid.innerHTML = '';
+            masterRoster.forEach((player, index) => {
+                const tierClass = player.tier === "Red Diamond" ? "card-tier-red" : (player.tier === "Black Diamond" ? "card-tier-black" : "card-tier-standard");
+                const cardHTML = `
+                    <div class="player-card ${tierClass}" onclick="openPlayerCardModal(${index})">
+                        <div class="player-header">
+                            <span class="player-name">#${index+1} ${player.name}</span>
+                            <span class="player-pos">${player.pos}</span>
+                        </div>
+                        <div class="player-photo-area">
+                            <div class="jersey-badge">${player.tier.toUpperCase()}</div>
+                            <div class="player-face-art">
+                                <div class="eyes eye-left"></div>
+                                <div class="eyes eye-right"></div>
+                                <div class="jersey-fill"></div>
+                            </div>
+                            <div class="meta-info">
+                                <p><strong>Age:</strong> ${player.age} | <strong>IQ:</strong> ${player.iq}</p>
+                                <p><strong>Height:</strong> ${player.height}</p>
+                            </div>
+                        </div>
+                        <div class="skills-grid-system">
+                            <div><span class="skill-lbl">J-Shot:</span> <span class="skill-val">${player.js}</span></div>
+                            <div><span class="skill-lbl">Defense:</span> <span class="skill-val">${player.od}</span></div>
+                            <div><span class="skill-lbl">Handling:</span> <span class="skill-val">${player.handling}</span></div>
+                            <div><span class="skill-lbl">Passing:</span> <span class="skill-val">${player.passing}</span></div>
+                        </div>
+                        <div class="card-footer-info">
+                            <span>Salary: $${player.salary.toLocaleString()}/wk</span>
+                            <span style="color: var(--accent-green);">Chemistry: ${player.chemistry}%</span>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+            document.getElementById('roster-count').innerText = masterRoster.length;
+        }
+
+        // Render League Standings
+        function renderStandings() {
+            const tbody = document.getElementById('league-standings-body');
+            tbody.innerHTML = '';
+            leagueTeams.forEach((team, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${idx + 1}</td>
+                        <td><strong>${team.name}</strong></td>
+                        <td>${team.wins} - ${team.losses}</td>
+                        <td>${idx === 0 ? '-' : (idx * 0.5).toFixed(1)}</td>
+                        <td><span style="color: var(--accent-blue); font-weight:bold;">${team.ovr} OVR</span></td>
+                        <td><button class="btn" style="padding: 3px 8px; font-size: 11px;" onclick="inspectTeamHub('${team.name}')">Inspect Hub</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render Transfer Market
+        function renderTransferMarket() {
+            const tbody = document.getElementById('transfer-market-body');
+            tbody.innerHTML = '';
+            transferMarketPool.slice(0, 15).forEach((item, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><a href="#" onclick="openMarketPlayerModal(${idx}); return false;" style="color:var(--text-main); font-weight:bold;">${item.name}</a></td>
+                        <td>${item.pos}</td>
+                        <td><span style="color:var(--accent-gold);">${item.tier}</span></td>
+                        <td style="color:var(--accent-green); font-weight:bold;">$${item.currentBid.toLocaleString()}</td>
+                        <td style="color:var(--text-muted);">${item.timeLeft}</td>
+                        <td><input type="number" id="bid-input-${idx}" value="${item.currentBid + 1000}" style="width:110px; padding:4px;"></td>
+                        <td><button class="btn btn-success" style="padding:4px 8px; font-size:11px;" onclick="placeBid(${idx})">Place Bid</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Live 100-Possession Match Simulator & Canvas Animation
+        function runGlobalMatchSim() {
+            const logBox = document.getElementById('m-log');
+            const canvas = document.getElementById('court-canvas');
+            const ctx = canvas.getContext('2d');
+            logBox.innerHTML = "[Engine] Simulating 100-possession game clock (48M Pro Rules)...\n";
+            
+            let homeScore = 0;
+            let awayScore = 0;
+            let possession = 0;
+
+            const interval = setInterval(() => {
+                possession++;
+                // Draw 2D schematic court lines
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = "#374151";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, 45, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Simulate possession play
+                const isHomeScoring = Math.random() > 0.48;
+                const points = Math.random() > 0.7 ? 3 : 2;
+                if (isHomeScoring) {
+                    homeScore += points;
+                    logBox.innerHTML += `[Possession ${possession}/100] Boston Titans execute set play -> SCORES (${points} PTS)! Score: Titans ${homeScore} - Vipers ${awayScore}\n`;
+                } else {
+                    awayScore += points;
+                    logBox.innerHTML += `[Possession ${possession}/100] Chicago Vipers fast break counter -> SCORES (${points} PTS). Score: Titans ${homeScore} - Vipers ${awayScore}\n`;
+                }
+
+                // Draw moving player tokens on canvas
+                ctx.fillStyle = "#2563eb";
+                ctx.beginPath();
+                ctx.arc(100 + (possession * 3.5) % 400, 150 + Math.sin(possession)*40, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                logBox.scrollTop = logBox.scrollHeight;
+
+                if (possession >= 20) { // Capped for snappy demo loop
+                    clearInterval(interval);
+                    logBox.innerHTML += `\n[Final Score] Boston Titans: ${homeScore} | Opponent: ${awayScore}. Match recorded successfully!`;
+                }
+            }, 300);
+        }
+
+        // Modal triggers
+        function openPlayerCardModal(index) {
+            const p = masterRoster[index];
+            document.getElementById('modal-player-name').innerText = `${p.name} (${p.pos}) - ${p.tier}`;
+            document.getElementById('modal-player-content').innerHTML = `
+                <p><strong>Age:</strong> ${p.age} | <strong>Height:</strong> ${p.height}</p>
+                <p><strong>Role:</strong> ${p.role} | <strong>Potential:</strong> ${p.potential}</p>
+                <p><strong>Game Shape:</strong> ${p.gameShape} | <strong>Basketball IQ:</strong> ${p.iq}</p>
+                <hr style="border-color:var(--border-color)">
+                <p><strong>Attributes Breakdown:</strong></p>
+                <p>Jump Shot: ${p.js} | Range: ${p.jr} | Defense: ${p.od}</p>
+                <p>Handling: ${p.handling} | Driving: ${p.driving} | Passing: ${p.passing}</p>
+                <p style="color:var(--accent-green); margin-top:10px;"><strong>Status:</strong> ${p.mood}</p>
+            `;
+            document.getElementById('player-modal').style.display = 'flex';
+        }
+
+        function closePlayerModal(e) {
+            if (e.target.id === 'player-modal') {
+                document.getElementById('player-modal').style.display = 'none';
+            }
+        }
+
+        function populateMedicalSelects() {
+            const sel = document.getElementById('med-player-select');
+            sel.innerHTML = '';
+            masterRoster.forEach((p, i) => {
+                sel.innerHTML += `<option value="${i}">${p.name} (${p.pos})</option>`;
+            });
+        }
+
+        function assignRehabProtocol() {
+            const term = document.getElementById('med-terminal');
+            term.innerHTML = "[Medical Bay] Player assigned to custom conditioning cycle. Rust tokens cleared successfully!";
+        }
+
+        function pullYouthProspect() {
+            if (clubFunds < 80000) {
+                alert("Insufficient club funds! $80,000 required.");
+                return;
+            }
+            clubFunds -= 80000;
+            document.getElementById('header-funds').innerText = `Club Funds: $${clubFunds.toLocaleString()}`;
+            const newKid = generateRandomPlayer("Standard");
+            newKid.age = 15;
+            masterRoster.push(newKid);
+            renderRoster();
+            document.getElementById('youth-terminal').innerText = `[Success] $80,000 academy donation processed! Recruited 15-year-old prodigy ${newKid.name}.`;
+        }
+
+        // Initialize on load
+        window.onload = initGame;
 </body>
 </html>
